@@ -1,4 +1,4 @@
-package com.example.hr_platform
+package com.ismail.hr_platform
 
 import io.flutter.embedding.android.FlutterActivity
 
