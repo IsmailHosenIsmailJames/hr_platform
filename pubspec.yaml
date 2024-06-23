@@ -47,6 +47,8 @@ dependencies:
   file_picker: ^8.0.5
   rive: ^0.13.8
   awesome_dialog: ^3.2.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_test:
