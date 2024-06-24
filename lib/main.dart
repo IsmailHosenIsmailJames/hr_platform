@@ -1,22 +1,20 @@
-import 'dart:isolate';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:hr_platform/src/core/initialization/init.dart';
+import 'package:hr_platform/src/screens/auth/login/login_page.dart';
 
 import 'firebase_options.dart';
 
-import 'package:flutter/services.dart';
-
-void _isolateMain(RootIsolateToken rootIsolateToken) async {
-  BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
-}
+// void _isolateMain(RootIsolateToken rootIsolateToken) async {
+//   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
-  Isolate.spawn(_isolateMain, rootIsolateToken);
+  // if (Platform.isWindows) {
+  //   RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
+  //   Isolate.spawn(_isolateMain, rootIsolateToken);
+  // }
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -44,7 +42,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const Init(),
+      home: const LoginPage(),
     );
   }
 }

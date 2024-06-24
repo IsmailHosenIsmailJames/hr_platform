@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -230,10 +228,12 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.all(20),
                           child: Center(
                             child: SizedBox(
-                                height: 400,
-                                width: 400,
-                                child: Image.asset(
-                                    "assets/radiant_logo.636da2b1.png")),
+                              height: 400,
+                              width: 400,
+                              child: Image.asset(
+                                "assets/radiant_logo.636da2b1.png",
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -250,9 +250,23 @@ class _LoginPageState extends State<LoginPage> {
             Scaffold(
                 backgroundColor: Colors.blue.shade800,
                 body: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: decoratedForm,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 100,
+                        width: 250,
+                        child: Image.asset(
+                          "assets/radiant_logo.636da2b1.png",
+                        ),
+                      ),
+                      const Gap(20),
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: decoratedForm,
+                      ),
+                    ],
                   ),
                 ),
               );
