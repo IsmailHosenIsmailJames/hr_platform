@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../screens/auth/login/login_page.dart';
 import '../../screens/home/home_page.dart';
@@ -9,15 +9,7 @@ class Init extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data != null) {
-          return const HomePage();
-        } else {
-          return const LoginPage();
-        }
-      },
-    );
+    final data = Hive.box('info').get('userData', defaultValue: null);
+    return data == null ? const LoginPage() : const HomePage();
   }
 }

@@ -42,14 +42,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAjIaLuPMEixmT6xNgnAiyNbMw7YzP5NBs',
-    appId: '1:224642949303:web:080b9ac7166b3df699ed32',
+    appId: '1:224642949303:web:49a26d0f979b375699ed32',
     messagingSenderId: '224642949303',
     projectId: 'hrplatformportal',
     authDomain: 'hrplatformportal.firebaseapp.com',
-    databaseURL:
-        'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL: 'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'hrplatformportal.appspot.com',
-    measurementId: 'G-8VFTZ1HY3N',
+    measurementId: 'G-LMR4V55EMQ',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -57,8 +56,7 @@ class DefaultFirebaseOptions {
     appId: '1:224642949303:android:fcd7d9e0809b4e5999ed32',
     messagingSenderId: '224642949303',
     projectId: 'hrplatformportal',
-    databaseURL:
-        'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL: 'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'hrplatformportal.appspot.com',
   );
 
@@ -67,11 +65,9 @@ class DefaultFirebaseOptions {
     appId: '1:224642949303:ios:75ac6cf1184df43d99ed32',
     messagingSenderId: '224642949303',
     projectId: 'hrplatformportal',
-    databaseURL:
-        'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL: 'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'hrplatformportal.appspot.com',
-    iosClientId:
-        '224642949303-j936dvuqtsdqnhgkipedg5cu576gen3h.apps.googleusercontent.com',
+    iosClientId: '224642949303-j936dvuqtsdqnhgkipedg5cu576gen3h.apps.googleusercontent.com',
     iosBundleId: 'com.example.hrPlatform',
   );
 
@@ -80,23 +76,21 @@ class DefaultFirebaseOptions {
     appId: '1:224642949303:ios:75ac6cf1184df43d99ed32',
     messagingSenderId: '224642949303',
     projectId: 'hrplatformportal',
-    databaseURL:
-        'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL: 'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'hrplatformportal.appspot.com',
-    iosClientId:
-        '224642949303-j936dvuqtsdqnhgkipedg5cu576gen3h.apps.googleusercontent.com',
+    iosClientId: '224642949303-j936dvuqtsdqnhgkipedg5cu576gen3h.apps.googleusercontent.com',
     iosBundleId: 'com.example.hrPlatform',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyAjIaLuPMEixmT6xNgnAiyNbMw7YzP5NBs',
-    appId: '1:224642949303:web:c295a817fae9930699ed32',
+    appId: '1:224642949303:web:49a26d0f979b375699ed32',
     messagingSenderId: '224642949303',
     projectId: 'hrplatformportal',
     authDomain: 'hrplatformportal.firebaseapp.com',
-    databaseURL:
-        'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL: 'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'hrplatformportal.appspot.com',
-    measurementId: 'G-DVCWQHGQ5X',
+    measurementId: 'G-LMR4V55EMQ',
   );
+
 }

@@ -8,42 +8,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:224642949303:android:9547a7b6a660613a99ed32",
-        "android_client_info": {
-          "package_name": "com.ismail.hr_platf"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "224642949303-uafivb3b55uv02k8gl9nqjrhc3etor03.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCYwHAHQrJK8VT_oB8Ao4ScS0nWGt6diGA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "224642949303-uafivb3b55uv02k8gl9nqjrhc3etor03.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "224642949303-j936dvuqtsdqnhgkipedg5cu576gen3h.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.hrPlatform"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:224642949303:android:fcd7d9e0809b4e5999ed32",
         "android_client_info": {
           "package_name": "com.ismail.hr_platform"
