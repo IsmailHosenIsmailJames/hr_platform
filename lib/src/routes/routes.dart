@@ -7,6 +7,7 @@ import '../screens/home/home_page.dart';
 
 class AppRoutes {
   static RouterConfig<Object> routes() {
+    String path = "/";
     return GoRouter(
       routes: <RouteBase>[
         GoRoute(
@@ -17,20 +18,18 @@ class AppRoutes {
           },
         ),
         GoRoute(
-          name: '/home',
-          path: '/home',
+          name: "path",
+          path: "/path/:path",
           builder: (context, state) {
-            return const HomePage();
+            print(
+              state.pathParameters['path']!,
+            );
+            return HomePage(
+              path: state.pathParameters['path']!,
+            );
           },
-        ),
+        )
       ],
-      redirect: (context, state) {
-        if (isAuthenticated()) {
-          return state.topRoute != null ? state.topRoute!.path : "/home";
-        } else {
-          return '/login';
-        }
-      },
     );
   }
 }

@@ -28,7 +28,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace = "com.ismail.hr_platform"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = "25.1.8937393"
 
     compileOptions {

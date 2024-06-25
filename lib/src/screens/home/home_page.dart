@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
-import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String path;
+  const HomePage({super.key, required this.path});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -25,13 +25,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            await logout();
-            showFluttertoastMessage("Logout successfull");
-          },
-          child: const Text("Logout"),
+      body: Container(
+        padding: EdgeInsets.all(20),
+        margin: EdgeInsets.all(20),
+        child: Row(
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {},
+              label: Text("Add"),
+              icon: Icon(Icons.add),
+            ),
+          ],
         ),
       ),
     );

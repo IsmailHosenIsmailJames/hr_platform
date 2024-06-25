@@ -40,62 +40,63 @@ class _LoginPageState extends State<LoginPage> {
         return result;
       }
     }
-    // try {
-    if (FirebaseAuth.instance.currentUser == null) {
-      await FirebaseAuth.instance.signInAnonymously();
-    }
-    final response =
-        await FirebaseFirestore.instance.collection('user').doc('user').get();
-    if (response.exists) {
-      Map<String, dynamic> allUserData =
-          Map<String, dynamic>.from(response.data()!);
-      List<Map> userList = List<Map>.from(allUserData['user-list']);
-      for (Map user in userList) {
-        String temId = user['id'] ?? '';
-        String temPass = user['password'] ?? '';
-
-        if (temId.trim() == id && temPass == password) {
-          Map<String, dynamic> thisUser = Map<String, dynamic>.from(user);
-          await Hive.box('info').put('userData', thisUser);
-          context.go("/home");
-          return null;
-        }
+    try {
+      if (FirebaseAuth.instance.currentUser == null) {
+        await FirebaseAuth.instance.signInAnonymously();
       }
-      return "User did not exits";
+      final response =
+          await FirebaseFirestore.instance.collection('user').doc('user').get();
+      if (response.exists) {
+        Map<String, dynamic> allUserData =
+            Map<String, dynamic>.from(response.data()!);
+        List<Map> userList = List<Map>.from(allUserData['user-list']);
+        for (Map user in userList) {
+          String temId = user['id'] ?? '';
+          String temPass = user['password'] ?? '';
+
+          if (temId.trim() == id && temPass == password) {
+            Map<String, dynamic> thisUser = Map<String, dynamic>.from(user);
+            final box = await Hive.openBox('info');
+            await box.put('userData', thisUser);
+            context.go("/");
+            return null;
+          }
+        }
+        return "User did not exits";
+      }
+
+      return "user document not exits";
+    } catch (e) {
+      return "Something went worng";
     }
-
-    return "user document not exits";
-
-    // } catch (e) {
-    //   return "Something went worng";
-    // }
   }
 
   Future<String?> loginAdmin(String email, String password) async {
-    // try {
-    final UserCredential result = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
-    if (result.user != null) {
-      final response = await FirebaseFirestore.instance
-          .collection('user')
-          .doc('admin')
-          .get();
-      if (response.exists) {
-        Map userData = response.data()!;
-        Map<String, dynamic> adminData = userData['data'];
-        await Hive.box('info').put("userData", adminData);
-        context.go("/home");
+    try {
+      final UserCredential result = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      if (result.user != null) {
+        final response = await FirebaseFirestore.instance
+            .collection('user')
+            .doc('admin')
+            .get();
+        if (response.exists) {
+          Map userData = response.data()!;
+          Map<String, dynamic> adminData = userData['data'];
+          final box = await Hive.openBox('info');
+          await box.put("userData", adminData);
+          context.go("/home");
+        } else {
+          return "Something went worng";
+        }
       } else {
-        return "Something went worng";
+        return "Email is not valid";
       }
-    } else {
-      return "Email is not valid";
+    } catch (e) {
+      if (kDebugMode) {
+        print("loginAdmin() error :  + $e");
+      }
     }
-    // } catch (e) {
-    //   if (kDebugMode) {
-    //     print("loginAdmin() error :  + $e");
-    //   }
-    // }
     return null;
   }
 

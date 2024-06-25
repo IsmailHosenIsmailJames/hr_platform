@@ -55,6 +55,10 @@ dependencies:
   go_router: ^14.2.0
   url_strategy: ^0.2.0
   flutter_launcher_icons: ^0.13.1
+  rive: ^0.13.8
+  loading_animation_widget: ^1.2.1
+  fast_cached_network_image: ^1.2.9
+  dio: ^5.4.3+1
 
 dev_dependencies:
   flutter_test:
