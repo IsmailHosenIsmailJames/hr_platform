@@ -6,9 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
-import 'package:hr_platform/src/core/initialization/init.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
 
 import '../../../theme/break_point.dart';
@@ -40,68 +40,62 @@ class _LoginPageState extends State<LoginPage> {
         return result;
       }
     }
-    try {
+    // try {
+    if (FirebaseAuth.instance.currentUser == null) {
       await FirebaseAuth.instance.signInAnonymously();
-      final response =
-          await FirebaseFirestore.instance.collection('user').doc('user').get();
-      if (response.exists) {
-        Map<String, dynamic> allUserData =
-            Map<String, dynamic>.from(response.data()!);
-        List<Map> userList = List<Map>.from(allUserData['user-list']);
-        for (Map user in userList) {
-          String temId = user['id'] ?? '';
-          String temPass = user['password'] ?? '';
-          if (temId == id && temPass == password) {
-            Map<String, dynamic> thisUser = Map<String, dynamic>.from(user);
-            await Hive.box('info').put('userData', thisUser);
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Init(),
-              ),
-              (route) => true,
-            );
-            return null;
-          }
+    }
+    final response =
+        await FirebaseFirestore.instance.collection('user').doc('user').get();
+    if (response.exists) {
+      Map<String, dynamic> allUserData =
+          Map<String, dynamic>.from(response.data()!);
+      List<Map> userList = List<Map>.from(allUserData['user-list']);
+      for (Map user in userList) {
+        String temId = user['id'] ?? '';
+        String temPass = user['password'] ?? '';
+
+        if (temId.trim() == id && temPass == password) {
+          Map<String, dynamic> thisUser = Map<String, dynamic>.from(user);
+          await Hive.box('info').put('userData', thisUser);
+          context.go("/home");
+          return null;
         }
       }
       return "User did not exits";
-    } catch (e) {
-      return "Something went worng";
     }
+
+    return "user document not exits";
+
+    // } catch (e) {
+    //   return "Something went worng";
+    // }
   }
 
   Future<String?> loginAdmin(String email, String password) async {
-    try {
-      final UserCredential result = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      if (result.user != null) {
-        final response = await FirebaseFirestore.instance
-            .collection('user')
-            .doc('admin')
-            .get();
-        if (response.exists) {
-          Map userData = response.data()!;
-          Map<String, dynamic> adminData = userData['data'];
-          await Hive.box('info').put("userData", adminData);
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const Init(),
-            ),
-            (route) => true,
-          );
-        } else {
-          return "Something went worng";
-        }
+    // try {
+    final UserCredential result = await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: email, password: password);
+    if (result.user != null) {
+      final response = await FirebaseFirestore.instance
+          .collection('user')
+          .doc('admin')
+          .get();
+      if (response.exists) {
+        Map userData = response.data()!;
+        Map<String, dynamic> adminData = userData['data'];
+        await Hive.box('info').put("userData", adminData);
+        context.go("/home");
       } else {
-        return "Email is not valid";
+        return "Something went worng";
       }
-    } catch (e) {
-      if (kDebugMode) {
-        print("loginAdmin() error :  + $e");
-      }
+    } else {
+      return "Email is not valid";
     }
+    // } catch (e) {
+    //   if (kDebugMode) {
+    //     print("loginAdmin() error :  + $e");
+    //   }
+    // }
     return null;
   }
 
@@ -116,6 +110,7 @@ class _LoginPageState extends State<LoginPage> {
           TextFormField(
             controller: _idTextEditingController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
+            style: const TextStyle(color: Colors.black),
             decoration:
                 getInputDecooration("User ID", "Please type your ID here..."),
             validator: (value) {
@@ -129,6 +124,7 @@ class _LoginPageState extends State<LoginPage> {
           TextFormField(
             controller: _passwordTextEditingController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
+            style: const TextStyle(color: Colors.black),
             decoration: getInputDecooration(
                 "Password", "Please type your Password here..."),
             validator: (value) {
@@ -164,6 +160,10 @@ class _LoginPageState extends State<LoginPage> {
                     _idTextEditingController.text.trim(),
                     _passwordTextEditingController.text,
                   );
+
+                  if (kDebugMode) {
+                    print(result);
+                  }
 
                   if (result == null) {
                     // login successfull

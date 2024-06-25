@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
-import 'package:hr_platform/src/core/initialization/init.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,16 +17,9 @@ class _HomePageState extends State<HomePage> {
     if (user != null) {
       await FirebaseAuth.instance.signOut();
     }
-    await Hive.box("info").deleteFromDisk();
-    await Hive.openBox("info");
-    Navigator.pushAndRemoveUntil(
-      // ignore: use_build_context_synchronously
-      context,
-      MaterialPageRoute(
-        builder: (context) => const Init(),
-      ),
-      (route) => true,
-    );
+    await Hive.box("info").delete("userData");
+    // ignore: use_build_context_synchronously
+    context.go("/login");
   }
 
   @override
