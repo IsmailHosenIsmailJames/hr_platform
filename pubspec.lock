@@ -289,6 +289,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  fluentui_system_icons:
+    dependency: "direct main"
+    description:
+      name: fluentui_system_icons
+      sha256: "8c37ba0ac30f3fd88026a1d874abfda4e5dfd64ebc3b0dd97719d4d5db65f04a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.244"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -352,14 +360,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0-release-candidate-6"
-  go_router:
-    dependency: "direct main"
-    description:
-      name: go_router
-      sha256: cdae1b9c8bd7efadcef6112e81c903662ef2ce105cbd220a04bbb7c3425b5554
-      url: "https://pub.dev"
-    source: hosted
-    version: "14.2.0"
   graphs:
     dependency: transitive
     description:
@@ -464,14 +464,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
-  logging:
-    dependency: transitive
-    description:
-      name: logging
-      sha256: "623a88c9594aa774443aa3eb2d41807a48486b5613e67599fb4c41c0ad47c340"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   matcher:
     dependency: transitive
     description:

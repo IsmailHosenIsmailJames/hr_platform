@@ -1,12 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
@@ -57,8 +58,12 @@ class _LoginPageState extends State<LoginPage> {
           if (temId.trim() == id && temPass == password) {
             Map<String, dynamic> thisUser = Map<String, dynamic>.from(user);
             final box = await Hive.openBox('info');
-            await box.put('userData', thisUser);
-            context.go("/");
+            await box.put('userData', jsonEncode(thisUser));
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              "/",
+              (route) => true,
+            );
             return null;
           }
         }
@@ -84,8 +89,8 @@ class _LoginPageState extends State<LoginPage> {
           Map userData = response.data()!;
           Map<String, dynamic> adminData = userData['data'];
           final box = await Hive.openBox('info');
-          await box.put("userData", adminData);
-          context.go("/home");
+          await box.put("userData", jsonEncode(adminData));
+          Navigator.pushNamedAndRemoveUntil(context, "/", (route) => true);
         } else {
           return "Something went worng";
         }
@@ -112,6 +117,7 @@ class _LoginPageState extends State<LoginPage> {
             controller: _idTextEditingController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             style: const TextStyle(color: Colors.black),
+            keyboardType: TextInputType.emailAddress,
             decoration:
                 getInputDecooration("User ID", "Please type your ID here..."),
             validator: (value) {
@@ -126,6 +132,7 @@ class _LoginPageState extends State<LoginPage> {
             controller: _passwordTextEditingController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             style: const TextStyle(color: Colors.black),
+            obscureText: true,
             decoration: getInputDecooration(
                 "Password", "Please type your Password here..."),
             validator: (value) {
