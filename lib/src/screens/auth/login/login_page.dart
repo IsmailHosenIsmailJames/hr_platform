@@ -258,23 +258,25 @@ class _LoginPageState extends State<LoginPage> {
             Scaffold(
                 backgroundColor: Colors.blue.shade800,
                 body: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 100,
-                        width: 250,
-                        child: Image.asset(
-                          "assets/radiant_logo.636da2b1.png",
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 100,
+                          width: 250,
+                          child: Image.asset(
+                            "assets/radiant_logo.636da2b1.png",
+                          ),
                         ),
-                      ),
-                      const Gap(20),
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: decoratedForm,
-                      ),
-                    ],
+                        const Gap(20),
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: decoratedForm,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );

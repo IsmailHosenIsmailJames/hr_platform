@@ -3,9 +3,13 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:hive/hive.dart';
 import 'package:hr_platform/src/models/files_model.dart';
+import 'package:hr_platform/src/screens/add_new_files/add_new_file.dart';
+import 'package:hr_platform/src/screens/add_new_folder/add_new_folder.dart';
 import 'package:hr_platform/src/theme/break_point.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   final String path;
@@ -56,7 +60,98 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showModalBottomSheet(
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    builder: (context) {
+                      return Container(
+                        padding: const EdgeInsets.all(15),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: Icon(
+                                    Icons.close,
+                                    size: 30,
+                                    color: Colors.blue.shade900,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              "Add new",
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.blue.shade800,
+                              ),
+                            ),
+                            const Divider(),
+                            const Gap(20),
+                            SizedBox(
+                              width: 300,
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return AddNewFile(
+                                          path: widget.path,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                label: const Text(
+                                  "Add new file",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                icon:
+                                    const Icon(FluentIcons.document_24_regular),
+                              ),
+                            ),
+                            const Gap(10),
+                            SizedBox(
+                              width: 300,
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return AddNewFolder(
+                                          path: widget.path,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                label: const Text(
+                                  "Add new folder",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                icon: const Icon(FluentIcons.folder_24_regular),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
                 icon: const Icon(
                   Icons.add,
                   size: 35,
@@ -86,8 +181,10 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () {
-                      cureentModel.path;
+                    onPressed: () async {
+                      if (await canLaunchUrl(Uri.parse(cureentModel.path))) {
+                        launchUrl(Uri.parse(cureentModel.path));
+                      }
                     },
                     child: Container(
                       margin: const EdgeInsets.all(5),
@@ -116,7 +213,7 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.zero,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {},
                     child: Container(
                       margin: const EdgeInsets.all(10),
                       height: 100,
