@@ -64,9 +64,22 @@ class MyApp extends StatelessWidget {
             );
           }
 
+          if (settings.name == '/') {
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context) {
+                return Initialization(namePath: settings.name);
+              },
+            );
+          }
+
           if (settings.name!.startsWith("/home")) {
-            Initialization(
-              namePath: settings.name!.replaceFirst("/home", ""),
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context) {
+                return Initialization(
+                    namePath: settings.name!.replaceFirst("/home", ""));
+              },
             );
           }
 

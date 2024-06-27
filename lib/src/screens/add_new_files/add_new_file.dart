@@ -1,13 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:get/get.dart';
-import 'package:hr_platform/src/screens/add_new_files/upload_progress_controller.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
+import 'package:hr_platform/src/models/files_model.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
 
 class AddNewFile extends StatefulWidget {
@@ -20,9 +24,123 @@ class AddNewFile extends StatefulWidget {
 
 class _AddNewFileState extends State<AddNewFile> {
   Uint8List? data;
+  FilePickerResult? imagePickerResult;
+  FilePickerResult? filePickerResult;
   Uint8List? imageData;
-  String? slectedFilePath;
+  String? selectedFilePath;
+  UploadTask? uploadTask;
   TextEditingController controller = TextEditingController();
+
+  void selectCoverImageForFile() async {
+    imagePickerResult = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png'],
+    );
+    setState(() {});
+    if (imagePickerResult != null) {
+      imageData =
+          await File(imagePickerResult!.files.single.path!).readAsBytes();
+      setState(() {});
+    } else {
+      showFluttertoastMessage("Please select a files");
+    }
+  }
+
+  void selectFile() async {
+    filePickerResult = await FilePicker.platform.pickFiles(
+      allowMultiple: false,
+    );
+    setState(() {});
+    if (filePickerResult != null) {
+      selectedFilePath = filePickerResult!.files.single.path!;
+      data = await File(filePickerResult!.files.single.path!).readAsBytes();
+      setState(() {});
+    } else {
+      showFluttertoastMessage("Please select a files");
+    }
+  }
+
+  String tsakState = "Let's add the file";
+
+  final box = Hive.box("info");
+  List<Map> getCurrentPossitionListOfData() {
+    final data = box.get('data', defaultValue: null);
+    List<Map> toReturn = [];
+    if (data != null) {
+      toReturn = List<Map>.from(jsonDecode(data)['data-map']);
+    }
+    return toReturn;
+  }
+
+  // void showProgress(String task) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return Dialog(
+  //         insetPadding: EdgeInsets.zero,
+  //         backgroundColor: Colors.grey.withOpacity(0.1),
+  //         child: SizedBox(
+  //           height: MediaQuery.of(context).size.height,
+  //           width: MediaQuery.of(context).size.width,
+  //           child: Center(
+  //             child: Container(
+  //               padding: const EdgeInsets.all(15),
+  //               height: 200,
+  //               width: 200,
+  //               decoration: BoxDecoration(
+  //                 color: Colors.white,
+  //                 borderRadius: BorderRadius.circular(20),
+  //               ),
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 crossAxisAlignment: CrossAxisAlignment.center,
+  //                 children: [
+  //                   Text(
+  //                     task,
+  //                     style: const TextStyle(fontSize: 20),
+  //                   ),
+  //                   const Gap(10),
+  //                   if (uploadTask != null)
+  //                     StreamBuilder(
+  //                       stream: uploadTask!.snapshotEvents,
+  //                       builder: (context, snapshot) {
+  //                         if (snapshot.hasData) {
+  //                           return CircularProgressIndicator(
+  //                             value: (snapshot.data!.bytesTransferred /
+  //                                     snapshot.data!.totalBytes) *
+  //                                 100.toDouble(),
+  //                             backgroundColor: Colors.grey,
+  //                           );
+  //                         } else {
+  //                           return const SizedBox();
+  //                         }
+  //                       },
+  //                     ),
+  //                   const Gap(10),
+  //                   if (uploadTask != null)
+  //                     StreamBuilder(
+  //                       stream: uploadTask!.snapshotEvents,
+  //                       builder: (context, snapshot) {
+  //                         if (snapshot.hasData) {
+  //                           return Text(
+  //                             '${snapshot.data!.bytesTransferred}/${snapshot.data!.totalBytes}',
+  //                           );
+  //                         } else {
+  //                           return const SizedBox();
+  //                         }
+  //                       },
+  //                     )
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,11 +202,23 @@ class _AddNewFileState extends State<AddNewFile> {
                   getInputDecooration("file title", "Type file title here..."),
             ),
             const Gap(15),
-            const Text(
-              "Preview image",
-              style: TextStyle(fontSize: 18),
+            Row(
+              children: [
+                const Text(
+                  "Preview image",
+                  style: TextStyle(fontSize: 18),
+                ),
+                const Spacer(),
+                if (imageData != null)
+                  TextButton(
+                    onPressed: () {
+                      selectCoverImageForFile();
+                    },
+                    child: const Text("Change"),
+                  ),
+              ],
             ),
-            const Gap(7),
+            if (imageData == null) const Gap(7),
             Container(
               height: 300,
               decoration: BoxDecoration(
@@ -102,21 +232,7 @@ class _AddNewFileState extends State<AddNewFile> {
                         backgroundColor: Colors.grey.withOpacity(0.3),
                       ),
                       onPressed: () async {
-                        final filesPicked = await FilePicker.platform.pickFiles(
-                          allowMultiple: false,
-                          type: FileType.custom,
-                          allowedExtensions: ['jpg', 'png'],
-                        );
-                        if (filesPicked != null) {
-                          print("files\nPicked\n");
-                          print(filesPicked.files.single.path);
-
-                          imageData = await File(filesPicked.files.single.path!)
-                              .readAsBytes();
-                          setState(() {});
-                        } else {
-                          print("files \nnot \npicked\n");
-                        }
+                        selectCoverImageForFile();
                       },
                       icon: const Icon(
                         Icons.add_a_photo_rounded,
@@ -126,30 +242,36 @@ class _AddNewFileState extends State<AddNewFile> {
                   : Image.memory(imageData!),
             ),
             const Gap(10),
-            const Row(
+            Row(
               children: [
-                Text(
+                const Text(
                   "Selected File",
                   style: TextStyle(fontSize: 18),
                 ),
-                Gap(10),
-                Text(
+                const Gap(10),
+                const Text(
                   "*",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
                     color: Colors.red,
                   ),
-                )
+                ),
+                const Spacer(),
+                if (data != null)
+                  TextButton(
+                    onPressed: () {
+                      selectFile();
+                    },
+                    child: const Text("Change"),
+                  ),
               ],
             ),
-            const Gap(5),
+            if (data == null) const Gap(5),
             data == null
                 ? OutlinedButton.icon(
                     onPressed: () async {
-                      FilePicker.platform.pickFiles(
-                        allowMultiple: false,
-                      );
+                      selectFile();
                     },
                     label: const Text(
                       "Select a file",
@@ -161,68 +283,109 @@ class _AddNewFileState extends State<AddNewFile> {
                       FluentIcons.document_24_regular,
                     ),
                   )
-                : Text(slectedFilePath!),
+                : Text(selectedFilePath!),
             const Gap(20),
             ElevatedButton(
-              onPressed: () {
-                if (controller.text.isNotEmpty && data != null) {
-                  final uploadProgressController =
-                      Get.put(UploadProgressController());
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Dialog(
-                        insetPadding: EdgeInsets.zero,
-                        backgroundColor: Colors.grey.withOpacity(0.1),
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height,
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                            child: Container(
-                              padding: const EdgeInsets.all(15),
-                              height: 200,
-                              width: 200,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Obx(
-                                () => Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      uploadProgressController.currentJob.value,
-                                      style: const TextStyle(fontSize: 20),
-                                    ),
-                                    const Gap(10),
-                                    CircularProgressIndicator(
-                                      value: uploadProgressController
-                                          .percentage.value
-                                          .toDouble(),
-                                      backgroundColor: Colors.grey,
-                                    ),
-                                    const Gap(10),
-                                    Text(
-                                        '${uploadProgressController.totalUploadedBytes}/${uploadProgressController.totalBytes}'),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+              onPressed: () async {
+                if (controller.text.isNotEmpty &&
+                    data != null &&
+                    uploadTask == null) {
+                  String fileName =
+                      "${DateTime.now().millisecondsSinceEpoch}_${filePickerResult!.files.single.name}";
+                  var firebaseStorageRef = FirebaseStorage.instance.ref();
+                  setState(() {
+                    uploadTask = firebaseStorageRef
+                        .child('files/$fileName')
+                        .putFile(File(selectedFilePath!));
+                  });
+
+                  var snapShot = await uploadTask!.whenComplete(() {});
+
+                  String fileUrl = await snapShot.ref.getDownloadURL();
+                  String? imageUrl;
+                  if (imagePickerResult != null) {
+                    String image =
+                        "${DateTime.now().millisecondsSinceEpoch}_${imagePickerResult!.files.single.name}";
+                    firebaseStorageRef = FirebaseStorage.instance.ref();
+                    setState(() {
+                      uploadTask = firebaseStorageRef
+                          .child('files/$image')
+                          .putFile(File(imagePickerResult!.files.single.path!));
+                    });
+
+                    snapShot = await uploadTask!.whenComplete(() {});
+                    imageUrl = await snapShot.ref.getDownloadURL();
+                  }
+
+                  final dataBaseData = FilesModel(
+                    isFile: true,
+                    name: controller.text.trim(),
+                    path: fileUrl,
+                    image: imageUrl,
+                    type: filePickerResult!.files.single.extension ?? "unknown",
                   );
+
+                  setState(() {
+                    uploadTask = null;
+                    tsakState = "Updating Data Base";
+                  });
+
+                  List<Map> localData = getCurrentPossitionListOfData();
+                  localData.add(dataBaseData.toMap());
+                  await FirebaseFirestore.instance
+                      .collection('data')
+                      .doc("data-map")
+                      .update({"data-map": localData});
+                  setState(() {
+                    tsakState = "Done all Task";
+                  });
+                  Navigator.pushNamedAndRemoveUntil(
+                    // ignore: use_build_context_synchronously
+                    context,
+                    widget.path,
+                    (route) => false,
+                  );
+                } else if (uploadTask != null) {
+                  showFluttertoastMessage("upload task is not yet finished");
                 } else {
                   showModalBottomSheet(
                     context: context,
                     builder: (context) => const Center(
-                        child: Text("title and file are required")),
+                      child: Text(
+                        "title and file are required",
+                      ),
+                    ),
                   );
                 }
               },
-              child: const Text("Let's add the file"),
+              child: uploadTask == null
+                  ? Text(tsakState)
+                  : StreamBuilder(
+                      stream: uploadTask!.snapshotEvents,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text("File Uploading :"),
+                              const Gap(10),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CircularProgressIndicator(
+                                  value: (snapshot.data!.bytesTransferred /
+                                      snapshot.data!.totalBytes),
+                                  color: Colors.green,
+                                  backgroundColor: Colors.white,
+                                ),
+                              )
+                            ],
+                          );
+                        } else {
+                          return const Text("Wait...");
+                        }
+                      },
+                    ),
             ),
           ],
         ),

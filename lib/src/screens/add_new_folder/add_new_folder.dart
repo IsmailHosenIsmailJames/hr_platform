@@ -12,7 +12,7 @@ class AddNewFolder extends StatefulWidget {
 class _AddNewFolderState extends State<AddNewFolder> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.green,
     );
   }

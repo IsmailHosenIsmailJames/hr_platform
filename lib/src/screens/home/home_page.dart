@@ -163,6 +163,8 @@ class _HomePageState extends State<HomePage> {
       body: SafeArea(
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisSpacing: 5,
+              mainAxisSpacing: 5,
               crossAxisCount:
                   MediaQuery.of(context).size.width > breakpoint ? 5 : 4),
           itemCount: cureentLayerData.length,
@@ -184,6 +186,35 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () async {
                       if (await canLaunchUrl(Uri.parse(cureentModel.path))) {
                         launchUrl(Uri.parse(cureentModel.path));
+                      } else {
+                        if (cureentModel.type == "jpeg" ||
+                            cureentModel.type == "jpg" ||
+                            cureentModel.type == "png") {
+                          showDialog(
+                            // ignore: use_build_context_synchronously
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                child: Image.network(
+                                  cureentModel.path,
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) =>
+                                          Center(
+                                    child: CircularProgressIndicator(
+                                      value: loadingProgress == null
+                                          ? 0.0
+                                          : (loadingProgress
+                                                      .cumulativeBytesLoaded ~/
+                                                  loadingProgress
+                                                      .expectedTotalBytes!)
+                                              .toDouble(),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
                       }
                     },
                     child: Container(

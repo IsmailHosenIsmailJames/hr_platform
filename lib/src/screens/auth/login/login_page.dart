@@ -59,11 +59,7 @@ class _LoginPageState extends State<LoginPage> {
             Map<String, dynamic> thisUser = Map<String, dynamic>.from(user);
             final box = await Hive.openBox('info');
             await box.put('userData', jsonEncode(thisUser));
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              "/",
-              (route) => true,
-            );
+            Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
             return null;
           }
         }
@@ -90,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
           Map<String, dynamic> adminData = userData['data'];
           final box = await Hive.openBox('info');
           await box.put("userData", jsonEncode(adminData));
-          Navigator.pushNamedAndRemoveUntil(context, "/", (route) => true);
+          Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
         } else {
           return "Something went worng";
         }
