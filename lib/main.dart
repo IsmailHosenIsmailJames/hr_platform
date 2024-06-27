@@ -1,6 +1,10 @@
+import 'dart:io';
+import 'dart:isolate';
+
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:hr_platform/src/auth/is_authenticated.dart';
 import 'package:hr_platform/src/core/initialization.dart';
@@ -9,16 +13,16 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'firebase_options.dart';
 
-// void _isolateMain(RootIsolateToken rootIsolateToken) async {
-//   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
-// }
+void _isolateMain(RootIsolateToken rootIsolateToken) async {
+  BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // if (Platform.isWindows) {
-  //   RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
-  //   Isolate.spawn(_isolateMain, rootIsolateToken);
-  // }
+  if (Platform.isWindows) {
+    RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
+    Isolate.spawn(_isolateMain, rootIsolateToken);
+  }
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

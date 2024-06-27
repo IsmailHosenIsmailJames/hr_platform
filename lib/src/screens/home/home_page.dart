@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +8,8 @@ import 'package:hr_platform/src/screens/add_new_files/add_new_file.dart';
 import 'package:hr_platform/src/screens/add_new_folder/add_new_folder.dart';
 import 'package:hr_platform/src/theme/break_point.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../core/data/get_data_form_hive.dart';
 
 class HomePage extends StatefulWidget {
   final String path;
@@ -34,20 +34,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  final box = Hive.box('info');
-
-  List<Map> getCurrentPossitionListOfData() {
-    final data = box.get('data', defaultValue: null);
-    List<Map> toReturn = [];
-    if (data != null) {
-      toReturn = List<Map>.from(jsonDecode(data)['data-map']);
-    }
-    return toReturn;
-  }
-
   @override
   Widget build(BuildContext context) {
-    bool isAdmin = FirebaseAuth.instance.currentUser!.email != null;
+    bool isAdmin = FirebaseAuth.instance.currentUser!.email != null &&
+        FirebaseAuth.instance.currentUser!.email!.isNotEmpty;
     List<Map> cureentLayerData = getCurrentPossitionListOfData();
     return Scaffold(
       floatingActionButton: isAdmin
@@ -220,8 +210,6 @@ class _HomePageState extends State<HomePage> {
                     child: Container(
                       margin: const EdgeInsets.all(5),
                       padding: const EdgeInsets.all(5),
-                      height: 100,
-                      width: 100,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: NetworkImage(
@@ -232,9 +220,20 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       alignment: Alignment.bottomRight,
-                      child: CircleAvatar(
-                          backgroundColor: Colors.white.withOpacity(0.5),
-                          child: const Icon(FluentIcons.document_24_regular)),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.white.withOpacity(0.5),
+                            child: const Icon(FluentIcons.document_24_regular),
+                          ),
+                          const Gap(10),
+                          Text(
+                            cureentModel.name.length > 20
+                                ? cureentModel.name.substring(0, 20)
+                                : cureentModel.name,
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 : TextButton(

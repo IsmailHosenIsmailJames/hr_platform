@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class FilesModel {
+  final String parent;
   final String? image;
   final bool isFile;
   final String name;
@@ -8,6 +9,7 @@ class FilesModel {
   final String type;
 
   FilesModel({
+    required this.parent,
     this.image,
     required this.isFile,
     required this.name,
@@ -16,6 +18,7 @@ class FilesModel {
   });
 
   FilesModel copyWith({
+    String? parent,
     String? image,
     bool? isFile,
     String? name,
@@ -23,6 +26,7 @@ class FilesModel {
     String? type,
   }) =>
       FilesModel(
+        parent: parent ?? this.parent,
         image: image ?? this.image,
         isFile: isFile ?? this.isFile,
         name: name ?? this.name,
@@ -36,6 +40,7 @@ class FilesModel {
   String toJson() => json.encode(toMap());
 
   factory FilesModel.fromMap(Map<String, dynamic> json) => FilesModel(
+        parent: json["parent"],
         image: json["image"],
         isFile: json["is-file"],
         name: json["name"],
@@ -44,6 +49,7 @@ class FilesModel {
       );
 
   Map<String, dynamic> toMap() => {
+        "parent": parent,
         "image": image,
         "is-file": isFile,
         "name": name,

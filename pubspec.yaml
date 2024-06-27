@@ -51,7 +51,6 @@ dependencies:
   email_validator: ^3.0.0
   shared_preferences: ^2.2.3
   fluttertoast: ^8.2.6
-  get: ^5.0.0-release-candidate-6
   url_strategy: ^0.2.0
   flutter_launcher_icons: ^0.13.1
   rive: ^0.13.8

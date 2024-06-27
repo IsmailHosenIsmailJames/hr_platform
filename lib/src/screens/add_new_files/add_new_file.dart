@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -9,10 +8,11 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
 import 'package:hr_platform/src/models/files_model.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
+
+import '../../core/data/get_data_form_hive.dart';
 
 class AddNewFile extends StatefulWidget {
   final String path;
@@ -63,86 +63,9 @@ class _AddNewFileState extends State<AddNewFile> {
 
   String tsakState = "Let's add the file";
 
-  final box = Hive.box("info");
-  List<Map> getCurrentPossitionListOfData() {
-    final data = box.get('data', defaultValue: null);
-    List<Map> toReturn = [];
-    if (data != null) {
-      toReturn = List<Map>.from(jsonDecode(data)['data-map']);
-    }
-    return toReturn;
-  }
-
-  // void showProgress(String task) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return Dialog(
-  //         insetPadding: EdgeInsets.zero,
-  //         backgroundColor: Colors.grey.withOpacity(0.1),
-  //         child: SizedBox(
-  //           height: MediaQuery.of(context).size.height,
-  //           width: MediaQuery.of(context).size.width,
-  //           child: Center(
-  //             child: Container(
-  //               padding: const EdgeInsets.all(15),
-  //               height: 200,
-  //               width: 200,
-  //               decoration: BoxDecoration(
-  //                 color: Colors.white,
-  //                 borderRadius: BorderRadius.circular(20),
-  //               ),
-  //               child: Column(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 children: [
-  //                   Text(
-  //                     task,
-  //                     style: const TextStyle(fontSize: 20),
-  //                   ),
-  //                   const Gap(10),
-  //                   if (uploadTask != null)
-  //                     StreamBuilder(
-  //                       stream: uploadTask!.snapshotEvents,
-  //                       builder: (context, snapshot) {
-  //                         if (snapshot.hasData) {
-  //                           return CircularProgressIndicator(
-  //                             value: (snapshot.data!.bytesTransferred /
-  //                                     snapshot.data!.totalBytes) *
-  //                                 100.toDouble(),
-  //                             backgroundColor: Colors.grey,
-  //                           );
-  //                         } else {
-  //                           return const SizedBox();
-  //                         }
-  //                       },
-  //                     ),
-  //                   const Gap(10),
-  //                   if (uploadTask != null)
-  //                     StreamBuilder(
-  //                       stream: uploadTask!.snapshotEvents,
-  //                       builder: (context, snapshot) {
-  //                         if (snapshot.hasData) {
-  //                           return Text(
-  //                             '${snapshot.data!.bytesTransferred}/${snapshot.data!.totalBytes}',
-  //                           );
-  //                         } else {
-  //                           return const SizedBox();
-  //                         }
-  //                       },
-  //                     )
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
+    print(widget.path);
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -309,7 +232,7 @@ class _AddNewFileState extends State<AddNewFile> {
                     firebaseStorageRef = FirebaseStorage.instance.ref();
                     setState(() {
                       uploadTask = firebaseStorageRef
-                          .child('files/$image')
+                          .child('cover_images/$image')
                           .putFile(File(imagePickerResult!.files.single.path!));
                     });
 
@@ -318,6 +241,7 @@ class _AddNewFileState extends State<AddNewFile> {
                   }
 
                   final dataBaseData = FilesModel(
+                    parent: widget.path,
                     isFile: true,
                     name: controller.text.trim(),
                     path: fileUrl,

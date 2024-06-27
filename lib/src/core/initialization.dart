@@ -40,14 +40,16 @@ class _InitializationState extends State<Initialization> {
         .get();
     if (response.exists) {
       await Hive.box('info').put('data', jsonEncode(response.data() ?? {}));
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(path: widget.namePath ?? "/"),
-            settings: RouteSettings(name: widget.namePath ?? "/"),
-          ),
-          (route) => true);
+    } else {
+      await Hive.box('info').put('data', jsonEncode({}));
     }
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(path: widget.namePath ?? "/"),
+          settings: RouteSettings(name: widget.namePath ?? "/"),
+        ),
+        (route) => true);
   }
 
   @override

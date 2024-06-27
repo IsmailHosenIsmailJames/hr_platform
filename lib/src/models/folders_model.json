@@ -1,6 +1,7 @@
 {
+    "parent": "/x/y/z",
+    "name": "FolderName",
     "image": "http://116.68.200.97:6027/static/media/form.54693b5d.png",
     "is-file": false,
-    "type": "PDF",
-    "sub": []
+    "type": "PDF"
 }
