@@ -1,12 +1,13 @@
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hive/hive.dart';
 import 'package:hr_platform/src/models/files_model.dart';
+import 'package:hr_platform/src/models/folders_model.dart';
 import 'package:hr_platform/src/screens/add_new_files/add_new_file.dart';
 import 'package:hr_platform/src/screens/add_new_folder/add_new_folder.dart';
-import 'package:hr_platform/src/theme/break_point.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/data/get_data_form_hive.dart';
@@ -151,110 +152,141 @@ class _HomePageState extends State<HomePage> {
             )
           : null,
       body: SafeArea(
-        child: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 5,
-              crossAxisCount:
-                  MediaQuery.of(context).size.width > breakpoint ? 5 : 4),
-          itemCount: cureentLayerData.length,
-          padding: const EdgeInsets.all(5),
-          itemBuilder: (context, index) {
-            Map<String, dynamic> cureent =
-                Map<String, dynamic>.from(cureentLayerData[index]);
-            FilesModel cureentModel = FilesModel.fromMap(cureent);
-            bool isFile = cureent['is-file'];
-            return isFile
-                ? TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.grey.withOpacity(0.5),
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () async {
-                      if (await canLaunchUrl(Uri.parse(cureentModel.path))) {
-                        launchUrl(Uri.parse(cureentModel.path));
-                      } else {
-                        if (cureentModel.type == "jpeg" ||
-                            cureentModel.type == "jpg" ||
-                            cureentModel.type == "png") {
-                          showDialog(
-                            // ignore: use_build_context_synchronously
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                child: Image.network(
-                                  cureentModel.path,
-                                  loadingBuilder:
-                                      (context, child, loadingProgress) =>
-                                          Center(
-                                    child: CircularProgressIndicator(
-                                      value: loadingProgress == null
-                                          ? 0.0
-                                          : (loadingProgress
-                                                      .cumulativeBytesLoaded ~/
-                                                  loadingProgress
-                                                      .expectedTotalBytes!)
-                                              .toDouble(),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        }
-                      }
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(5),
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            cureentModel.image ??
-                                "http://116.68.200.97:6027/static/media/form.54693b5d.png",
-                          ),
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      alignment: Alignment.bottomRight,
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.white.withOpacity(0.5),
-                            child: const Icon(FluentIcons.document_24_regular),
-                          ),
-                          const Gap(10),
-                          Text(
-                            cureentModel.name.length > 20
-                                ? cureentModel.name.substring(0, 20)
-                                : cureentModel.name,
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ),
-                    onPressed: () async {},
-                    child: Container(
-                      margin: const EdgeInsets.all(10),
-                      height: 100,
-                      color: Colors.blue,
-                      width: 100,
-                      child: Text(isFile.toString()),
-                    ),
-                  );
-          },
+        child: Wrap(
+          children: getWidgetsOfFilesFolder(cureentLayerData),
         ),
       ),
     );
+  }
+
+  List<Widget> getWidgetsOfFilesFolder(List cureentLayerData) {
+    List<Widget> toReturn = [];
+    for (int index = 0; index < cureentLayerData.length; index++) {
+      Map<String, dynamic> cureent =
+          Map<String, dynamic>.from(cureentLayerData[index]);
+
+      bool isFile = cureent['is-file'];
+      if (isFile) {
+        FilesModel cureentModel = FilesModel.fromMap(cureent);
+        toReturn.add(
+          Container(
+            height: 180,
+            width: 180,
+            margin: const EdgeInsets.all(10),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.grey.withOpacity(0.5),
+                padding: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {
+                if (await canLaunchUrl(Uri.parse(cureentModel.path))) {
+                  launchUrl(Uri.parse(cureentModel.path));
+                } else {
+                  if (cureentModel.type == "jpeg" ||
+                      cureentModel.type == "jpg" ||
+                      cureentModel.type == "png") {
+                    showDialog(
+                      // ignore: use_build_context_synchronously
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: FastCachedImage(
+                            url: cureentModel.path,
+                            loadingBuilder: (p0, p1) {
+                              return CircularProgressIndicator(
+                                value: p1.progressPercentage.value,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  }
+                }
+              },
+              child: Container(
+                margin: const EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FastCachedImageProvider(
+                      cureentModel.image ??
+                          "http://116.68.200.97:6027/static/media/form.54693b5d.png",
+                    ),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                alignment: Alignment.bottomRight,
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.white.withOpacity(0.5),
+                      child: const Icon(FluentIcons.document_24_regular),
+                    ),
+                    const Gap(10),
+                    Text(
+                      cureentModel.name.length > 20
+                          ? cureentModel.name.substring(0, 20)
+                          : cureentModel.name,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      } else {
+        FolderModel cureentModel = FolderModel.fromMap(cureent);
+        toReturn.add(
+          Container(
+            height: 180,
+            width: 180,
+            margin: const EdgeInsets.all(10),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.grey.withOpacity(0.5),
+                padding: EdgeInsets.zero,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () async {},
+              child: Container(
+                margin: const EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: FastCachedImageProvider(
+                      cureentModel.image ??
+                          "http://116.68.200.97:6027/static/media/form.54693b5d.png",
+                    ),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                alignment: Alignment.bottomRight,
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.white.withOpacity(0.5),
+                      child: const Icon(FluentIcons.folder_24_regular),
+                    ),
+                    const Gap(10),
+                    Text(
+                      cureentModel.name.length > 20
+                          ? cureentModel.name.substring(0, 20)
+                          : cureentModel.name,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    return toReturn;
   }
 }

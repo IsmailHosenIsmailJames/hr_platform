@@ -30,6 +30,7 @@ class _AddNewFileState extends State<AddNewFile> {
   String? selectedFilePath;
   UploadTask? uploadTask;
   TextEditingController controller = TextEditingController();
+  String tsakState = "Let's add the file";
 
   void selectCoverImageForFile() async {
     imagePickerResult = await FilePicker.platform.pickFiles(
@@ -60,8 +61,6 @@ class _AddNewFileState extends State<AddNewFile> {
       showFluttertoastMessage("Please select a files");
     }
   }
-
-  String tsakState = "Let's add the file";
 
   @override
   Widget build(BuildContext context) {

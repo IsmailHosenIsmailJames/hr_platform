@@ -5,14 +5,12 @@ class FolderModel {
   final String name;
   final String? image;
   final bool isFile;
-  final String type;
 
   FolderModel({
     required this.parent,
     required this.name,
     this.image,
     required this.isFile,
-    required this.type,
   });
 
   FolderModel copyWith({
@@ -20,14 +18,12 @@ class FolderModel {
     String? name,
     String? image,
     bool? isFile,
-    String? type,
   }) =>
       FolderModel(
         parent: parent ?? this.parent,
         name: name ?? this.name,
         image: image ?? this.image,
         isFile: isFile ?? this.isFile,
-        type: type ?? this.type,
       );
 
   factory FolderModel.fromJson(String str) =>
@@ -40,7 +36,6 @@ class FolderModel {
         name: json["name"],
         image: json["image"],
         isFile: json["is-file"],
-        type: json["type"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -48,6 +43,5 @@ class FolderModel {
         "name": name,
         "image": image,
         "is-file": isFile,
-        "type": type,
       };
 }
