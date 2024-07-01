@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/models/folders_model.dart';
 
 import '../../core/data/get_data_form_hive.dart';
@@ -188,6 +190,9 @@ class _AddNewFolderState extends State<AddNewFolder> {
                   setState(() {
                     tsakState = "Done all Task";
                   });
+                  await Hive.box("info")
+                      .put("data", jsonEncode({"data-map": localData}));
+
                   Navigator.pushNamedAndRemoveUntil(
                     // ignore: use_build_context_synchronously
                     context,

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -8,6 +9,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
 import 'package:hr_platform/src/models/files_model.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
@@ -262,6 +264,8 @@ class _AddNewFileState extends State<AddNewFile> {
                   setState(() {
                     tsakState = "Done all Task";
                   });
+                  await Hive.box("info")
+                      .put("data", jsonEncode({"data-map": localData}));
                   Navigator.pushNamedAndRemoveUntil(
                     // ignore: use_build_context_synchronously
                     context,
