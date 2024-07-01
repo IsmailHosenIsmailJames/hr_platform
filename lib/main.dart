@@ -12,6 +12,7 @@ import 'package:hr_platform/src/screens/auth/login/login_page.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'firebase_options.dart';
+import 'src/screens/home/home_page.dart';
 
 void _isolateMain(RootIsolateToken rootIsolateToken) async {
   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
@@ -54,7 +55,9 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (contex) => const Initialization(),
+        '/': (contex) => const Initialization(
+              namePath: "/home",
+            ),
       },
       onGenerateRoute: (settings) {
         if (isAuthenticated()) {
@@ -72,7 +75,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(
               settings: settings,
               builder: (context) {
-                return Initialization(namePath: settings.name);
+                return const Initialization(namePath: "/home");
               },
             );
           }
@@ -81,8 +84,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(
               settings: settings,
               builder: (context) {
-                return Initialization(
-                    namePath: settings.name!.replaceFirst("/home", ""));
+                return HomePage(path: settings.name!.replaceFirst("/home", ""));
               },
             );
           }

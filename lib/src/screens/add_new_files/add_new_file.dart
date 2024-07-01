@@ -265,7 +265,7 @@ class _AddNewFileState extends State<AddNewFile> {
                   Navigator.pushNamedAndRemoveUntil(
                     // ignore: use_build_context_synchronously
                     context,
-                    widget.path,
+                    "/home${widget.path}",
                     (route) => false,
                   );
                 } else if (uploadTask != null) {

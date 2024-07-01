@@ -191,7 +191,7 @@ class _AddNewFolderState extends State<AddNewFolder> {
                   Navigator.pushNamedAndRemoveUntil(
                     // ignore: use_build_context_synchronously
                     context,
-                    widget.path,
+                    "/home${widget.path}",
                     (route) => false,
                   );
                 } else if (uploadTask != null) {
