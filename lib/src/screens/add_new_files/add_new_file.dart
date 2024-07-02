@@ -227,8 +227,9 @@ class _AddNewFileState extends State<AddNewFile> {
 
                   String fileUrl = await snapShot.ref.getDownloadURL();
                   String? imageUrl;
+                  String? image;
                   if (imagePickerResult != null) {
-                    String image =
+                    image =
                         "${DateTime.now().millisecondsSinceEpoch}_${imagePickerResult!.files.single.name}";
                     firebaseStorageRef = FirebaseStorage.instance.ref();
                     setState(() {
@@ -242,6 +243,8 @@ class _AddNewFileState extends State<AddNewFile> {
                   }
 
                   final dataBaseData = FilesModel(
+                    coverImageRef: image == null ? "" : 'cover_images/$image',
+                    fileRef: "files/$fileName",
                     parent: widget.path,
                     isFile: true,
                     name: controller.text.trim(),

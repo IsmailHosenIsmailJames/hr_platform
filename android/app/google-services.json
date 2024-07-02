@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:224642949303:android:fcd7d9e0809b4e5999ed32",
+        "mobilesdk_app_id": "1:224642949303:android:213a55d9ba9dd6f999ed32",
         "android_client_info": {
-          "package_name": "com.ismail.hr_platform"
+          "package_name": "com.example.hr_platform"
         }
       },
       "oauth_client": [

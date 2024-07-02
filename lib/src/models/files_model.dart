@@ -7,6 +7,8 @@ class FilesModel {
   final String name;
   final String path;
   final String type;
+  final String fileRef;
+  final String coverImageRef;
 
   FilesModel({
     required this.parent,
@@ -15,6 +17,8 @@ class FilesModel {
     required this.name,
     required this.path,
     required this.type,
+    required this.fileRef,
+    required this.coverImageRef,
   });
 
   FilesModel copyWith({
@@ -24,6 +28,8 @@ class FilesModel {
     String? name,
     String? path,
     String? type,
+    String? fileRef,
+    String? coverImageRef,
   }) =>
       FilesModel(
         parent: parent ?? this.parent,
@@ -32,6 +38,8 @@ class FilesModel {
         name: name ?? this.name,
         path: path ?? this.path,
         type: type ?? this.type,
+        fileRef: fileRef ?? this.fileRef,
+        coverImageRef: coverImageRef ?? this.coverImageRef,
       );
 
   factory FilesModel.fromJson(String str) =>
@@ -46,6 +54,8 @@ class FilesModel {
         name: json["name"],
         path: json["path"],
         type: json["type"],
+        fileRef: json["fileRef"],
+        coverImageRef: json['coverImageRef'],
       );
 
   Map<String, dynamic> toMap() => {
@@ -55,5 +65,7 @@ class FilesModel {
         "name": name,
         "path": path,
         "type": type,
+        "fileRef": fileRef,
+        "coverImageRef": coverImageRef,
       };
 }

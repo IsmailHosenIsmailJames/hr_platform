@@ -42,18 +42,18 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAjIaLuPMEixmT6xNgnAiyNbMw7YzP5NBs',
-    appId: '1:224642949303:web:49a26d0f979b375699ed32',
+    appId: '1:224642949303:web:cb0853c4dc366aad99ed32',
     messagingSenderId: '224642949303',
     projectId: 'hrplatformportal',
     authDomain: 'hrplatformportal.firebaseapp.com',
     databaseURL: 'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'hrplatformportal.appspot.com',
-    measurementId: 'G-LMR4V55EMQ',
+    measurementId: 'G-K64NMNC2P5',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCYwHAHQrJK8VT_oB8Ao4ScS0nWGt6diGA',
-    appId: '1:224642949303:android:fcd7d9e0809b4e5999ed32',
+    appId: '1:224642949303:android:213a55d9ba9dd6f999ed32',
     messagingSenderId: '224642949303',
     projectId: 'hrplatformportal',
     databaseURL: 'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
@@ -84,13 +84,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyAjIaLuPMEixmT6xNgnAiyNbMw7YzP5NBs',
-    appId: '1:224642949303:web:49a26d0f979b375699ed32',
+    appId: '1:224642949303:web:155be69797ba05f599ed32',
     messagingSenderId: '224642949303',
     projectId: 'hrplatformportal',
     authDomain: 'hrplatformportal.firebaseapp.com',
     databaseURL: 'https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'hrplatformportal.appspot.com',
-    measurementId: 'G-LMR4V55EMQ',
+    measurementId: 'G-6BC4W0T47J',
   );
 
 }
