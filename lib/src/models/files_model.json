@@ -1,0 +1,10 @@
+{
+    "parent": "/folder/x/y",
+    "image": "http://116.68.200.97:6027/static/media/form.54693b5d.png",
+    "is-file": true,
+    "fileRef": "z/ds/sd/dsd",
+    "coverImageRef" : "x/c/c",
+    "name": "my PDF file.pdf",
+    "path": "http://116.68.200.97:6027/pdf/LeaveRelatedFAQs.pdf",
+    "type": "PDF"
+}

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "224642949303",
+    "firebase_url": "https://hrplatformportal-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "hrplatformportal",
+    "storage_bucket": "hrplatformportal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:224642949303:android:213a55d9ba9dd6f999ed32",
+        "android_client_info": {
+          "package_name": "com.example.hr_platform"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "224642949303-uafivb3b55uv02k8gl9nqjrhc3etor03.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYwHAHQrJK8VT_oB8Ao4ScS0nWGt6diGA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "224642949303-uafivb3b55uv02k8gl9nqjrhc3etor03.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "224642949303-j936dvuqtsdqnhgkipedg5cu576gen3h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.hrPlatform"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
