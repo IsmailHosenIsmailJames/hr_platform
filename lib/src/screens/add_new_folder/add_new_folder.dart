@@ -155,8 +155,9 @@ class _AddNewFolderState extends State<AddNewFolder> {
                   var firebaseStorageRef = FirebaseStorage.instance.ref();
 
                   String? imageUrl;
+                  String? image;
                   if (imagePickerResult != null) {
-                    String image =
+                    image =
                         "${DateTime.now().millisecondsSinceEpoch}_${imagePickerResult!.files.single.name}";
                     firebaseStorageRef = FirebaseStorage.instance.ref();
                     setState(() {
@@ -174,6 +175,7 @@ class _AddNewFolderState extends State<AddNewFolder> {
                     isFile: false,
                     name: controller.text.trim(),
                     image: imageUrl,
+                    coverImageRef: 'cover_images/$image',
                   );
 
                   setState(() {

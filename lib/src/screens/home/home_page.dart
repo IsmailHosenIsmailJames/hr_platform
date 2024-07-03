@@ -334,15 +334,7 @@ class _HomePageState extends State<HomePage> {
                                         onPressed: () async {
                                           showFluttertoastMessage(
                                               "Deleating ${widget.path}/${cureentModel.name}.${cureentModel.type}");
-                                          try {
-                                            await FirebaseStorage.instance
-                                                .ref()
-                                                .child(cureentModel.fileRef)
-                                                .delete();
-                                          } catch (e) {
-                                            showFluttertoastMessage(
-                                                "Something went worng");
-                                          }
+
                                           try {
                                             await FirebaseStorage.instance
                                                 .ref()
@@ -361,7 +353,9 @@ class _HomePageState extends State<HomePage> {
                                             if (cureentModel.parent ==
                                                     allData[i]["parent"] &&
                                                 cureentModel.path ==
-                                                    allData[i]["path"]) {
+                                                    allData[i]["path"] &&
+                                                cureentModel.name ==
+                                                    allData[i]["name"]) {
                                               indexAt = i;
                                               break;
                                             }
@@ -470,17 +464,134 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 alignment: Alignment.bottomRight,
-                child: Row(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.white.withOpacity(0.5),
-                      child: const Icon(FluentIcons.folder_24_regular),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        PopupMenuButton(
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white.withOpacity(0.5),
+                          ),
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("Are you sure?"),
+                                    content: const Text(
+                                        "After deleten folder, it can not recover again"),
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Cancel"),
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red),
+                                        onPressed: () async {
+                                          if ((filteredMap[
+                                                      "/home${widget.path}/${cureentModel.name}"] ??
+                                                  [])
+                                              .isNotEmpty) {
+                                            showFluttertoastMessage(
+                                                "Remove contents under folder first");
+                                            return;
+                                          }
+                                          showFluttertoastMessage(
+                                              "Deleating ${widget.path}/${cureentModel.name}.");
+
+                                          int indexAt = -1;
+
+                                          for (var i = 0;
+                                              i < allData.length;
+                                              i++) {
+                                            if (cureentModel.parent ==
+                                                    allData[i]["parent"] &&
+                                                cureentModel.name ==
+                                                    allData[i]["name"]) {
+                                              indexAt = i;
+                                              break;
+                                            }
+                                          }
+                                          if (indexAt == -1) {
+                                            showFluttertoastMessage(
+                                                "Something went worng");
+                                          }
+
+                                          try {
+                                            await FirebaseStorage.instance
+                                                .ref()
+                                                .child(
+                                                    cureentModel.coverImageRef)
+                                                .delete();
+                                          } catch (e) {
+                                            showFluttertoastMessage(
+                                                "Something went worng");
+                                          }
+
+                                          allData.removeAt(indexAt);
+                                          await FirebaseFirestore.instance
+                                              .collection('data')
+                                              .doc("data-map")
+                                              .update({"data-map": allData});
+                                          final box = Hive.box("info");
+                                          await box.put(
+                                              'data',
+                                              jsonEncode(
+                                                  {"data-map": allData}));
+                                          showFluttertoastMessage(
+                                              "Successfull Deleation");
+                                          Navigator.pushNamedAndRemoveUntil(
+                                            // ignore: use_build_context_synchronously
+                                            context,
+                                            "/home${widget.path}",
+                                            (route) => false,
+                                          );
+                                        },
+                                        child: const Text("Delete"),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              child: const Row(
+                                children: [
+                                  Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  Gap(5),
+                                  Text("Delete"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    const Gap(10),
-                    Text(
-                      cureentModel.name.length > 20
-                          ? cureentModel.name.substring(0, 20)
-                          : cureentModel.name,
+                    Container(
+                      padding:
+                          const EdgeInsets.only(left: 3, top: 1, bottom: 1),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(FluentIcons.folder_24_regular),
+                          const Gap(5),
+                          Text(
+                            cureentModel.name.length > 20
+                                ? cureentModel.name.substring(0, 20)
+                                : cureentModel.name,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
