@@ -1,5 +1,11 @@
+import 'dart:convert';
+
+import 'package:clipboard/clipboard.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -187,6 +193,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  int downloadPercentage = 0;
+
   List<Widget> getWidgetsOfFilesFolder() {
     List<Map> allData = getCurrentPossitionListOfData();
     Map<String, List<Map>> filteredMap = {};
@@ -243,7 +251,8 @@ class _HomePageState extends State<HomePage> {
                       },
                     );
                   } else {
-                    showFluttertoastMessage("This file type is not supported");
+                    showFluttertoastMessage(
+                        "This file type can not directly open. Download it.");
                   }
                 }
               },
@@ -260,17 +269,165 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 alignment: Alignment.bottomRight,
-                child: Row(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.white.withOpacity(0.5),
-                      child: const Icon(FluentIcons.document_24_regular),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        PopupMenuButton(
+                          style: IconButton.styleFrom(
+                            backgroundColor: Colors.white.withOpacity(0.5),
+                          ),
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              onTap: () async {
+                                String? directory = await FilePicker.platform
+                                    .getDirectoryPath();
+                                showFluttertoastMessage("Downloading");
+                                if (directory == null) {
+                                  showFluttertoastMessage(
+                                      "Folder did not selected. Download Cancle");
+                                }
+                              },
+                              child: const Row(
+                                children: [
+                                  Icon(Icons.download),
+                                  Gap(5),
+                                  Text("Download"),
+                                ],
+                              ),
+                            ),
+                            PopupMenuItem(
+                              onTap: () {
+                                FlutterClipboard.copy(cureentModel.path).then(
+                                  (value) => showFluttertoastMessage(
+                                      "Copied : ${cureentModel.path}"),
+                                );
+                              },
+                              child: const Row(
+                                children: [
+                                  Icon(Icons.link),
+                                  Gap(5),
+                                  Text("Copy link"),
+                                ],
+                              ),
+                            ),
+                            PopupMenuItem(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("Are you sure?"),
+                                    content: const Text(
+                                        "After deleten data, it can not recover again"),
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text("Cancel"),
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red),
+                                        onPressed: () async {
+                                          showFluttertoastMessage(
+                                              "Deleating ${widget.path}/${cureentModel.name}.${cureentModel.type}");
+                                          try {
+                                            await FirebaseStorage.instance
+                                                .ref()
+                                                .child(cureentModel.fileRef)
+                                                .delete();
+                                          } catch (e) {
+                                            showFluttertoastMessage(
+                                                "Something went worng");
+                                          }
+                                          try {
+                                            await FirebaseStorage.instance
+                                                .ref()
+                                                .child(
+                                                    cureentModel.coverImageRef)
+                                                .delete();
+                                          } catch (e) {
+                                            showFluttertoastMessage(
+                                                "Something went worng");
+                                          }
+                                          int indexAt = -1;
+
+                                          for (var i = 0;
+                                              i < allData.length;
+                                              i++) {
+                                            if (cureentModel.parent ==
+                                                    allData[i]["parent"] &&
+                                                cureentModel.path ==
+                                                    allData[i]["path"]) {
+                                              indexAt = i;
+                                              break;
+                                            }
+                                          }
+                                          if (indexAt == -1) {
+                                            showFluttertoastMessage(
+                                                "Something went worng");
+                                          }
+                                          allData.removeAt(indexAt);
+                                          await FirebaseFirestore.instance
+                                              .collection('data')
+                                              .doc("data-map")
+                                              .update({"data-map": allData});
+                                          final box = Hive.box("info");
+                                          await box.put(
+                                              'data',
+                                              jsonEncode(
+                                                  {"data-map": allData}));
+                                          showFluttertoastMessage(
+                                              "Successfull Deleation");
+                                          Navigator.pushNamedAndRemoveUntil(
+                                            // ignore: use_build_context_synchronously
+                                            context,
+                                            "/home${widget.path}",
+                                            (route) => false,
+                                          );
+                                        },
+                                        child: const Text("Delete"),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              child: const Row(
+                                children: [
+                                  Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  Gap(5),
+                                  Text("Delete"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    const Gap(10),
-                    Text(
-                      cureentModel.name.length > 20
-                          ? cureentModel.name.substring(0, 20)
-                          : cureentModel.name,
+                    Container(
+                      padding:
+                          const EdgeInsets.only(left: 3, top: 1, bottom: 1),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.6),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(FluentIcons.document_24_regular),
+                          const Gap(5),
+                          Text(
+                            cureentModel.name.length > 17
+                                ? "${cureentModel.name.substring(0, 17)}...${cureentModel.type}"
+                                : "${cureentModel.name}.${cureentModel.type}",
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
