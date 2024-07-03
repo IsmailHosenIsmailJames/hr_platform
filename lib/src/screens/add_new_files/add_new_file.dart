@@ -66,7 +66,6 @@ class _AddNewFileState extends State<AddNewFile> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.path);
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,

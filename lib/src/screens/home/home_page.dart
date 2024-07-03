@@ -16,6 +16,7 @@ import 'package:hr_platform/src/models/files_model.dart';
 import 'package:hr_platform/src/models/folders_model.dart';
 import 'package:hr_platform/src/screens/add_new_files/add_new_file.dart';
 import 'package:hr_platform/src/screens/add_new_folder/add_new_folder.dart';
+import 'package:hr_platform/src/screens/home/drawer/drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/data/get_data_form_hive.dart';
@@ -55,8 +56,6 @@ class _HomePageState extends State<HomePage> {
         if (canPop == true) {
           int lastSalah = widget.path.lastIndexOf('/');
           String toGo = widget.path.substring(0, lastSalah);
-          print(widget.path);
-          print(toGo);
           Navigator.pushNamedAndRemoveUntil(
             context,
             "/home$toGo",
@@ -181,7 +180,7 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: Text(widget.path),
         ),
-        drawer: const Drawer(),
+        drawer: const MyDrawer(),
         body: SafeArea(
           child: toShowWidgets.isEmpty
               ? const Center(child: Text("No files or folders found"))
