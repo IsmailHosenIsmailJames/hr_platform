@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:hr_platform/src/screens/home/settings/settings.dart';
@@ -20,28 +21,54 @@ class MyDrawer extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(10),
               children: [
-                TextButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const Survey();
-                        },
-                      ),
-                    );
-                  },
-                  label: const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Create a Survey",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
+                if (FirebaseAuth.instance.currentUser!.email != null &&
+                    FirebaseAuth.instance.currentUser!.email!.isNotEmpty)
+                  TextButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const Survey();
+                          },
+                        ),
+                      );
+                    },
+                    label: const Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Add user",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    icon: const Icon(FluentIcons.add_24_filled),
                   ),
-                  icon: const Icon(FluentIcons.document_table_24_regular),
-                ),
+                if (FirebaseAuth.instance.currentUser!.email != null &&
+                    FirebaseAuth.instance.currentUser!.email!.isNotEmpty)
+                  TextButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const Survey();
+                          },
+                        ),
+                      );
+                    },
+                    label: const Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Create a Survey",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    icon: const Icon(FluentIcons.document_table_24_regular),
+                  ),
                 TextButton.icon(
                   onPressed: () {
                     Navigator.push(
