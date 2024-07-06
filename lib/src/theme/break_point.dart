@@ -1,1 +1,1 @@
-int breakpoint = 800;
+int breakPointWidth = 800;

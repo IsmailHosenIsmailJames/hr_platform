@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
 import 'package:hr_platform/src/screens/survey/controller_getx.dart';
 import 'package:hr_platform/src/screens/survey/surevey_model.dart';
 
@@ -98,8 +97,8 @@ class _SurveyState extends State<Survey> {
                               for (String s in listOfOptions) {
                                 listOfOptionWidgets.add(Row(
                                   children: [
-                                    Icon(Icons.radio),
-                                    Gap(10),
+                                    const Icon(Icons.radio),
+                                    const Gap(10),
                                     Text(s)
                                   ],
                                 ));

@@ -219,7 +219,7 @@ class _LoginPageState extends State<LoginPage> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        return constraints.maxWidth > breakpoint
+        return constraints.maxWidth > breakPointWidth
             ?
             // desktop view
             Scaffold(
