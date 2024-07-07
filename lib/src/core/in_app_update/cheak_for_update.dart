@@ -14,43 +14,43 @@ import 'windows/in_app_update_windows.dart';
 bool didCheckedOnceForUpdate = false;
 
 void cheakUpdateAvailable(BuildContext context) async {
-  try {
-    if (!didCheckedOnceForUpdate) {
-      didCheckedOnceForUpdate = true;
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      String deviceAppVersion = packageInfo.version;
+  // try {
+  if (!didCheckedOnceForUpdate) {
+    didCheckedOnceForUpdate = true;
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String deviceAppVersion = packageInfo.version;
 
-      final client = Dio();
-      final Response response = await client.get(
-          "${ApiOfInAppUpdate().base}${ApiOfInAppUpdate().lastVersionInfo}");
+    final client = Dio();
+    final Response response = await client
+        .get("${ApiOfInAppUpdate().base}${ApiOfInAppUpdate().lastVersionInfo}");
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsondata =
-            Map<String, dynamic>.from(response.data);
-        if (kDebugMode) {
-          print(jsondata);
-        }
-        String version = jsondata["version"];
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsondata =
+          Map<String, dynamic>.from(response.data);
+      if (kDebugMode) {
+        print(jsondata);
+      }
+      String version = jsondata["version"];
 
-        int vLast = getExtendedVersionNumber(version);
-        int vDevice = getExtendedVersionNumber(deviceAppVersion);
+      int vLast = getExtendedVersionNumber(version);
+      int vDevice = getExtendedVersionNumber(deviceAppVersion);
 
-        if (vDevice < vLast) {
-          if (Platform.isAndroid) {
-            showDialogForMobileUpdate(
-                context, deviceAppVersion, version, jsondata);
-          } else if (Platform.isWindows) {
-            showDialogForDeskTopUpdate(
-                context, deviceAppVersion, version, jsondata);
-          }
+      if (vDevice < vLast) {
+        if (Platform.isAndroid) {
+          showDialogForMobileUpdate(
+              context, deviceAppVersion, version, jsondata);
+        } else if (Platform.isWindows) {
+          showDialogForDeskTopUpdate(
+              context, deviceAppVersion, version, jsondata);
         }
       }
     }
-  } catch (e) {
-    if (kDebugMode) {
-      print(e);
-    }
   }
+  // } catch (e) {
+  //   if (kDebugMode) {
+  //     print(e);
+  //   }
+  // }
 }
 
 int getExtendedVersionNumber(String version) {

@@ -19,12 +19,11 @@ void showDialogForDeskTopUpdate(
   Map<String, dynamic> jsonData,
 ) async {
   String changes = jsonData['changes'];
-  List files = jsonData['files'];
+  List files = jsonData['apkLinks'];
   String? apkURL;
   for (var e in files) {
-    if (e['filename'].toString().contains("exe") ||
-        e['filename'].toString().contains("msi")) {
-      apkURL = ApiOfInAppUpdate().base + e['path'];
+    if (e.toString().contains("exe") || e.toString().contains("msi")) {
+      apkURL = "${ApiOfInAppUpdate().base}/$e";
     }
   }
   if (apkURL == null) {

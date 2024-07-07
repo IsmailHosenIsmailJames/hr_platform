@@ -20,6 +20,7 @@ import 'package:hr_platform/src/screens/home/drawer/drawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/data/get_data_form_hive.dart';
+import '../../core/in_app_update/cheak_for_update.dart';
 
 class HomePage extends StatefulWidget {
   final String path;
@@ -42,6 +43,12 @@ class _HomePageState extends State<HomePage> {
       "/login",
       (route) => true,
     );
+  }
+
+  @override
+  void initState() {
+    cheakUpdateAvailable(context);
+    super.initState();
   }
 
   @override

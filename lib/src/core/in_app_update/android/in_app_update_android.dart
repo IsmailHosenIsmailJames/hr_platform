@@ -19,12 +19,12 @@ import 'get_architecture.dart';
 void showDialogForMobileUpdate(BuildContext context, String deviceV,
     String lastV, Map<String, dynamic> jsonData) async {
   String changes = jsonData['changes'];
-  List files = jsonData['files'];
+  List files = jsonData['apkLinks'];
   String arc = await getAndroidArchitecture();
   String? apkURL;
   for (var e in files) {
-    if (e['filename'].toString().contains(arc)) {
-      apkURL = ApiOfInAppUpdate().base + e['path'];
+    if (e.toString().contains(arc)) {
+      apkURL = "${ApiOfInAppUpdate().base}/$e";
     }
   }
   if (apkURL == null) {
