@@ -1,1 +1,37 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"hrplatformportal","appId":"1:224642949303:android:213a55d9ba9dd6f999ed32","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"hrplatformportal","configurations":{"android":"1:224642949303:android:213a55d9ba9dd6f999ed32","web":"1:224642949303:web:cb0853c4dc366aad99ed32","windows":"1:224642949303:web:155be69797ba05f599ed32"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "hrplatformportal",
+          "appId": "1:224642949303:android:213a55d9ba9dd6f999ed32",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "hrplatformportal",
+          "configurations": {
+            "android": "1:224642949303:android:213a55d9ba9dd6f999ed32",
+            "web": "1:224642949303:web:cb0853c4dc366aad99ed32",
+            "windows": "1:224642949303:web:155be69797ba05f599ed32"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
