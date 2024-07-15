@@ -78,12 +78,12 @@ class _LoginPageState extends State<LoginPage> {
           .signInWithEmailAndPassword(email: email, password: password);
       if (result.user != null) {
         final response = await FirebaseFirestore.instance
-            .collection('user')
+            .collection('admin')
             .doc('admin')
             .get();
         if (response.exists) {
           Map userData = response.data()!;
-          Map<String, dynamic> adminData = userData['data'];
+          Map<String, dynamic> adminData = Map<String, dynamic>.from(userData);
           final box = await Hive.openBox('info');
           await box.put("userData", jsonEncode(adminData));
           Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);

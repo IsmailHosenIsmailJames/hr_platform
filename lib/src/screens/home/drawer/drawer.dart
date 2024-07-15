@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/home/settings/settings.dart';
 import 'package:hr_platform/src/screens/survey/survey.dart';
 
@@ -29,7 +30,7 @@ class MyDrawer extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return const Survey();
+                            return const AddUser();
                           },
                         ),
                       );
