@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:hr_platform/src/models/user_model.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
 
 class AddUser extends StatefulWidget {
@@ -160,7 +162,54 @@ class _AddUserState extends State<AddUser> {
                   SizedBox(
                     width: 330,
                     child: ElevatedButton.icon(
-                      onPressed: () async {},
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          try {
+                            final response = await FirebaseFirestore.instance
+                                .collection("general_user")
+                                .doc(userIDController.text)
+                                .get();
+                            if (response.exists) {
+                              showDialog(
+                                // ignore: use_build_context_synchronously
+                                context: context,
+                                builder: (context) => const AlertDialog(
+                                  title: Text("This user already exits"),
+                                ),
+                              );
+                            } else {
+                              await FirebaseFirestore.instance
+                                  .collection("general_user")
+                                  .doc(userIDController.text)
+                                  .set(
+                                    UserModel(
+                                      userID: userIDController.text,
+                                      userPassword: passwordController.text,
+                                      userName: userNameController.text,
+                                      cellPhone: cellPhoneController.text,
+                                      companyName: companyNameController.text,
+                                      dateOfJoining:
+                                          dateOfJoiningController.text,
+                                      departmentName:
+                                          departmentNameController.text,
+                                      designationName:
+                                          designationNameController.text,
+                                      email: emailController.text,
+                                      jobTypeName: jobTypeNameController.text,
+                                    ).toMap(),
+                                  );
+                            }
+                          } catch (e) {
+                            showModalBottomSheet(
+                              // ignore: use_build_context_synchronously
+                              context: context,
+                              builder: (context) => const Center(
+                                child: Text("Somethings went worng"),
+                              ),
+                            );
+                          }
+                        }
+                      },
                       label: const Text("ADD"),
                       icon: const Icon(Icons.add),
                     ),
@@ -179,14 +228,14 @@ class _AddUserState extends State<AddUser> {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
-        if (isRequired) Gap(10),
+        if (isRequired) const Gap(10),
         if (isRequired)
-          Text(
+          const Text(
             "*",
             style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 20, color: Colors.red),

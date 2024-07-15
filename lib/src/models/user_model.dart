@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 class UserModel {
+  String? userID;
+  String? userPassword;
   String? userName;
   String? cellPhone;
   String? companyName;
@@ -11,6 +13,9 @@ class UserModel {
   String? jobTypeName;
 
   UserModel({
+    this.userID,
+    this.userPassword,
+    this.userName,
     this.cellPhone,
     this.companyName,
     this.dateOfJoining,
@@ -18,10 +23,12 @@ class UserModel {
     this.designationName,
     this.email,
     this.jobTypeName,
-    this.userName,
   });
 
   UserModel copyWith({
+    String? userID,
+    String? userPassword,
+    String? userName,
     String? cellPhone,
     String? companyName,
     String? dateOfJoining,
@@ -29,7 +36,6 @@ class UserModel {
     String? designationName,
     String? email,
     String? jobTypeName,
-    String? userName,
   }) =>
       UserModel(
         cellPhone: cellPhone ?? this.cellPhone,
@@ -40,6 +46,8 @@ class UserModel {
         email: email ?? this.email,
         jobTypeName: jobTypeName ?? this.jobTypeName,
         userName: userName ?? this.userName,
+        userID: userID ?? this.userID,
+        userPassword: userPassword ?? this.userPassword,
       );
 
   factory UserModel.fromJson(String str) => UserModel.fromMap(json.decode(str));
@@ -47,6 +55,8 @@ class UserModel {
   String toJson() => json.encode(toMap());
 
   factory UserModel.fromMap(Map<String, dynamic> json) => UserModel(
+        userID: json["user_id"],
+        userPassword: json['user_password'],
         cellPhone: json["cell_phone"],
         companyName: json["company_name"],
         dateOfJoining: json["date_of_joining"],
@@ -58,6 +68,8 @@ class UserModel {
       );
 
   Map<String, dynamic> toMap() => {
+        "user_id": userID,
+        "user_password": userPassword,
         "cell_phone": cellPhone,
         "company_name": companyName,
         "date_of_joining": dateOfJoining,
