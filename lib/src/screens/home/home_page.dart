@@ -220,6 +220,12 @@ class _HomePageState extends State<HomePage> {
       bool isFile = cureent['is-file'];
       if (isFile) {
         FilesModel cureentModel = FilesModel.fromMap(cureent);
+        String fileType = cureentModel.type;
+        bool isImage = false;
+        if (fileType == "jpg" ||
+            fileType == "jpeg" ||
+            fileType == "png" ||
+            fileType == "webp") isImage = true;
         toReturn.add(
           Container(
             height: 180,
@@ -234,32 +240,28 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               onPressed: () async {
-                if (await canLaunchUrl(Uri.parse(cureentModel.path))) {
+                if (isImage) {
+                  showDialog(
+                    // ignore: use_build_context_synchronously
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        child: FastCachedImage(
+                          url: cureentModel.path,
+                          loadingBuilder: (p0, p1) {
+                            return CircularProgressIndicator(
+                              value: p1.progressPercentage.value,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  );
+                } else if (await canLaunchUrl(Uri.parse(cureentModel.path))) {
                   launchUrl(Uri.parse(cureentModel.path));
                 } else {
-                  if (cureentModel.type == "jpeg" ||
-                      cureentModel.type == "jpg" ||
-                      cureentModel.type == "png") {
-                    showDialog(
-                      // ignore: use_build_context_synchronously
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          child: FastCachedImage(
-                            url: cureentModel.path,
-                            loadingBuilder: (p0, p1) {
-                              return CircularProgressIndicator(
-                                value: p1.progressPercentage.value,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  } else {
-                    showFluttertoastMessage(
-                        "This file type can not directly open. Download it.");
-                  }
+                  showFluttertoastMessage(
+                      "This file type can not directly open. Download it.");
                 }
               },
               child: Container(
@@ -268,8 +270,10 @@ class _HomePageState extends State<HomePage> {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: FastCachedImageProvider(
-                      cureentModel.image ??
-                          "http://116.68.200.97:6027/static/media/form.54693b5d.png",
+                      isImage
+                          ? cureentModel.path
+                          : cureentModel.image ??
+                              "http://116.68.200.97:6027/static/media/form.54693b5d.png",
                     ),
                     fit: BoxFit.contain,
                   ),
