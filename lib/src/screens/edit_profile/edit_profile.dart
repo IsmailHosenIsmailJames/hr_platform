@@ -14,7 +14,6 @@ class EditProfile extends StatefulWidget {
 
 class _EditProfileState extends State<EditProfile> {
   final formKey = GlobalKey<FormState>();
-  late TextEditingController userIDController;
   late TextEditingController passwordController;
   late TextEditingController userNameController;
   late TextEditingController cellPhoneController;
@@ -26,7 +25,6 @@ class _EditProfileState extends State<EditProfile> {
   late TextEditingController jobTypeNameController;
   @override
   void initState() {
-    userIDController = TextEditingController(text: widget.userModel.userID);
     passwordController =
         TextEditingController(text: widget.userModel.userPassword);
     userNameController = TextEditingController(text: widget.userModel.userName);
@@ -60,30 +58,6 @@ class _EditProfileState extends State<EditProfile> {
               key: formKey,
               child: Column(
                 children: [
-                  titleWidget("User ID", true),
-                  const Gap(5),
-                  TextFormField(
-                    controller: userIDController,
-                    validator: (value) {
-                      if (value == null || value.length < 4) {
-                        return "ID should be 4 digit at least";
-                      } else {
-                        try {
-                          int.parse(value);
-                          return null;
-                        } catch (e) {
-                          return "Not a valid digit";
-                        }
-                      }
-                    },
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    keyboardType: TextInputType.number,
-                    decoration: getInputDecooration(
-                      "User ID",
-                      "Type user id for new user...",
-                    ),
-                  ),
-                  const Gap(10),
                   titleWidget("User Password", true),
                   const Gap(5),
                   TextFormField(
@@ -189,10 +163,10 @@ class _EditProfileState extends State<EditProfile> {
                           try {
                             await FirebaseFirestore.instance
                                 .collection("general_user")
-                                .doc(userIDController.text)
+                                .doc(widget.userModel.userID)
                                 .update(
                                   UserModel(
-                                    userID: userIDController.text,
+                                    userID: widget.userModel.userID,
                                     userPassword: passwordController.text,
                                     userName: userNameController.text,
                                     cellPhone: cellPhoneController.text,
