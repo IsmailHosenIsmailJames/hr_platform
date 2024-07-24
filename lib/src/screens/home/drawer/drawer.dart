@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hr_platform/src/models/user_model.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
+import 'package:hr_platform/src/screens/edit_profile/edit_profile.dart';
 import 'package:hr_platform/src/screens/home/settings/settings.dart';
 import 'package:hr_platform/src/screens/survey/survey.dart';
 
@@ -91,7 +94,36 @@ class MyDrawer extends StatelessWidget {
                     ],
                   ),
                   icon: const Icon(FluentIcons.settings_24_regular),
-                )
+                ),
+                if (!(FirebaseAuth.instance.currentUser!.email != null &&
+                    FirebaseAuth.instance.currentUser!.email!.isNotEmpty))
+                  TextButton.icon(
+                    onPressed: () async {
+                      final box = await Hive.openBox('info');
+                      UserModel userModel =
+                          UserModel.fromJson(box.get('userData'));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return EditProfile(
+                              userModel: userModel,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    label: const Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Edit Profile",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    icon: const Icon(FluentIcons.edit_24_regular),
+                  ),
               ],
             ),
           ),
