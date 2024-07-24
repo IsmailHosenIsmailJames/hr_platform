@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -53,6 +54,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> splitedPath = widget.path.split('/');
     List<Widget> toShowWidgets = getWidgetsOfFilesFolder();
     bool isAdmin = FirebaseAuth.instance.currentUser!.email != null &&
         FirebaseAuth.instance.currentUser!.email!.isNotEmpty;
@@ -185,7 +187,41 @@ class _HomePageState extends State<HomePage> {
               )
             : null,
         appBar: AppBar(
-          title: Text(widget.path),
+          title: Row(
+            children: List.generate(
+              splitedPath.length,
+              (index) {
+                if (splitedPath[index].isNotEmpty) {
+                  return TextButton(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                    ),
+                    onPressed: () {
+                      String clickedPath = '';
+                      for (int i = 0; i <= index; i++) {
+                        clickedPath += '${splitedPath[i]}/';
+                      }
+                      if (clickedPath[clickedPath.length - 1] == '/') {
+                        clickedPath =
+                            clickedPath.substring(0, clickedPath.length - 1);
+                      }
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        "/home$clickedPath",
+                        (route) => false,
+                      );
+                    },
+                    child: Text(
+                      "${splitedPath[index]}/",
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  );
+                } else {
+                  return const SizedBox();
+                }
+              },
+            ),
+          ),
         ),
         drawer: const MyDrawer(),
         body: SafeArea(
@@ -294,7 +330,15 @@ class _HomePageState extends State<HomePage> {
                               onTap: () async {
                                 String? directory = await FilePicker.platform
                                     .getDirectoryPath();
-                                showFluttertoastMessage("Downloading");
+                                if (directory != null) {
+                                  showFluttertoastMessage(
+                                      "Downloading ${cureentModel.path}");
+                                  await Dio().download(cureentModel.path,
+                                      "$directory/${cureentModel.name}");
+                                  showFluttertoastMessage(
+                                      "Successfull Download ${cureentModel.path}");
+                                }
+
                                 if (directory == null) {
                                   showFluttertoastMessage(
                                       "Folder did not selected. Download Cancle");

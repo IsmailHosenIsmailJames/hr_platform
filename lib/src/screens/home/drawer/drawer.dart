@@ -103,6 +103,7 @@ class MyDrawer extends StatelessWidget {
                       UserModel userModel =
                           UserModel.fromJson(box.get('userData'));
                       Navigator.push(
+                        // ignore: use_build_context_synchronously
                         context,
                         MaterialPageRoute(
                           builder: (context) {
@@ -124,6 +125,29 @@ class MyDrawer extends StatelessWidget {
                     ),
                     icon: const Icon(FluentIcons.edit_24_regular),
                   ),
+                TextButton.icon(
+                  onPressed: () async {
+                    await FirebaseAuth.instance.signOut();
+                    await Hive.box('info').deleteFromDisk();
+                    await Hive.openBox("info");
+                    Navigator.pushNamedAndRemoveUntil(
+                      // ignore: use_build_context_synchronously
+                      context,
+                      '/',
+                      (route) => false,
+                    );
+                  },
+                  label: const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Sign Out",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                  icon: const Icon(FluentIcons.sign_out_24_regular),
+                ),
               ],
             ),
           ),
