@@ -45,28 +45,18 @@ class _LoginPageState extends State<LoginPage> {
       if (FirebaseAuth.instance.currentUser == null) {
         await FirebaseAuth.instance.signInAnonymously();
       }
-      final response =
-          await FirebaseFirestore.instance.collection('user').doc('user').get();
+      final response = await FirebaseFirestore.instance
+          .collection('general_user')
+          .doc(id)
+          .get();
       if (response.exists) {
-        Map<String, dynamic> allUserData =
-            Map<String, dynamic>.from(response.data()!);
-        List<Map> userList = List<Map>.from(allUserData['user-list']);
-        for (Map user in userList) {
-          String temId = user['id'] ?? '';
-          String temPass = user['password'] ?? '';
-
-          if (temId.trim() == id && temPass == password) {
-            Map<String, dynamic> thisUser = Map<String, dynamic>.from(user);
-            final box = await Hive.openBox('info');
-            await box.put('userData', jsonEncode(thisUser));
-            Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
-            return null;
-          }
-        }
+        final box = await Hive.openBox('info');
+        await box.put('userData', jsonEncode(response.data()));
+        Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+        return null;
+      } else {
         return "User did not exits";
       }
-
-      return "user document not exits";
     } catch (e) {
       return "Something went worng";
     }
