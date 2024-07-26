@@ -333,10 +333,15 @@ class _HomePageState extends State<HomePage> {
                                 if (directory != null) {
                                   showFluttertoastMessage(
                                       "Downloading ${cureentModel.path}");
-                                  await Dio().download(cureentModel.path,
-                                      "$directory/${cureentModel.name}");
-                                  showFluttertoastMessage(
-                                      "Successfull Download ${cureentModel.path}");
+                                  try {
+                                    await Dio().download(cureentModel.path,
+                                        "$directory/${cureentModel.name}.${cureentModel.type}");
+                                    showFluttertoastMessage(
+                                        "Successfull Download ${cureentModel.path}");
+                                  } catch (e) {
+                                    showFluttertoastMessage(
+                                        "Failed Download ${cureentModel.path}");
+                                  }
                                 }
 
                                 if (directory == null) {
