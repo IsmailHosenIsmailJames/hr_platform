@@ -18,10 +18,12 @@ import 'package:hr_platform/src/models/folders_model.dart';
 import 'package:hr_platform/src/screens/add_new_files/add_new_file.dart';
 import 'package:hr_platform/src/screens/add_new_folder/add_new_folder.dart';
 import 'package:hr_platform/src/screens/home/drawer/drawer.dart';
+import 'package:hr_platform/src/theme/break_point.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/data/get_data_form_hive.dart';
 import '../../core/in_app_update/cheak_for_update.dart';
+import '../../models/user_model.dart';
 
 class HomePage extends StatefulWidget {
   final String path;
@@ -52,12 +54,56 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > breakPointWidth;
+    bool isMobile = !isDesktop;
     List<String> splitedPath = widget.path.split('/');
     List<Widget> toShowWidgets = getWidgetsOfFilesFolder();
     bool isAdmin = FirebaseAuth.instance.currentUser!.email != null &&
         FirebaseAuth.instance.currentUser!.email!.isNotEmpty;
+    final box = Hive.box('info');
+    UserModel? userModel =
+        (!isAdmin) ? UserModel.fromJson(box.get('userData')) : null;
+
+    Widget folderNavigator = Row(
+      children: List.generate(
+        splitedPath.length,
+        (index) {
+          if (splitedPath[index].isNotEmpty) {
+            return TextButton(
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+              ),
+              onPressed: () {
+                String clickedPath = '';
+                for (int i = 0; i <= index; i++) {
+                  clickedPath += '${splitedPath[i]}/';
+                }
+                if (clickedPath[clickedPath.length - 1] == '/') {
+                  clickedPath =
+                      clickedPath.substring(0, clickedPath.length - 1);
+                }
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  "/home$clickedPath",
+                  (route) => false,
+                );
+              },
+              child: Text(
+                "${splitedPath[index]}/",
+                style: const TextStyle(fontSize: 20),
+              ),
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
+      ),
+    );
+
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
@@ -75,6 +121,8 @@ class _HomePageState extends State<HomePage> {
         }
       },
       child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: isDesktop ? Colors.lightBlue.shade400 : null,
         floatingActionButton: isAdmin
             ? FloatingActionButton(
                 onPressed: null,
@@ -186,49 +234,108 @@ class _HomePageState extends State<HomePage> {
                 ),
               )
             : null,
-        appBar: AppBar(
-          title: Row(
-            children: List.generate(
-              splitedPath.length,
-              (index) {
-                if (splitedPath[index].isNotEmpty) {
-                  return TextButton(
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                    ),
-                    onPressed: () {
-                      String clickedPath = '';
-                      for (int i = 0; i <= index; i++) {
-                        clickedPath += '${splitedPath[i]}/';
-                      }
-                      if (clickedPath[clickedPath.length - 1] == '/') {
-                        clickedPath =
-                            clickedPath.substring(0, clickedPath.length - 1);
-                      }
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        "/home$clickedPath",
-                        (route) => false,
-                      );
-                    },
-                    child: Text(
-                      "${splitedPath[index]}/",
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  );
-                } else {
-                  return const SizedBox();
-                }
-              },
-            ),
-          ),
+        appBar: isMobile
+            ? AppBar(
+                title: folderNavigator,
+              )
+            : null,
+        endDrawer: MyDrawer(
+          isAdmin: isAdmin,
         ),
-        drawer: const MyDrawer(),
         body: SafeArea(
           child: toShowWidgets.isEmpty
               ? const Center(child: Text("No files or folders found"))
-              : Wrap(
-                  children: toShowWidgets,
+              : Column(
+                  children: [
+                    if (isDesktop)
+                      Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          margin: const EdgeInsets.all(5),
+                          padding: const EdgeInsets.only(
+                            left: 20,
+                            right: 20,
+                            top: 5,
+                            bottom: 5,
+                          ),
+                          width: breakPointWidth.toDouble(),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: folderNavigator,
+                          ),
+                        ),
+                      ),
+                    Container(
+                      width:
+                          isDesktop ? MediaQuery.of(context).size.width : null,
+                      height: isDesktop
+                          ? MediaQuery.of(context).size.height * 0.80
+                          : null,
+                      padding: isDesktop
+                          ? EdgeInsets.only(
+                              top: MediaQuery.of(context).size.width * 0.01,
+                              bottom: MediaQuery.of(context).size.width * 0.05,
+                              left: MediaQuery.of(context).size.width * 0.05,
+                              right: MediaQuery.of(context).size.width * 0.03,
+                            )
+                          : null,
+                      margin: isDesktop
+                          ? EdgeInsets.only(
+                              top: MediaQuery.of(context).size.width * 0.01,
+                              bottom: MediaQuery.of(context).size.width * 0.05,
+                              left: MediaQuery.of(context).size.width * 0.05,
+                              right: MediaQuery.of(context).size.width * 0.03,
+                            )
+                          : null,
+                      decoration: isDesktop
+                          ? BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: Colors.blue.shade700.withOpacity(0.7),
+                            )
+                          : null,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (isDesktop)
+                            Row(
+                              children: [
+                                const Spacer(),
+                                Text(
+                                  isAdmin ? "Admin" : userModel!.userName ?? "",
+                                  style: const TextStyle(
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const Spacer(),
+                                IconButton(
+                                  onPressed: () {
+                                    scaffoldKey.currentState!.openEndDrawer();
+                                  },
+                                  icon: const Icon(
+                                    Icons.menu,
+                                    color: Colors.white,
+                                    size: 40,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          const Gap(15),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Wrap(
+                              children: toShowWidgets,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
         ),
       ),

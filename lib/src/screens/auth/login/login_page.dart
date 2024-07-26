@@ -51,7 +51,9 @@ class _LoginPageState extends State<LoginPage> {
           .get();
       if (response.exists) {
         final box = await Hive.openBox('info');
-        await box.put('userData', jsonEncode(response.data()));
+        Map temUserData = Map.from(response.data()!);
+        temUserData.addAll({"user_id": id});
+        await box.put('userData', jsonEncode(temUserData));
         Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
         return null;
       } else {
@@ -74,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
         if (response.exists) {
           Map userData = response.data()!;
           Map<String, dynamic> adminData = Map<String, dynamic>.from(userData);
+
           final box = await Hive.openBox('info');
           await box.put("userData", jsonEncode(adminData));
           Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);

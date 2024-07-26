@@ -38,14 +38,14 @@ dependencies:
   hive_flutter: ^1.1.0
   fast_cached_network_image: ^1.2.9
   url_strategy: ^0.2.0
-  firebase_core: ^3.1.1
-  cloud_firestore: ^5.0.2
+  firebase_core: ^3.2.0
+  cloud_firestore: ^5.1.0
   gap: ^3.0.1
   email_validator: ^3.0.0
-  firebase_auth: ^5.1.1
-  fluentui_system_icons: ^1.1.246
+  firebase_auth: ^5.1.2
+  fluentui_system_icons: ^1.1.248
   url_launcher: ^6.3.0
-  firebase_storage: ^12.1.0
+  firebase_storage: ^12.1.1
   file_picker: ^8.0.6
   loading_animation_widget: ^1.2.1
   fluttertoast: ^8.2.6

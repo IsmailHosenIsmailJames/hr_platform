@@ -5,22 +5,55 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/models/user_model.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/edit_profile/edit_profile.dart';
-import 'package:hr_platform/src/screens/home/settings/settings.dart';
 import 'package:hr_platform/src/screens/survey/survey.dart';
 
 class MyDrawer extends StatelessWidget {
-  const MyDrawer({super.key});
+  final bool isAdmin;
+  const MyDrawer({
+    super.key,
+    required this.isAdmin,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final box = Hive.box('info');
+    UserModel? userModel =
+        (!isAdmin) ? UserModel.fromJson(box.get('userData')) : null;
+
     return Drawer(
       child: Column(
         children: [
-          Container(
-            height: 200,
-            width: double.infinity,
-            color: Colors.blue.shade800,
-          ),
+          if (!isAdmin)
+            Container(
+              height: 200,
+              width: double.infinity,
+              color: Colors.blue.shade800,
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FittedBox(
+                    child: Text(
+                      userModel!.userName!,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "ID: ${userModel.userID ?? ""}",
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(userModel.cellPhone ?? ""),
+                ],
+              ),
+            ),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(10),
@@ -73,28 +106,28 @@ class MyDrawer extends StatelessWidget {
                     ),
                     icon: const Icon(FluentIcons.document_table_24_regular),
                   ),
-                TextButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return const Settings();
-                        },
-                      ),
-                    );
-                  },
-                  label: const Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Settings",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
-                  icon: const Icon(FluentIcons.settings_24_regular),
-                ),
+                // TextButton.icon(
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) {
+                //           return const Settings();
+                //         },
+                //       ),
+                //     );
+                //   },
+                //   label: const Row(
+                //     mainAxisAlignment: MainAxisAlignment.start,
+                //     children: [
+                //       Text(
+                //         "Settings",
+                //         style: TextStyle(fontSize: 16),
+                //       ),
+                //     ],
+                //   ),
+                //   icon: const Icon(FluentIcons.settings_24_regular),
+                // ),
                 if (!(FirebaseAuth.instance.currentUser!.email != null &&
                     FirebaseAuth.instance.currentUser!.email!.isNotEmpty))
                   TextButton.icon(
