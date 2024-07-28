@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-class MultiChoice {
+class SingleChoice {
   final int id;
   String type;
   String question;
   String? hint;
   List<Option> options;
-  List<int>? answer;
+  int? answer;
 
-  MultiChoice({
+  SingleChoice({
     required this.id,
     required this.type,
     required this.question,
@@ -17,15 +17,15 @@ class MultiChoice {
     this.answer,
   });
 
-  MultiChoice copyWith({
+  SingleChoice copyWith({
     int? id,
     String? type,
     String? question,
     String? hint,
     List<Option>? options,
-    List<int>? answer,
+    int? answer,
   }) =>
-      MultiChoice(
+      SingleChoice(
         id: id ?? this.id,
         type: type ?? this.type,
         question: question ?? this.question,
@@ -34,19 +34,19 @@ class MultiChoice {
         answer: answer ?? this.answer,
       );
 
-  factory MultiChoice.fromJson(String str) =>
-      MultiChoice.fromMap(json.decode(str));
+  factory SingleChoice.fromJson(String str) =>
+      SingleChoice.fromMap(json.decode(str));
 
   String toJson() => json.encode(toMap());
 
-  factory MultiChoice.fromMap(Map<String, dynamic> json) => MultiChoice(
+  factory SingleChoice.fromMap(Map<String, dynamic> json) => SingleChoice(
         id: json["id"],
         type: json["type"],
         question: json["question"],
         hint: json["hint"],
         options:
             List<Option>.from(json["options"].map((x) => Option.fromMap(x))),
-        answer: List<int>.from(json["answer"].map((x) => x)),
+        answer: json["answer"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -55,8 +55,7 @@ class MultiChoice {
         "question": question,
         "hint": hint,
         "options": List<dynamic>.from(options.map((x) => x.toMap())),
-        "answer":
-            answer == null ? null : List<dynamic>.from(answer!.map((x) => x)),
+        "answer": answer,
       };
 }
 
