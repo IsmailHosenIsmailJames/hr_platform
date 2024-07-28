@@ -1,0 +1,8 @@
+{
+    "id": 1928675985,
+    "type": "text",
+    "max_len" : 1000,
+    "question": "String text : required",
+    "hint": "String hint text : optional",
+    "answer": "String text answer"
+}
