@@ -1,0 +1,20 @@
+{
+    "id": 1928675985,
+    "type":"multi_choice",
+    "question": "String text : required",
+    "hint": "String hint text : optional",
+    "options": [
+        {
+            "id": 83728372,
+            "text": "option - 1 : required"
+        },
+        {
+            "id": 83728372,
+            "text": "option - 2 : required"
+        }
+    ],
+    "answer": [
+        83728372,
+        83728372
+    ]
+}
