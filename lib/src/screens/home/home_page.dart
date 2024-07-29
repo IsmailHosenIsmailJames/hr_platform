@@ -239,9 +239,16 @@ class _HomePageState extends State<HomePage> {
                 title: folderNavigator,
               )
             : null,
-        endDrawer: MyDrawer(
-          isAdmin: isAdmin,
-        ),
+        endDrawer: MediaQuery.of(context).size.width > breakPointWidth
+            ? MyDrawer(
+                isAdmin: isAdmin,
+              )
+            : null,
+        drawer: MediaQuery.of(context).size.width <= breakPointWidth
+            ? MyDrawer(
+                isAdmin: isAdmin,
+              )
+            : null,
         body: SafeArea(
           child: toShowWidgets.isEmpty
               ? const Center(child: Text("No files or folders found"))
