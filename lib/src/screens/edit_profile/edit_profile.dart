@@ -4,6 +4,8 @@ import 'package:gap/gap.dart';
 import 'package:hr_platform/src/models/user_model.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
 
+import '../add_user/add_user.dart';
+
 class EditProfile extends StatefulWidget {
   final UserModel userModel;
   const EditProfile({super.key, required this.userModel});
@@ -201,27 +203,6 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget titleWidget(String title, bool isRequired) {
-    return Row(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        if (isRequired) const Gap(10),
-        if (isRequired)
-          const Text(
-            "*",
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 20, color: Colors.red),
-          )
-      ],
     );
   }
 }

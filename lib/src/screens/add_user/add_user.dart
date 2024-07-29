@@ -222,25 +222,25 @@ class _AddUserState extends State<AddUser> {
       ),
     );
   }
+}
 
-  Widget titleWidget(String title, bool isRequired) {
-    return Row(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
+Widget titleWidget(String title, bool isRequired) {
+  return Row(
+    children: [
+      Text(
+        title,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
         ),
-        if (isRequired) const Gap(10),
-        if (isRequired)
-          const Text(
-            "*",
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 20, color: Colors.red),
-          )
-      ],
-    );
-  }
+      ),
+      if (isRequired) const Gap(10),
+      if (isRequired)
+        const Text(
+          "*",
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 20, color: Colors.red),
+        )
+    ],
+  );
 }
