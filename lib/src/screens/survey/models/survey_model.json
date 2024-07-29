@@ -1,0 +1,55 @@
+{
+    "id": 232323,
+    "title": "survey title.....",
+    "description": "description of survey",
+    "timer": 32543534,
+    "date": 23243435,
+    "expired" : 82736286,
+    "questions": [
+        {
+            "id": 1928675985,
+            "type": "multi_choice",
+            "question": "String text : required",
+            "hint": "String hint text : optional",
+            "options": [
+                {
+                    "id": 83728372,
+                    "text": "option - 1 : required"
+                },
+                {
+                    "id": 83728372,
+                    "text": "option - 2 : required"
+                }
+            ],
+            "answer": [
+                83728372,
+                83728372
+            ]
+        },
+        {
+            "id": 1928675985,
+            "type": "single_choice",
+            "question": "String text : required",
+            "hint": "String hint text : optional",
+            "options": [
+                {
+                    "id": 83728372,
+                    "text": "option - 1 : required"
+                },
+                {
+                    "id": 83728372,
+                    "text": "option - 2 : required"
+                }
+            ],
+            "answer": 83728372
+        },
+        {
+            "id": 1928675985,
+            "type": "text",
+            "max_len": 1000,
+            "question": "String text : required",
+            "hint": "String hint text : optional",
+            "answer": "String text answer"
+        }
+    ]
+}
