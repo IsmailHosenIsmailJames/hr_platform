@@ -69,19 +69,19 @@ class Question {
   int id;
   String type;
   String question;
-  String hint;
-  List<Option> options;
+  String? hint;
+  List<Option>? options;
   dynamic answer;
-  int maxLen;
+  int? maxLen;
 
   Question({
     required this.id,
     required this.type,
     required this.question,
-    required this.hint,
-    required this.options,
-    required this.answer,
-    required this.maxLen,
+    this.hint,
+    this.options,
+    this.answer,
+    this.maxLen,
   });
 
   Question copyWith({
@@ -123,7 +123,9 @@ class Question {
         "type": type,
         "question": question,
         "hint": hint,
-        "options": List<dynamic>.from(options.map((x) => x.toMap())),
+        "options": answer == null
+            ? null
+            : List<dynamic>.from(options!.map((x) => x.toMap())),
         "answer": answer,
         "max_len": maxLen,
       };

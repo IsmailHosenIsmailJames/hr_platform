@@ -3,18 +3,18 @@ import 'dart:convert';
 class TextAnswerQuestion {
   final int id;
   final String type;
-  final int maxLen;
+  int? maxLen;
   final String question;
-  final String hint;
-  final String answer;
+  String? hint;
+  String? answer;
 
   TextAnswerQuestion({
     required this.id,
     required this.type,
-    required this.maxLen,
+    this.maxLen,
     required this.question,
-    required this.hint,
-    required this.answer,
+    this.hint,
+    this.answer,
   });
 
   TextAnswerQuestion copyWith({

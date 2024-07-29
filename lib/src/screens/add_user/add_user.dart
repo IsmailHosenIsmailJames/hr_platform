@@ -224,22 +224,25 @@ class _AddUserState extends State<AddUser> {
   }
 }
 
-Widget titleWidget(String title, bool isRequired) {
+Widget titleWidget(String title, bool isRequired, {double fontsize = 20}) {
   return Row(
     children: [
       Text(
         title,
-        style: const TextStyle(
+        style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 20,
+          fontSize: fontsize,
         ),
       ),
       if (isRequired) const Gap(10),
       if (isRequired)
-        const Text(
+        Text(
           "*",
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 20, color: Colors.red),
+            fontWeight: FontWeight.bold,
+            fontSize: fontsize,
+            color: Colors.red,
+          ),
         )
     ],
   );
