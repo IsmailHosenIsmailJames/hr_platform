@@ -308,13 +308,20 @@ class _SurveyState extends State<Survey> {
                       (index) {
                         if (controller.survey.value.questions[index].type ==
                             "multi_choice") {
-                          return multiCChoiceWidget(context,
-                              controller.survey.value.questions[index], index);
+                          return multiCChoiceWidget(
+                              context,
+                              controller.survey.value.questions[index],
+                              index,
+                              "Multipule Choice");
                         } else if (controller
                                 .survey.value.questions[index].type ==
                             "single_choice") {
                           return singleChoiceWidget(
-                              controller.survey.value.questions[index]);
+                            context,
+                            controller.survey.value.questions[index],
+                            index,
+                            "Single Choice",
+                          );
                         } else {
                           return textQuestionWidget(
                             context,
@@ -430,19 +437,13 @@ class _SurveyState extends State<Survey> {
     );
   }
 
-  Widget singleChoiceWidget(Question question) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      margin: const EdgeInsets.only(bottom: 15),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(10),
-      ),
-    );
+  Widget singleChoiceWidget(
+      BuildContext context, Question question, int index, String type) {
+    return multiCChoiceWidget(context, question, index, type);
   }
 
   Widget multiCChoiceWidget(
-      BuildContext context, Question question, int index) {
+      BuildContext context, Question question, int index, String type) {
     return Container(
       padding: const EdgeInsets.all(5),
       margin: const EdgeInsets.only(bottom: 15),
@@ -456,7 +457,7 @@ class _SurveyState extends State<Survey> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              titleWidget("Multipule Choice", false, fontsize: 18),
+              titleWidget(type, false, fontsize: 18),
               IconButton(
                 onPressed: () {
                   surveyController.survey.value.questions.removeAt(index);
