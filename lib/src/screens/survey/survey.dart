@@ -392,16 +392,7 @@ class _SurveyState extends State<Survey> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               titleWidget("Text answer", false, fontsize: 18),
-              IconButton(
-                onPressed: () {
-                  surveyController.survey.value.questions.removeAt(index);
-                  setState(() {});
-                },
-                icon: const Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                ),
-              ),
+              popUpForQuestion(index),
             ],
           ),
           getFirstRowOfQuestionWidget(index, context),
@@ -499,16 +490,7 @@ class _SurveyState extends State<Survey> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               titleWidget(type, false, fontsize: 18),
-              IconButton(
-                onPressed: () {
-                  surveyController.survey.value.questions.removeAt(index);
-                  setState(() {});
-                },
-                icon: const Icon(
-                  Icons.delete,
-                  color: Colors.red,
-                ),
-              ),
+              popUpForQuestion(index)
             ],
           ),
           getFirstRowOfQuestionWidget(index, context, showLimit: false),
@@ -614,6 +596,71 @@ class _SurveyState extends State<Survey> {
           ),
         ],
       ),
+    );
+  }
+
+  PopupMenuButton<dynamic> popUpForQuestion(int index) {
+    return PopupMenuButton(
+      itemBuilder: (context) {
+        return [
+          if (index > 0)
+            PopupMenuItem(
+              onTap: () {
+                Question tem =
+                    surveyController.survey.value.questions[index - 1];
+                surveyController.survey.value.questions[index - 1] =
+                    surveyController.survey.value.questions[index];
+                surveyController.survey.value.questions[index] = tem;
+                setState(() {});
+              },
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.arrow_upward,
+                  ),
+                  Gap(5),
+                  Text("Move up"),
+                ],
+              ),
+            ),
+          if (index < surveyController.survey.value.questions.length - 1)
+            PopupMenuItem(
+              onTap: () {
+                Question tem =
+                    surveyController.survey.value.questions[index + 1];
+                surveyController.survey.value.questions[index + 1] =
+                    surveyController.survey.value.questions[index];
+                surveyController.survey.value.questions[index] = tem;
+                setState(() {});
+              },
+              child: const Row(
+                children: [
+                  Icon(
+                    Icons.arrow_downward,
+                  ),
+                  Gap(5),
+                  Text("Move down"),
+                ],
+              ),
+            ),
+          PopupMenuItem(
+            onTap: () {
+              surveyController.survey.value.questions.removeAt(index);
+              setState(() {});
+            },
+            child: const Row(
+              children: [
+                Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+                Gap(5),
+                Text("Delete"),
+              ],
+            ),
+          ),
+        ];
+      },
     );
   }
 }
