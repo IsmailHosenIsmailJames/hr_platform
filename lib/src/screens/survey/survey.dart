@@ -1,10 +1,12 @@
 import 'package:bottom_picker/bottom_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/survey/models/surevey_model.dart';
 import 'package:hr_platform/src/screens/survey/models/text_answer.dart';
+import 'package:hr_platform/src/screens/survey/view_general_user.dart/survey_view.dart';
 
 import '../../theme/text_field_input_decoration.dart';
 import 'getx/controller_getx.dart';
@@ -19,15 +21,13 @@ class Survey extends StatefulWidget {
 
 class _SurveyState extends State<Survey> {
   SureveyModel? previousSurveyModel;
-  late TextEditingController titleEditingController = TextEditingController();
-  late TextEditingController descriptionEditingController =
-      TextEditingController();
 
   @override
   void initState() {
     previousSurveyModel = widget.previousSurveyModel;
-    titleEditingController = TextEditingController();
-    descriptionEditingController = TextEditingController();
+    if (previousSurveyModel != null) {
+      surveyController.survey.value = previousSurveyModel!;
+    }
     super.initState();
   }
 
@@ -42,7 +42,17 @@ class _SurveyState extends State<Survey> {
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SurveyView(
+                      surevey: surveyController.survey.value,
+                      isPreview: true,
+                    ),
+                  ),
+                );
+              },
               label: const Text("Preview"),
               icon: const Icon(
                 Icons.preview_rounded,
@@ -62,6 +72,8 @@ class _SurveyState extends State<Survey> {
                   titleWidget("Title of survey", true, fontsize: 17),
                   const Gap(5),
                   TextFormField(
+                    controller: TextEditingController(
+                        text: controller.survey.value.title),
                     onChanged: (value) {
                       controller.survey.value.title = value;
                     },
@@ -74,6 +86,8 @@ class _SurveyState extends State<Survey> {
                   titleWidget("Description of survey", false, fontsize: 17),
                   const Gap(5),
                   TextFormField(
+                    controller: TextEditingController(
+                        text: controller.survey.value.description),
                     onChanged: (value) {
                       controller.survey.value.description = value;
                     },
@@ -91,9 +105,21 @@ class _SurveyState extends State<Survey> {
                             titleWidget("Time of survey", false, fontsize: 17),
                             const Gap(5),
                             TextFormField(
+                              controller: TextEditingController(
+                                  text: surveyController.survey.value.timer ==
+                                          null
+                                      ? ""
+                                      : surveyController.survey.value.timer
+                                          .toString()),
                               onChanged: (value) {
-                                controller.survey.value.timer =
-                                    int.parse(value);
+                                try {
+                                  controller.survey.value.timer =
+                                      int.parse(value);
+                                } catch (e) {
+                                  if (kDebugMode) {
+                                    print(e);
+                                  }
+                                }
                               },
                               decoration: getInputDecooration("time in minute",
                                   "type your time as number for that minutes"),
@@ -123,18 +149,17 @@ class _SurveyState extends State<Survey> {
                                       return BottomPicker.dateTime(
                                         initialDateTime:
                                             DateTime.fromMillisecondsSinceEpoch(
-                                          expairedDateTimeEpoc ??
+                                          surveyController
+                                                  .survey.value.expired ??
                                               DateTime.now()
                                                   .millisecondsSinceEpoch,
                                         ),
                                         onSubmit: (date) {
                                           DateTime dateTime = date;
-                                          expairedDateTime =
-                                              "${dateTime.day}/${dateTime.month}/${dateTime.year}";
-                                          expairedDateTimeEpoc =
+                                          surveyController
+                                                  .survey.value.expired =
                                               dateTime.millisecondsSinceEpoch;
-                                          controller.survey.value.expired =
-                                              dateTime.millisecondsSinceEpoch;
+
                                           setState(() {});
                                         },
                                         pickerTitle: const Text(
@@ -152,16 +177,26 @@ class _SurveyState extends State<Survey> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(expairedDateTime ?? "Pick time"),
-                                    if (expairedDateTime != null) const Gap(5),
-                                    if (expairedDateTime != null)
+                                    surveyController.survey.value.expired !=
+                                            null
+                                        ? Text(
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                    surveyController
+                                                        .survey.value.expired!)
+                                                .toIso8601String()
+                                                .split("T")[0],
+                                          )
+                                        : const Text("Pick time"),
+                                    if (surveyController.survey.value.expired !=
+                                        null)
+                                      const Gap(5),
+                                    if (surveyController.survey.value.expired !=
+                                        null)
                                       IconButton(
                                         onPressed: () {
                                           setState(() {
-                                            expairedDateTime = null;
-                                            expairedDateTimeEpoc = null;
-                                            controller.survey.value.expired =
-                                                null;
+                                            surveyController
+                                                .survey.value.expired = null;
                                           });
                                         },
                                         icon: const Icon(Icons.close),
@@ -371,6 +406,9 @@ class _SurveyState extends State<Survey> {
           ),
           getFirstRowOfQuestionWidget(index, context),
           TextFormField(
+            controller: TextEditingController(
+              text: surveyController.survey.value.questions[index].question,
+            ),
             decoration:
                 getInputDecooration("Question", "Type your question here..."),
             onChanged: (value) {
@@ -378,9 +416,12 @@ class _SurveyState extends State<Survey> {
             },
           ),
           const Gap(10),
-          titleWidget("Hint", false, fontsize: 16),
+          titleWidget("Hint", false,
+              fontsize: 16, alinment: MainAxisAlignment.start),
           const Gap(5),
           TextFormField(
+            controller: TextEditingController(
+                text: surveyController.survey.value.questions[index].hint),
             decoration: getInputDecooration("Hint", "Type your hint here..."),
             onChanged: (value) {
               surveyController.survey.value.questions[index].hint = value;
@@ -473,6 +514,8 @@ class _SurveyState extends State<Survey> {
           getFirstRowOfQuestionWidget(index, context, showLimit: false),
           const Gap(7),
           TextFormField(
+            controller: TextEditingController(
+                text: surveyController.survey.value.questions[index].question),
             decoration:
                 getInputDecooration("Question", "Type your question here..."),
             onChanged: (value) {
@@ -480,9 +523,12 @@ class _SurveyState extends State<Survey> {
             },
           ),
           const Gap(10),
-          titleWidget("Hint", false, fontsize: 16),
+          titleWidget("Hint", false,
+              fontsize: 16, alinment: MainAxisAlignment.start),
           const Gap(5),
           TextFormField(
+            controller: TextEditingController(
+                text: surveyController.survey.value.questions[index].hint),
             decoration: getInputDecooration("Hint", "Type your hint here..."),
             onChanged: (value) {
               surveyController.survey.value.questions[index].hint = value;
@@ -535,6 +581,13 @@ class _SurveyState extends State<Survey> {
                         const Gap(10),
                         Expanded(
                           child: TextFormField(
+                            controller: TextEditingController(
+                                text: surveyController.survey.value
+                                    .questions[index].options![i].text),
+                            onChanged: (value) {
+                              surveyController.survey.value.questions[index]
+                                  .options![i].text = value;
+                            },
                             decoration: getInputDecooration(
                                 "Option text", "type option here"),
                           ),
@@ -563,7 +616,4 @@ class _SurveyState extends State<Survey> {
       ),
     );
   }
-
-  String? expairedDateTime;
-  int? expairedDateTimeEpoc;
 }
