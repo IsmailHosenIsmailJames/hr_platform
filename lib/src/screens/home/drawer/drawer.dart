@@ -1,10 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/models/user_model.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/edit_profile/edit_profile.dart';
+import 'package:hr_platform/src/screens/survey/all_survey.dart';
+import 'package:hr_platform/src/screens/survey/getx/controller_getx.dart';
+import 'package:hr_platform/src/screens/survey/models/surevey_model.dart';
 import 'package:hr_platform/src/screens/survey/survey.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -87,6 +91,14 @@ class MyDrawer extends StatelessWidget {
                       FirebaseAuth.instance.currentUser!.email!.isNotEmpty)
                     TextButton.icon(
                       onPressed: () {
+                        final tem = Get.put(SurveyController());
+                        tem.survey.value = SureveyModel(
+                          id: getRandomValue(),
+                          title: "",
+                          description: "",
+                          date: DateTime.now().millisecondsSinceEpoch,
+                          questions: <Question>[],
+                        );
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -107,28 +119,28 @@ class MyDrawer extends StatelessWidget {
                       ),
                       icon: const Icon(FluentIcons.document_table_24_regular),
                     ),
-                  // TextButton.icon(
-                  //   onPressed: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //         builder: (context) {
-                  //           return const Settings();
-                  //         },
-                  //       ),
-                  //     );
-                  //   },
-                  //   label: const Row(
-                  //     mainAxisAlignment: MainAxisAlignment.start,
-                  //     children: [
-                  //       Text(
-                  //         "Settings",
-                  //         style: TextStyle(fontSize: 16),
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   icon: const Icon(FluentIcons.settings_24_regular),
-                  // ),
+                  TextButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const AllSurvey();
+                          },
+                        ),
+                      );
+                    },
+                    label: const Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "All Survey",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                    icon: const Icon(FluentIcons.document_table_24_regular),
+                  ),
                   if (!(FirebaseAuth.instance.currentUser!.email != null &&
                       FirebaseAuth.instance.currentUser!.email!.isNotEmpty))
                     TextButton.icon(

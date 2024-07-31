@@ -48,7 +48,7 @@ class _SurveyViewState extends State<SurveyView> {
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               titleWidget(
                 surevey.title,
@@ -212,7 +212,7 @@ class _SurveyViewState extends State<SurveyView> {
           ),
           Column(
             children: List.generate(
-              surevey.questions[index].options!.length,
+              (surevey.questions[index].options ?? []).length,
               (i) {
                 List<int> ans = [];
                 if (isSingleChoice) {

@@ -112,8 +112,9 @@ class Question {
         type: json["type"],
         question: json["question"],
         hint: json["hint"],
-        options:
-            List<Option>.from(json["options"].map((x) => Option.fromMap(x))),
+        options: json["options"] == null
+            ? []
+            : List<Option>.from(json["options"].map((x) => Option.fromMap(x))),
         answer: json["answer"],
         maxLen: json["max_len"],
       );
@@ -124,7 +125,7 @@ class Question {
         "question": question,
         "hint": hint,
         "options": answer == null
-            ? null
+            ? []
             : List<dynamic>.from(options!.map((x) => x.toMap())),
         "answer": answer,
         "max_len": maxLen,

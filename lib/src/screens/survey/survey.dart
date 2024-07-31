@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hr_platform/src/core/show_toast_message.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/survey/models/surevey_model.dart';
 import 'package:hr_platform/src/screens/survey/models/text_answer.dart';
@@ -34,6 +36,12 @@ class _SurveyState extends State<Survey> {
   final surveyController = Get.put(SurveyController());
 
   final formKey = GlobalKey<FormState>();
+  final box = Hive.box("surveyLocal");
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +49,16 @@ class _SurveyState extends State<Survey> {
       appBar: AppBar(
         title: const Text("Create a survey"),
         actions: [
+          IconButton(
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                await box.put("${surveyController.survey.value.id}",
+                    surveyController.survey.value.toJson());
+                showToastedMessage("Saved!");
+              }
+            },
+            icon: const Icon(Icons.save_outlined),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: ElevatedButton.icon(
@@ -620,7 +638,8 @@ class _SurveyState extends State<Survey> {
             ),
             child: Column(
               children: List.generate(
-                surveyController.survey.value.questions[index].options!.length,
+                (surveyController.survey.value.questions[index].options ?? [])
+                    .length,
                 (i) {
                   return Padding(
                     padding: const EdgeInsets.all(5.0),

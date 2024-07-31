@@ -31,6 +31,8 @@ void main() async {
   setPathUrlStrategy();
   await Hive.initFlutter("hr_platform");
   await Hive.openBox("info");
+  await Hive.openBox("surveyLocal");
+
   runApp(const MyApp());
 }
 
