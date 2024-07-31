@@ -244,6 +244,37 @@ class _SurveyState extends State<Survey> {
                       ],
                     ),
                     const Gap(10),
+                    const Gap(10),
+                    Column(
+                      children: List.generate(
+                        controller.survey.value.questions.length,
+                        (index) {
+                          if (controller.survey.value.questions[index].type ==
+                              "multi_choice") {
+                            return multiCChoiceWidget(
+                                context,
+                                controller.survey.value.questions[index],
+                                index,
+                                "Multipule Choice");
+                          } else if (controller
+                                  .survey.value.questions[index].type ==
+                              "single_choice") {
+                            return singleChoiceWidget(
+                              context,
+                              controller.survey.value.questions[index],
+                              index,
+                              "Single Choice",
+                            );
+                          } else {
+                            return textQuestionWidget(
+                              context,
+                              controller.survey.value.questions[index],
+                              index,
+                            );
+                          }
+                        },
+                      ),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -377,37 +408,6 @@ class _SurveyState extends State<Survey> {
                         ),
                       ],
                     ),
-                    const Gap(10),
-                    Column(
-                      children: List.generate(
-                        controller.survey.value.questions.length,
-                        (index) {
-                          if (controller.survey.value.questions[index].type ==
-                              "multi_choice") {
-                            return multiCChoiceWidget(
-                                context,
-                                controller.survey.value.questions[index],
-                                index,
-                                "Multipule Choice");
-                          } else if (controller
-                                  .survey.value.questions[index].type ==
-                              "single_choice") {
-                            return singleChoiceWidget(
-                              context,
-                              controller.survey.value.questions[index],
-                              index,
-                              "Single Choice",
-                            );
-                          } else {
-                            return textQuestionWidget(
-                              context,
-                              controller.survey.value.questions[index],
-                              index,
-                            );
-                          }
-                        },
-                      ),
-                    )
                   ],
                 );
               },

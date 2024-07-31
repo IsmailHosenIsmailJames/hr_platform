@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
@@ -56,6 +54,7 @@ class _SurveyViewState extends State<SurveyView> {
                 surevey.title,
                 false,
                 fontsize: 20,
+                alinment: MainAxisAlignment.start,
               ),
               const Gap(5),
               Text(surevey.description),
@@ -143,7 +142,8 @@ class _SurveyViewState extends State<SurveyView> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          Text("Hint: ${surevey.questions[index].hint}"),
+          if (surevey.questions[index].hint != null)
+            Text("Hint: ${surevey.questions[index].hint}"),
           Divider(
             color: Colors.grey.shade700,
           ),
@@ -205,7 +205,8 @@ class _SurveyViewState extends State<SurveyView> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          Text("Hint: ${surevey.questions[index].hint}"),
+          if (surevey.questions[index].hint != null)
+            Text("Hint: ${surevey.questions[index].hint}"),
           Divider(
             color: Colors.grey.shade700,
           ),
