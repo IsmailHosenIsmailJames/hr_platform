@@ -133,7 +133,7 @@ class Question {
         "type": type,
         "question": question,
         "hint": hint,
-        "options": answer == null
+        "options": options == null
             ? []
             : List<dynamic>.from(options!.map((x) => x.toMap())),
         "answer": answer,
