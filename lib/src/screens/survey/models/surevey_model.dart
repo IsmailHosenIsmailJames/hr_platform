@@ -8,6 +8,7 @@ class SureveyModel {
   int date;
   int? expired;
   List<Question> questions;
+  int? lastUpdated;
 
   SureveyModel({
     required this.id,
@@ -17,6 +18,7 @@ class SureveyModel {
     required this.date,
     this.expired,
     required this.questions,
+    this.lastUpdated,
   });
 
   SureveyModel copyWith({
@@ -27,6 +29,7 @@ class SureveyModel {
     int? date,
     int? expired,
     List<Question>? questions,
+    int? lastUpdated,
   }) =>
       SureveyModel(
         id: id ?? this.id,
@@ -36,6 +39,7 @@ class SureveyModel {
         date: date ?? this.date,
         expired: expired ?? this.expired,
         questions: questions ?? this.questions,
+        lastUpdated: lastUpdated ?? this.lastUpdated,
       );
 
   factory SureveyModel.fromJson(String str) =>
@@ -51,7 +55,11 @@ class SureveyModel {
         date: json["date"],
         expired: json["expired"],
         questions: List<Question>.from(
-            json["questions"].map((x) => Question.fromMap(x))),
+          json["questions"].map(
+            (x) => Question.fromMap(x),
+          ),
+        ),
+        lastUpdated: json["lastUpdated"],
       );
 
   Map<String, dynamic> toMap() => {
@@ -62,6 +70,7 @@ class SureveyModel {
         "date": date,
         "expired": expired,
         "questions": List<dynamic>.from(questions.map((x) => x.toMap())),
+        "lastUpdated": lastUpdated,
       };
 }
 
