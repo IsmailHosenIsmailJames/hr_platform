@@ -57,6 +57,12 @@ class _SurveyState extends State<Survey> {
                 await box.put("${surveyController.survey.value.id}",
                     surveyController.survey.value.toJson());
                 showToastedMessage("Saved!");
+                Navigator.pushNamedAndRemoveUntil(
+                  // ignore: use_build_context_synchronously
+                  context,
+                  "/",
+                  (route) => false,
+                );
               }
             },
             icon: const Icon(Icons.save_outlined),
@@ -64,9 +70,16 @@ class _SurveyState extends State<Survey> {
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (formKey.currentState!.validate()) {
+                  surveyController.survey.value.lastUpdated =
+                      DateTime.now().millisecondsSinceEpoch;
+                  await box.put("${surveyController.survey.value.id}",
+                      surveyController.survey.value.toJson());
+
+                  showToastedMessage("Saved!");
                   Navigator.push(
+                    // ignore: use_build_context_synchronously
                     context,
                     MaterialPageRoute(
                       builder: (context) => SurveyView(

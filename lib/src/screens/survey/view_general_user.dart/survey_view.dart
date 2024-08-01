@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:get/get.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:hr_platform/src/core/show_toast_message.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
-import 'package:hr_platform/src/screens/survey/getx/controller_getx.dart';
 import 'package:hr_platform/src/screens/survey/models/surevey_question_model.dart';
 
+import '../../../models/user_model.dart';
 import '../../../theme/text_field_input_decoration.dart';
 
 class SurveyView extends StatefulWidget {
@@ -28,8 +30,6 @@ class _SurveyViewState extends State<SurveyView> {
 
   bool submittingOrUploading = false;
 
-  final surveyController = Get.put(SurveyController());
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,24 +46,64 @@ class _SurveyViewState extends State<SurveyView> {
                 if (widget.isPreview == true ||
                     (FirebaseAuth.instance.currentUser!.email != null &&
                         FirebaseAuth.instance.currentUser!.email!.isNotEmpty)) {
-                  if ((await FirebaseFirestore.instance
+                  try {
+                    if ((await FirebaseFirestore.instance
+                            .collection("survey")
+                            .doc("${surevey.id}")
+                            .get())
+                        .exists) {
+                      await FirebaseFirestore.instance
                           .collection("survey")
-                          .doc("${surveyController.survey.value.id}")
-                          .get())
-                      .exists) {
+                          .doc("${surevey.id}")
+                          .update(
+                        {"question": surevey.toMap()},
+                      );
+                    } else {
+                      await FirebaseFirestore.instance
+                          .collection("survey")
+                          .doc("${surevey.id}")
+                          .set(
+                        {"question": surevey.toMap()},
+                      );
+                    }
+                    Navigator.pushNamedAndRemoveUntil(
+                      // ignore: use_build_context_synchronously
+                      context,
+                      "/",
+                      (route) => false,
+                    );
+                    showToastedMessage("Successfully Published");
+                  } catch (e) {
+                    if (kDebugMode) {
+                      print(e);
+                    }
+                  }
+                } else {
+                  try {
+                    final box = Hive.box('info');
+                    UserModel userModel =
+                        UserModel.fromJson(box.get('userData'));
+
+                    Map<String, dynamic> ans = {};
+                    for (Question question in surevey.questions) {
+                      ans.addAll({"${question.id}": question.answer});
+                    }
+
                     await FirebaseFirestore.instance
                         .collection("survey")
-                        .doc("${surveyController.survey.value.id}")
-                        .update(
-                      {"question": surveyController.survey.value.toMap()},
+                        .doc("${surevey.id}")
+                        .update({"${userModel.userID}": ans});
+                    showToastedMessage("Submit Successfull");
+                    Navigator.pushNamedAndRemoveUntil(
+                      // ignore: use_build_context_synchronously
+                      context,
+                      "/",
+                      (route) => false,
                     );
-                  } else {
-                    await FirebaseFirestore.instance
-                        .collection("survey")
-                        .doc("${surveyController.survey.value.id}")
-                        .set(
-                      {"question": surveyController.survey.value.toMap()},
-                    );
+                  } catch (e) {
+                    showToastedMessage("Submit failed");
+
+                    print(e);
                   }
                 }
                 setState(() {

@@ -226,7 +226,7 @@ class _AddUserState extends State<AddUser> {
 
 Widget titleWidget(String title, bool isRequired,
     {double fontsize = 20,
-    MainAxisAlignment alinment = MainAxisAlignment.center}) {
+    MainAxisAlignment alinment = MainAxisAlignment.start}) {
   return Row(
     mainAxisAlignment: alinment,
     crossAxisAlignment: CrossAxisAlignment.center,

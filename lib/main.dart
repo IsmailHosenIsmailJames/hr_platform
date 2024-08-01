@@ -9,6 +9,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:hr_platform/src/auth/is_authenticated.dart';
 import 'package:hr_platform/src/core/initialization.dart';
 import 'package:hr_platform/src/screens/auth/login/login_page.dart';
+import 'package:hr_platform/src/screens/survey/all_survey.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'firebase_options.dart';
@@ -80,6 +81,29 @@ class MyApp extends StatelessWidget {
                 return const Initialization(namePath: "/home");
               },
             );
+          }
+
+          if (settings.name != null && settings.name!.startsWith("/survey")) {
+            String name = settings.name!;
+            name = name.replaceAll("/survey", "").replaceAll("/", "");
+            int? id = int.tryParse(name);
+            if (id != null) {
+              return MaterialPageRoute(
+                settings: settings,
+                builder: (context) {
+                  return AllSurvey(
+                    surveyID: "$id",
+                  );
+                },
+              );
+            } else {
+              return MaterialPageRoute(
+                settings: settings,
+                builder: (context) {
+                  return const AllSurvey();
+                },
+              );
+            }
           }
 
           if (settings.name!.startsWith("/home")) {
