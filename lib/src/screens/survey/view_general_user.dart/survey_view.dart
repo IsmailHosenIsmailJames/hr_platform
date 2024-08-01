@@ -7,6 +7,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:hr_platform/src/core/show_toast_message.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/survey/models/surevey_question_model.dart';
+import 'package:hr_platform/src/theme/break_point.dart';
 
 import '../../../models/user_model.dart';
 import '../../../theme/text_field_input_decoration.dart';
@@ -130,63 +131,68 @@ class _SurveyViewState extends State<SurveyView> {
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              titleWidget(
-                surevey.title,
-                false,
-                fontsize: 20,
-                alinment: MainAxisAlignment.start,
-              ),
-              const Gap(5),
-              Text(surevey.description),
-              const Divider(),
-              Row(
+          child: Center(
+            child: SizedBox(
+              width: breakPointWidth.toDouble(),
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  titleWidget("Date: ", false, fontsize: 16),
-                  Text(
-                    DateTime.fromMillisecondsSinceEpoch(surevey.date)
-                        .toIso8601String()
-                        .split("T")[0],
+                  titleWidget(
+                    surevey.title,
+                    false,
+                    fontsize: 20,
+                    alinment: MainAxisAlignment.start,
                   ),
-                  const Gap(15),
-                  if (surevey.timer != null)
-                    titleWidget("Time: ", false, fontsize: 16),
-                  if (surevey.timer != null)
-                    Text(
-                      surevey.timer.toString(),
+                  const Gap(5),
+                  Text(surevey.description),
+                  const Divider(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      titleWidget("Date: ", false, fontsize: 16),
+                      Text(
+                        DateTime.fromMillisecondsSinceEpoch(surevey.date)
+                            .toIso8601String()
+                            .split("T")[0],
+                      ),
+                      const Gap(15),
+                      if (surevey.timer != null)
+                        titleWidget("Time: ", false, fontsize: 16),
+                      if (surevey.timer != null)
+                        Text(
+                          surevey.timer.toString(),
+                        ),
+                      const Gap(15),
+                      if (surevey.expired != null)
+                        titleWidget("Expired: ", false, fontsize: 16),
+                      if (surevey.expired != null)
+                        Text(
+                          DateTime.fromMillisecondsSinceEpoch(surevey.expired!)
+                              .toIso8601String()
+                              .split("T")[0],
+                        ),
+                    ],
+                  ),
+                  const Divider(),
+                  Column(
+                    children: List.generate(
+                      surevey.questions.length,
+                      (index) {
+                        if (surevey.questions[index].type == "multi_choice") {
+                          return getMultiChoiceViewWidget(index);
+                        } else if (surevey.questions[index].type ==
+                            "single_choice") {
+                          return getSingleChoiceViewWidget(index);
+                        } else {
+                          return getTextAnswerViewWidget(index);
+                        }
+                      },
                     ),
-                  const Gap(15),
-                  if (surevey.expired != null)
-                    titleWidget("Expired: ", false, fontsize: 16),
-                  if (surevey.expired != null)
-                    Text(
-                      DateTime.fromMillisecondsSinceEpoch(surevey.expired!)
-                          .toIso8601String()
-                          .split("T")[0],
-                    ),
+                  )
                 ],
               ),
-              const Divider(),
-              Column(
-                children: List.generate(
-                  surevey.questions.length,
-                  (index) {
-                    if (surevey.questions[index].type == "multi_choice") {
-                      return getMultiChoiceViewWidget(index);
-                    } else if (surevey.questions[index].type ==
-                        "single_choice") {
-                      return getSingleChoiceViewWidget(index);
-                    } else {
-                      return getTextAnswerViewWidget(index);
-                    }
-                  },
-                ),
-              )
-            ],
+            ),
           ),
         ),
       ),

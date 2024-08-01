@@ -9,6 +9,7 @@ import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/survey/models/surevey_question_model.dart';
 import 'package:hr_platform/src/screens/survey/models/text_answer.dart';
 import 'package:hr_platform/src/screens/survey/view_general_user.dart/survey_view.dart';
+import 'package:hr_platform/src/theme/break_point.dart';
 
 import '../../theme/text_field_input_decoration.dart';
 import 'getx/controller_getx.dart';
@@ -96,351 +97,370 @@ class _SurveyState extends State<Survey> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: GetX<SurveyController>(
-              builder: (controller) {
-                return Column(
-                  children: [
-                    const Gap(10),
-                    titleWidget("Title of survey", true,
-                        fontsize: 17, alinment: MainAxisAlignment.start),
-                    const Gap(5),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "title can't be empty";
-                        }
-                        return null;
-                      },
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      controller: TextEditingController(
-                          text: controller.survey.value.title),
-                      onChanged: (value) {
-                        controller.survey.value.title = value;
-                      },
-                      decoration: getInputDecooration(
-                        "Title of survey",
-                        "Type title of survey...",
-                      ),
-                    ),
-                    const Gap(15),
-                    titleWidget("Description of survey", false,
-                        fontsize: 17, alinment: MainAxisAlignment.start),
-                    const Gap(5),
-                    TextFormField(
-                      controller: TextEditingController(
-                          text: controller.survey.value.description),
-                      onChanged: (value) {
-                        controller.survey.value.description = value;
-                      },
-                      decoration: getInputDecooration(
-                        "Description of survey",
-                        "Type Description of survey...",
-                      ),
-                    ),
-                    const Gap(15),
-                    Row(
+        child: Center(
+          child: SizedBox(
+            width: breakPointWidth.toDouble(),
+            child: Form(
+              key: formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: GetX<SurveyController>(
+                  builder: (controller) {
+                    return Column(
                       children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              titleWidget("Time of survey", false,
-                                  fontsize: 17,
-                                  alinment: MainAxisAlignment.start),
-                              const Gap(5),
-                              TextFormField(
-                                validator: (value) {
-                                  if (value != null && value.isNotEmpty) {
-                                    if (int.tryParse(value) == null) {
-                                      return "enter valid number";
-                                    }
-                                  }
-                                  return null;
-                                },
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                controller: TextEditingController(
-                                    text: surveyController.survey.value.timer ==
-                                            null
-                                        ? ""
-                                        : surveyController.survey.value.timer
-                                            .toString()),
-                                onChanged: (value) {
-                                  try {
-                                    controller.survey.value.timer =
-                                        int.parse(value);
-                                  } catch (e) {
-                                    if (kDebugMode) {
-                                      print(e);
-                                    }
-                                  }
-                                },
-                                decoration: getInputDecooration(
-                                    "time in minute",
-                                    "type your time as number for that minutes"),
-                              ),
-                            ],
+                        const Gap(10),
+                        titleWidget("Title of survey", true,
+                            fontsize: 17, alinment: MainAxisAlignment.start),
+                        const Gap(5),
+                        TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "title can't be empty";
+                            }
+                            return null;
+                          },
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          controller: TextEditingController(
+                              text: controller.survey.value.title),
+                          onChanged: (value) {
+                            controller.survey.value.title = value;
+                          },
+                          decoration: getInputDecooration(
+                            "Title of survey",
+                            "Type title of survey...",
                           ),
                         ),
                         const Gap(15),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              titleWidget("Expired Date", false,
-                                  fontsize: 17,
-                                  alinment: MainAxisAlignment.start),
-                              const Gap(5),
-                              SizedBox(
-                                width: 200,
-                                height: 50,
-                                child: OutlinedButton(
-                                  style: OutlinedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) {
-                                        return BottomPicker.dateTime(
-                                          initialDateTime: DateTime
-                                              .fromMillisecondsSinceEpoch(
-                                            surveyController
-                                                    .survey.value.expired ??
-                                                DateTime.now()
-                                                    .millisecondsSinceEpoch,
-                                          ),
-                                          onSubmit: (date) {
-                                            DateTime dateTime = date;
-                                            surveyController
-                                                    .survey.value.expired =
-                                                dateTime.millisecondsSinceEpoch;
-
-                                            setState(() {});
-                                          },
-                                          pickerTitle: const Text(
-                                            "Pick Expired Date",
-                                            style: TextStyle(
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      surveyController.survey.value.expired !=
-                                              null
-                                          ? Text(
-                                              DateTime.fromMillisecondsSinceEpoch(
-                                                      surveyController.survey
-                                                          .value.expired!)
-                                                  .toIso8601String()
-                                                  .split("T")[0],
-                                            )
-                                          : const Text("Pick time"),
-                                      if (surveyController
-                                              .survey.value.expired !=
-                                          null)
-                                        const Gap(5),
-                                      if (surveyController
-                                              .survey.value.expired !=
-                                          null)
-                                        IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              surveyController
-                                                  .survey.value.expired = null;
-                                            });
-                                          },
-                                          icon: const Icon(Icons.close),
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                        titleWidget("Description of survey", false,
+                            fontsize: 17, alinment: MainAxisAlignment.start),
+                        const Gap(5),
+                        TextFormField(
+                          controller: TextEditingController(
+                              text: controller.survey.value.description),
+                          onChanged: (value) {
+                            controller.survey.value.description = value;
+                          },
+                          decoration: getInputDecooration(
+                            "Description of survey",
+                            "Type Description of survey...",
                           ),
                         ),
-                      ],
-                    ),
-                    const Gap(10),
-                    const Gap(10),
-                    Column(
-                      children: List.generate(
-                        controller.survey.value.questions.length,
-                        (index) {
-                          if (controller.survey.value.questions[index].type ==
-                              "multi_choice") {
-                            return multiCChoiceWidget(
-                                context,
-                                controller.survey.value.questions[index],
-                                index,
-                                "Multipule Choice");
-                          } else if (controller
-                                  .survey.value.questions[index].type ==
-                              "single_choice") {
-                            return singleChoiceWidget(
-                              context,
-                              controller.survey.value.questions[index],
-                              index,
-                              "Single Choice",
-                            );
-                          } else {
-                            return textQuestionWidget(
-                              context,
-                              controller.survey.value.questions[index],
-                              index,
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        titleWidget("Add Questions", true),
-                        const Gap(20),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => Dialog(
-                                child: SizedBox(
-                                  height: 300,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 20,
-                                        bottom: 20,
-                                        left: 10,
-                                        right: 10),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Text(
-                                          "Choice One",
-                                          style: TextStyle(fontSize: 30),
+                        const Gap(15),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  titleWidget("Time of survey", false,
+                                      fontsize: 17,
+                                      alinment: MainAxisAlignment.start),
+                                  const Gap(5),
+                                  TextFormField(
+                                    validator: (value) {
+                                      if (value != null && value.isNotEmpty) {
+                                        if (int.tryParse(value) == null) {
+                                          return "enter valid number";
+                                        }
+                                      }
+                                      return null;
+                                    },
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
+                                    controller: TextEditingController(
+                                        text: surveyController
+                                                    .survey.value.timer ==
+                                                null
+                                            ? ""
+                                            : surveyController
+                                                .survey.value.timer
+                                                .toString()),
+                                    onChanged: (value) {
+                                      try {
+                                        controller.survey.value.timer =
+                                            int.parse(value);
+                                      } catch (e) {
+                                        if (kDebugMode) {
+                                          print(e);
+                                        }
+                                      }
+                                    },
+                                    decoration: getInputDecooration(
+                                        "time in minute",
+                                        "type your time as number for that minutes"),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(15),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  titleWidget("Expired Date", false,
+                                      fontsize: 17,
+                                      alinment: MainAxisAlignment.start),
+                                  const Gap(5),
+                                  SizedBox(
+                                    width: 200,
+                                    height: 50,
+                                    child: OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                         ),
-                                        const Divider(),
-                                        const Gap(20),
-                                        SizedBox(
-                                          width: 300,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              controller.survey.value.questions
-                                                  .add(
-                                                Question(
-                                                  id: getRandomValue(),
-                                                  type: "multi_choice",
-                                                  question: "",
-                                                  options: [],
+                                      ),
+                                      onPressed: () {
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) {
+                                            return BottomPicker.dateTime(
+                                              initialDateTime: DateTime
+                                                  .fromMillisecondsSinceEpoch(
+                                                surveyController
+                                                        .survey.value.expired ??
+                                                    DateTime.now()
+                                                        .millisecondsSinceEpoch,
+                                              ),
+                                              onSubmit: (date) {
+                                                DateTime dateTime = date;
+                                                surveyController
+                                                        .survey.value.expired =
+                                                    dateTime
+                                                        .millisecondsSinceEpoch;
+
+                                                setState(() {});
+                                              },
+                                              pickerTitle: const Text(
+                                                "Pick Expired Date",
+                                                style: TextStyle(
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                              );
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Icon(
-                                                    Icons.radio_button_checked),
-                                                Gap(20),
-                                                Text("Multi Choice Options"),
-                                              ],
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          surveyController
+                                                      .survey.value.expired !=
+                                                  null
+                                              ? Text(
+                                                  DateTime.fromMillisecondsSinceEpoch(
+                                                          surveyController
+                                                              .survey
+                                                              .value
+                                                              .expired!)
+                                                      .toIso8601String()
+                                                      .split("T")[0],
+                                                )
+                                              : const Text("Pick time"),
+                                          if (surveyController
+                                                  .survey.value.expired !=
+                                              null)
+                                            const Gap(5),
+                                          if (surveyController
+                                                  .survey.value.expired !=
+                                              null)
+                                            IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  surveyController.survey.value
+                                                      .expired = null;
+                                                });
+                                              },
+                                              icon: const Icon(Icons.close),
                                             ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 300,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              controller.survey.value.questions
-                                                  .add(
-                                                Question(
-                                                  id: getRandomValue(),
-                                                  type: "single_choice",
-                                                  question: "",
-                                                  options: [],
-                                                ),
-                                              );
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Icon(
-                                                    Icons.radio_button_checked),
-                                                Gap(20),
-                                                Text("Single Choice Options"),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 300,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              controller.survey.value.questions
-                                                  .add(
-                                                Question(
-                                                  id: getRandomValue(),
-                                                  type: "text",
-                                                  question: "",
-                                                ),
-                                              );
-                                              TextAnswerQuestion.fromMap(
-                                                  Question(
-                                                id: getRandomValue(),
-                                                type: "text",
-                                                question: "",
-                                              ).toMap());
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                Icon(
-                                                    Icons.radio_button_checked),
-                                                Gap(20),
-                                                Text("Text answer"),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
-                            );
-                          },
-                          icon: const Icon(Icons.add),
-                          label: const Text("Add"),
+                            ),
+                          ],
+                        ),
+                        const Gap(10),
+                        const Gap(10),
+                        Column(
+                          children: List.generate(
+                            controller.survey.value.questions.length,
+                            (index) {
+                              if (controller
+                                      .survey.value.questions[index].type ==
+                                  "multi_choice") {
+                                return multiCChoiceWidget(
+                                    context,
+                                    controller.survey.value.questions[index],
+                                    index,
+                                    "Multipule Choice");
+                              } else if (controller
+                                      .survey.value.questions[index].type ==
+                                  "single_choice") {
+                                return singleChoiceWidget(
+                                  context,
+                                  controller.survey.value.questions[index],
+                                  index,
+                                  "Single Choice",
+                                );
+                              } else {
+                                return textQuestionWidget(
+                                  context,
+                                  controller.survey.value.questions[index],
+                                  index,
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            titleWidget("Add Questions", true),
+                            const Gap(20),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => Dialog(
+                                    child: SizedBox(
+                                      height: 300,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 20,
+                                            bottom: 20,
+                                            left: 10,
+                                            right: 10),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Text(
+                                              "Choice One",
+                                              style: TextStyle(fontSize: 30),
+                                            ),
+                                            const Divider(),
+                                            const Gap(20),
+                                            SizedBox(
+                                              width: 300,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  controller
+                                                      .survey.value.questions
+                                                      .add(
+                                                    Question(
+                                                      id: getRandomValue(),
+                                                      type: "multi_choice",
+                                                      question: "",
+                                                      options: [],
+                                                    ),
+                                                  );
+                                                  setState(() {});
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Icon(Icons
+                                                        .radio_button_checked),
+                                                    Gap(20),
+                                                    Text(
+                                                        "Multi Choice Options"),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 300,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  controller
+                                                      .survey.value.questions
+                                                      .add(
+                                                    Question(
+                                                      id: getRandomValue(),
+                                                      type: "single_choice",
+                                                      question: "",
+                                                      options: [],
+                                                    ),
+                                                  );
+                                                  setState(() {});
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Icon(Icons
+                                                        .radio_button_checked),
+                                                    Gap(20),
+                                                    Text(
+                                                        "Single Choice Options"),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 300,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  controller
+                                                      .survey.value.questions
+                                                      .add(
+                                                    Question(
+                                                      id: getRandomValue(),
+                                                      type: "text",
+                                                      question: "",
+                                                    ),
+                                                  );
+                                                  TextAnswerQuestion.fromMap(
+                                                      Question(
+                                                    id: getRandomValue(),
+                                                    type: "text",
+                                                    question: "",
+                                                  ).toMap());
+                                                  setState(() {});
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Icon(Icons
+                                                        .radio_button_checked),
+                                                    Gap(20),
+                                                    Text("Text answer"),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.add),
+                              label: const Text("Add"),
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                  ],
-                );
-              },
+                    );
+                  },
+                ),
+              ),
             ),
           ),
         ),
