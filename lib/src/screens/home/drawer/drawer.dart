@@ -8,7 +8,7 @@ import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/edit_profile/edit_profile.dart';
 import 'package:hr_platform/src/screens/survey/all_survey.dart';
 import 'package:hr_platform/src/screens/survey/getx/controller_getx.dart';
-import 'package:hr_platform/src/screens/survey/models/surevey_model.dart';
+import 'package:hr_platform/src/screens/survey/models/surevey_question_model.dart';
 import 'package:hr_platform/src/screens/survey/survey.dart';
 
 class MyDrawer extends StatelessWidget {

@@ -7,7 +7,7 @@ import 'package:hr_platform/src/screens/survey/survey.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:hr_platform/src/screens/survey/view_general_user.dart/survey_view.dart';
 
-import 'models/surevey_model.dart';
+import 'models/surevey_question_model.dart';
 
 class AllSurvey extends StatefulWidget {
   const AllSurvey({super.key});
@@ -151,19 +151,23 @@ class _AllSurveyState extends State<AllSurvey> {
                                 color: Colors.red,
                               ),
                             ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Survey(
-                                    previousSurveyModel: allSurvey[index],
+                          if ((FirebaseAuth.instance.currentUser!.email !=
+                                  null &&
+                              FirebaseAuth
+                                  .instance.currentUser!.email!.isNotEmpty))
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Survey(
+                                      previousSurveyModel: allSurvey[index],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.edit),
-                          ),
+                                );
+                              },
+                              icon: const Icon(Icons.edit),
+                            ),
                         ],
                       )
                     ],

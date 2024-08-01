@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:get/state_manager.dart';
-import 'package:hr_platform/src/screens/survey/models/surevey_model.dart';
+import 'package:hr_platform/src/screens/survey/models/surevey_question_model.dart';
 
 class SurveyController extends GetxController {
   Rx<SureveyModel> survey = SureveyModel(
@@ -14,5 +14,5 @@ class SurveyController extends GetxController {
 }
 
 int getRandomValue() {
-  return Random().nextInt(999999999) + 1000000000;
+  return Random().nextInt(999999999) + 100000000;
 }

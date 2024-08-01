@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/survey/getx/controller_getx.dart';
-import 'package:hr_platform/src/screens/survey/models/surevey_model.dart';
+import 'package:hr_platform/src/screens/survey/models/surevey_question_model.dart';
 
 import '../../../theme/text_field_input_decoration.dart';
 
@@ -35,9 +37,38 @@ class _SurveyViewState extends State<SurveyView> {
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                if (widget.isPreview == true ||
+                    (FirebaseAuth.instance.currentUser!.email != null &&
+                        FirebaseAuth.instance.currentUser!.email!.isNotEmpty)) {
+                  if ((await FirebaseFirestore.instance
+                          .collection("survey")
+                          .doc("${surveyController.survey.value.id}")
+                          .get())
+                      .exists) {
+                    await FirebaseFirestore.instance
+                        .collection("survey")
+                        .doc("${surveyController.survey.value.id}")
+                        .update(
+                      {"survey": surveyController.survey.value.toMap()},
+                    );
+                  } else {
+                    await FirebaseFirestore.instance
+                        .collection("survey")
+                        .doc("${surveyController.survey.value.id}")
+                        .set(
+                      {"survey": surveyController.survey.value.toMap()},
+                    );
+                  }
+                }
+              },
               child: Text(
-                widget.isPreview ? "Publish" : "Submit",
+                widget.isPreview ||
+                        (FirebaseAuth.instance.currentUser!.email != null &&
+                            FirebaseAuth
+                                .instance.currentUser!.email!.isNotEmpty)
+                    ? "Publish"
+                    : "Submit",
               ),
             ),
           ),

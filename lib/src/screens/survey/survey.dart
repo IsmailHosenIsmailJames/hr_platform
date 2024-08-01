@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/core/show_toast_message.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
-import 'package:hr_platform/src/screens/survey/models/surevey_model.dart';
+import 'package:hr_platform/src/screens/survey/models/surevey_question_model.dart';
 import 'package:hr_platform/src/screens/survey/models/text_answer.dart';
 import 'package:hr_platform/src/screens/survey/view_general_user.dart/survey_view.dart';
 
@@ -52,6 +52,8 @@ class _SurveyState extends State<Survey> {
           IconButton(
             onPressed: () async {
               if (formKey.currentState!.validate()) {
+                surveyController.survey.value.lastUpdated =
+                    DateTime.now().millisecondsSinceEpoch;
                 await box.put("${surveyController.survey.value.id}",
                     surveyController.survey.value.toJson());
                 showToastedMessage("Saved!");
@@ -61,7 +63,7 @@ class _SurveyState extends State<Survey> {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
-            child: ElevatedButton.icon(
+            child: ElevatedButton(
               onPressed: () {
                 if (formKey.currentState!.validate()) {
                   Navigator.push(
@@ -75,10 +77,7 @@ class _SurveyState extends State<Survey> {
                   );
                 }
               },
-              label: const Text("Preview"),
-              icon: const Icon(
-                Icons.preview_rounded,
-              ),
+              child: const Text("Preview"),
             ),
           ),
         ],
