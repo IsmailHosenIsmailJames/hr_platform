@@ -26,6 +26,8 @@ class _SurveyViewState extends State<SurveyView> {
     super.initState();
   }
 
+  bool submittingOrUploading = false;
+
   final surveyController = Get.put(SurveyController());
 
   @override
@@ -38,6 +40,9 @@ class _SurveyViewState extends State<SurveyView> {
             padding: const EdgeInsets.only(right: 8.0),
             child: ElevatedButton(
               onPressed: () async {
+                setState(() {
+                  submittingOrUploading = true;
+                });
                 if (widget.isPreview == true ||
                     (FirebaseAuth.instance.currentUser!.email != null &&
                         FirebaseAuth.instance.currentUser!.email!.isNotEmpty)) {
@@ -50,26 +55,34 @@ class _SurveyViewState extends State<SurveyView> {
                         .collection("survey")
                         .doc("${surveyController.survey.value.id}")
                         .update(
-                      {"survey": surveyController.survey.value.toMap()},
+                      {"question": surveyController.survey.value.toMap()},
                     );
                   } else {
                     await FirebaseFirestore.instance
                         .collection("survey")
                         .doc("${surveyController.survey.value.id}")
                         .set(
-                      {"survey": surveyController.survey.value.toMap()},
+                      {"question": surveyController.survey.value.toMap()},
                     );
                   }
                 }
+                setState(() {
+                  submittingOrUploading = false;
+                });
               },
-              child: Text(
-                widget.isPreview ||
-                        (FirebaseAuth.instance.currentUser!.email != null &&
-                            FirebaseAuth
-                                .instance.currentUser!.email!.isNotEmpty)
-                    ? "Publish"
-                    : "Submit",
-              ),
+              child: submittingOrUploading
+                  ? const CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                  : Text(
+                      widget.isPreview ||
+                              (FirebaseAuth.instance.currentUser!.email !=
+                                      null &&
+                                  FirebaseAuth
+                                      .instance.currentUser!.email!.isNotEmpty)
+                          ? "Publish"
+                          : "Submit",
+                    ),
             ),
           ),
         ],
