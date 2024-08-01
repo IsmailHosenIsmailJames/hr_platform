@@ -56,7 +56,7 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> json) => UserModel(
         userID: json["user_id"],
-        userPassword: json['user_password'],
+        userPassword: json['password'],
         cellPhone: json["cell_phone"],
         companyName: json["company_name"],
         dateOfJoining: json["date_of_joining"],
@@ -69,7 +69,7 @@ class UserModel {
 
   Map<String, dynamic> toMap() => {
         "user_id": userID,
-        "user_password": userPassword,
+        "password": userPassword,
         "cell_phone": cellPhone,
         "company_name": companyName,
         "date_of_joining": dateOfJoining,

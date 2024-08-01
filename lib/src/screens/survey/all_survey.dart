@@ -128,9 +128,188 @@ class _AllSurveyState extends State<AllSurvey> {
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
+                : allSurveyFirebase.isEmpty
+                    ? const Center(
+                        child: Text("empty"),
+                      )
+                    : Column(
+                        children: List.generate(
+                          allSurveyFirebase.length,
+                          (index) {
+                            return GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SurveyView(
+                                      surevey: allSurveyFirebase[index],
+                                      isPreview: false,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                margin: const EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      allSurveyFirebase[index].title,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const Gap(5),
+                                    if (allSurveyFirebase[index]
+                                        .description
+                                        .isNotEmpty)
+                                      Text(
+                                        allSurveyFirebase[index].description,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    if (allSurveyFirebase[index]
+                                        .description
+                                        .isNotEmpty)
+                                      const Gap(5),
+                                    Text("ID: ${allSurveyFirebase[index].id}"),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            FlutterClipboard.copy(
+                                                    '${allSurveyFirebase[index].id}')
+                                                .then((value) {
+                                              showToastedMessage(
+                                                  "Copied ${allSurveyFirebase[index].id}");
+                                            });
+                                          },
+                                          icon: const Icon(Icons.link),
+                                        ),
+                                        if ((FirebaseAuth.instance.currentUser!
+                                                    .email !=
+                                                null &&
+                                            FirebaseAuth.instance.currentUser!
+                                                .email!.isNotEmpty))
+                                          IconButton(
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    AlertDialog(
+                                                  title: const Text(
+                                                      "Are you sure?"),
+                                                  content: const Text(
+                                                      "After delete, this will no longer exits in server"),
+                                                  actions: [
+                                                    TextButton.icon(
+                                                      style:
+                                                          TextButton.styleFrom(
+                                                              foregroundColor:
+                                                                  Colors.red),
+                                                      onPressed: () async {
+                                                        await FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                "survey")
+                                                            .doc(
+                                                                "${allSurveyFirebase[index].id}")
+                                                            .delete();
+
+                                                        allSurveyFirebase
+                                                            .removeAt(index);
+
+                                                        setState(() {});
+
+                                                        // ignore: use_build_context_synchronously
+                                                        Navigator.pop(context);
+                                                      },
+                                                      label:
+                                                          const Text("Delete"),
+                                                      icon: const Icon(
+                                                        Icons.delete,
+                                                      ),
+                                                    ),
+                                                    TextButton.icon(
+                                                      style:
+                                                          TextButton.styleFrom(
+                                                              foregroundColor:
+                                                                  Colors.green),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      label:
+                                                          const Text("Cancel"),
+                                                      icon: const Icon(
+                                                        Icons.cancel,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        if ((FirebaseAuth.instance.currentUser!
+                                                    .email !=
+                                                null &&
+                                            FirebaseAuth.instance.currentUser!
+                                                .email!.isNotEmpty))
+                                          IconButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => Survey(
+                                                    previousSurveyModel:
+                                                        allSurveyFirebase[
+                                                            index],
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            icon: const Icon(Icons.edit),
+                                          ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: titleWidget(
+                "Local Memory",
+                false,
+                alinment: MainAxisAlignment.start,
+                fontsize: 18,
+              ),
+            ),
+            allSurveyLocal.isEmpty
+                ? const Center(
+                    child: Text("empty"),
+                  )
                 : Column(
                     children: List.generate(
-                      allSurveyFirebase.length,
+                      allSurveyLocal.length,
                       (index) {
                         return GestureDetector(
                           behavior: HitTestBehavior.translucent,
@@ -139,7 +318,7 @@ class _AllSurveyState extends State<AllSurvey> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => SurveyView(
-                                  surevey: allSurveyFirebase[index],
+                                  surevey: allSurveyLocal[index],
                                   isPreview: false,
                                 ),
                               ),
@@ -157,38 +336,38 @@ class _AllSurveyState extends State<AllSurvey> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  allSurveyFirebase[index].title,
+                                  allSurveyLocal[index].title,
                                   style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 const Gap(5),
-                                if (allSurveyFirebase[index]
+                                if (allSurveyLocal[index]
                                     .description
                                     .isNotEmpty)
                                   Text(
-                                    allSurveyFirebase[index].description,
+                                    allSurveyLocal[index].description,
                                     style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                if (allSurveyFirebase[index]
+                                if (allSurveyLocal[index]
                                     .description
                                     .isNotEmpty)
                                   const Gap(5),
-                                Text("ID: ${allSurveyFirebase[index].id}"),
+                                Text("ID: ${allSurveyLocal[index].id}"),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     IconButton(
                                       onPressed: () {
                                         FlutterClipboard.copy(
-                                                '${allSurveyFirebase[index].id}')
+                                                '${allSurveyLocal[index].id}')
                                             .then((value) {
                                           showToastedMessage(
-                                              "Copied ${allSurveyFirebase[index].id}");
+                                              "Copied ${allSurveyLocal[index].id}");
                                         });
                                       },
                                       icon: const Icon(Icons.link),
@@ -206,20 +385,19 @@ class _AllSurveyState extends State<AllSurvey> {
                                               title:
                                                   const Text("Are you sure?"),
                                               content: const Text(
-                                                  "After delete, this will no longer exits in server"),
+                                                  "After delete, this will no longer exits local memory."),
                                               actions: [
                                                 TextButton.icon(
                                                   style: TextButton.styleFrom(
                                                       foregroundColor:
                                                           Colors.red),
                                                   onPressed: () async {
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection("survey")
-                                                        .doc(
-                                                            "${allSurveyFirebase[index].id}")
-                                                        .delete();
+                                                    await box.delete(
+                                                        "${allSurveyLocal[index].id}");
+                                                    await getSurveyData();
 
+                                                    allSurveyLocal
+                                                        .removeAt(index);
                                                     setState(() {});
                                                     // ignore: use_build_context_synchronously
                                                     Navigator.pop(context);
@@ -262,7 +440,7 @@ class _AllSurveyState extends State<AllSurvey> {
                                             MaterialPageRoute(
                                               builder: (context) => Survey(
                                                 previousSurveyModel:
-                                                    allSurveyFirebase[index],
+                                                    allSurveyLocal[index],
                                               ),
                                             ),
                                           );
@@ -278,154 +456,6 @@ class _AllSurveyState extends State<AllSurvey> {
                       },
                     ),
                   ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: titleWidget(
-                "Local Memory",
-                false,
-                alinment: MainAxisAlignment.start,
-                fontsize: 18,
-              ),
-            ),
-            Column(
-              children: List.generate(
-                allSurveyLocal.length,
-                (index) {
-                  return GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SurveyView(
-                            surevey: allSurveyLocal[index],
-                            isPreview: false,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            allSurveyLocal[index].title,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const Gap(5),
-                          if (allSurveyLocal[index].description.isNotEmpty)
-                            Text(
-                              allSurveyLocal[index].description,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          if (allSurveyLocal[index].description.isNotEmpty)
-                            const Gap(5),
-                          Text("ID: ${allSurveyLocal[index].id}"),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  FlutterClipboard.copy(
-                                          '${allSurveyLocal[index].id}')
-                                      .then((value) {
-                                    showToastedMessage(
-                                        "Copied ${allSurveyLocal[index].id}");
-                                  });
-                                },
-                                icon: const Icon(Icons.link),
-                              ),
-                              if ((FirebaseAuth.instance.currentUser!.email !=
-                                      null &&
-                                  FirebaseAuth
-                                      .instance.currentUser!.email!.isNotEmpty))
-                                IconButton(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text("Are you sure?"),
-                                        content: const Text(
-                                            "After delete, this will no longer exits local memory."),
-                                        actions: [
-                                          TextButton.icon(
-                                            style: TextButton.styleFrom(
-                                                foregroundColor: Colors.red),
-                                            onPressed: () async {
-                                              await box.delete(
-                                                  "${allSurveyLocal[index].id}");
-                                              await getSurveyData();
-
-                                              setState(() {});
-                                              // ignore: use_build_context_synchronously
-                                              Navigator.pop(context);
-                                            },
-                                            label: const Text("Delete"),
-                                            icon: const Icon(
-                                              Icons.delete,
-                                            ),
-                                          ),
-                                          TextButton.icon(
-                                            style: TextButton.styleFrom(
-                                                foregroundColor: Colors.green),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            label: const Text("Cancel"),
-                                            icon: const Icon(
-                                              Icons.cancel,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                              if ((FirebaseAuth.instance.currentUser!.email !=
-                                      null &&
-                                  FirebaseAuth
-                                      .instance.currentUser!.email!.isNotEmpty))
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Survey(
-                                          previousSurveyModel:
-                                              allSurveyLocal[index],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(Icons.edit),
-                                ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
           ],
         ),
       ),
