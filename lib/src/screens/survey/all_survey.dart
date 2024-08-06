@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csv/csv.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +30,7 @@ class AllSurvey extends StatefulWidget {
 class _AllSurveyState extends State<AllSurvey> {
   List<SureveyModel> allSurveyLocal = [];
   List<SureveyModel> allSurveyFirebase = [];
+  List<QueryDocumentSnapshot> allSurveyDocumentFirebase = [];
   bool isGettingData = true;
 
   final box = Hive.box("surveyLocal");
@@ -51,6 +55,7 @@ class _AllSurveyState extends State<AllSurvey> {
         if (element.exists) {
           final data = element.data();
           if (data != null) {
+            allSurveyDocumentFirebase.add(element);
             final model =
                 SureveyModel.fromJson(jsonEncode(element.get("question")));
             if (!(FirebaseAuth.instance.currentUser!.email != null &&
@@ -246,8 +251,8 @@ class _AllSurveyState extends State<AllSurvey> {
 
                                                             setState(() {});
 
-                                                            // ignore: use_build_context_synchronously
                                                             Navigator.pop(
+                                                                // ignore: use_build_context_synchronously
                                                                 context);
                                                           },
                                                           label: const Text(
@@ -305,8 +310,30 @@ class _AllSurveyState extends State<AllSurvey> {
                                                 },
                                                 icon: const Icon(Icons.edit),
                                               ),
+                                            const Gap(5),
+                                            if ((FirebaseAuth.instance
+                                                        .currentUser!.email !=
+                                                    null &&
+                                                FirebaseAuth
+                                                    .instance
+                                                    .currentUser!
+                                                    .email!
+                                                    .isNotEmpty))
+                                              IconButton(
+                                                tooltip: 'Download CSV Data',
+                                                onPressed: () {
+                                                  // Download CSV file of survey
+                                                  downloadCSV(
+                                                      index,
+                                                      allSurveyFirebase[index]
+                                                          .title);
+                                                },
+                                                icon: const Icon(
+                                                  Icons.download,
+                                                ),
+                                              ),
                                           ],
-                                        )
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -430,8 +457,8 @@ class _AllSurveyState extends State<AllSurvey> {
                                                           allSurveyLocal
                                                               .removeAt(index);
                                                           setState(() {});
-                                                          // ignore: use_build_context_synchronously
                                                           Navigator.pop(
+                                                              // ignore: use_build_context_synchronously
                                                               context);
                                                         },
                                                         label: const Text(
@@ -500,5 +527,71 @@ class _AllSurveyState extends State<AllSurvey> {
         ),
       ),
     );
+  }
+
+  void downloadCSV(int index, String title) async {
+    // Download CSV file of survey
+    List<Question> sureveyModelQuestion = allSurveyFirebase[index].questions;
+    List<int> listOfIDQuestion = [];
+    List<String> listOfStringQuestion = ["ID"];
+
+    for (int i = 0; i < sureveyModelQuestion.length; i++) {
+      listOfIDQuestion.add(sureveyModelQuestion[i].id);
+      listOfStringQuestion.add(sureveyModelQuestion[i].question);
+    }
+
+    Map<String, dynamic> documentWithAns =
+        Map<String, dynamic>.from(jsonDecode(jsonEncode(
+      allSurveyDocumentFirebase[index].data(),
+    )));
+
+    List<List<dynamic>> csvData = [];
+
+    Map<String, String> allOptionAndID = {};
+    for (Question question in sureveyModelQuestion) {
+      if (question.options != null) {
+        for (Option option in question.options!) {
+          allOptionAndID.addAll({"${option.id}": option.text});
+        }
+      }
+    }
+
+    documentWithAns.forEach(
+      (key, value) {
+        if (key != "question") {
+          Map mapOfQuestionIDAndOptionID = Map.from(value);
+          List row = [key];
+          for (int i = 0; i < listOfIDQuestion.length; i++) {
+            if (mapOfQuestionIDAndOptionID.keys
+                .contains("${listOfIDQuestion[i]}")) {
+              dynamic questionAns =
+                  mapOfQuestionIDAndOptionID["${listOfIDQuestion[i]}"];
+              if (questionAns.runtimeType == String) {
+                row.add(questionAns);
+              } else {
+                List<int> multipuleOrSingleAns = List<int>.from(questionAns);
+                String textAns = "";
+                for (int i = 0; i < multipuleOrSingleAns.length; i++) {
+                  textAns +=
+                      '${allOptionAndID["${multipuleOrSingleAns[i]}"] ?? ""} ${(multipuleOrSingleAns.length - 1 == i ? "" : "+ ")}';
+                }
+
+                row.add(textAns);
+              }
+            }
+          }
+          csvData.add(row);
+        }
+      },
+    );
+    csvData.insert(0, listOfStringQuestion);
+    String csv = const ListToCsvConverter().convert(csvData);
+    String? path = await FilePicker.platform.getDirectoryPath();
+    if (path != null) {
+      await File("$path/$title.csv").writeAsString(csv);
+      showToastedMessage("Saved successfull!");
+    } else {
+      showToastedMessage("Please pick a folder where we can save data");
+    }
   }
 }

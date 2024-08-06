@@ -103,8 +103,6 @@ class _SurveyViewState extends State<SurveyView> {
                     );
                   } catch (e) {
                     showToastedMessage("Submit failed");
-
-                    print(e);
                   }
                 }
                 setState(() {
