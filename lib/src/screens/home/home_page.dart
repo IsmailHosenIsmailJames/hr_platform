@@ -335,45 +335,48 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.blue.shade700.withOpacity(0.7),
                               )
                             : null,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (isDesktop)
-                              Row(
-                                children: [
-                                  const Spacer(),
-                                  Text(
-                                    isAdmin
-                                        ? "Admin"
-                                        : userModel!.userName ?? "",
-                                    style: const TextStyle(
-                                      fontSize: 26,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (isDesktop)
+                                Row(
+                                  children: [
+                                    const Spacer(),
+                                    Text(
+                                      isAdmin
+                                          ? "Admin"
+                                          : userModel!.userName ?? "",
+                                      style: const TextStyle(
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                  ),
-                                  const Spacer(),
-                                  IconButton(
-                                    onPressed: () {
-                                      scaffoldKey.currentState!.openEndDrawer();
-                                    },
-                                    icon: const Icon(
-                                      Icons.menu,
-                                      color: Colors.white,
-                                      size: 40,
+                                    const Spacer(),
+                                    IconButton(
+                                      onPressed: () {
+                                        scaffoldKey.currentState!
+                                            .openEndDrawer();
+                                      },
+                                      icon: const Icon(
+                                        Icons.menu,
+                                        color: Colors.white,
+                                        size: 40,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
+                              const Gap(15),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: Wrap(
+                                  children: toShowWidgets,
+                                ),
                               ),
-                            const Gap(15),
-                            SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: Wrap(
-                                children: toShowWidgets,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
