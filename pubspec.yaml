@@ -61,6 +61,7 @@ dependencies:
   device_info_plus: ^10.1.0
   bottom_picker: ^2.8.0
   csv: ^6.0.0
+  syncfusion_flutter_pdfviewer: ^26.2.8
 
 dev_dependencies:
   flutter_test:

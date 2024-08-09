@@ -21,6 +21,7 @@ import 'package:hr_platform/src/models/folders_model.dart';
 import 'package:hr_platform/src/screens/add_new_files/add_new_file.dart';
 import 'package:hr_platform/src/screens/add_new_folder/add_new_folder.dart';
 import 'package:hr_platform/src/screens/home/drawer/drawer.dart';
+import 'package:hr_platform/src/screens/pdf_view/pdf_view.dart';
 import 'package:hr_platform/src/theme/break_point.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -478,6 +479,16 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
                     },
+                  );
+                } else if (fileType == 'pdf' || fileType == 'PDF') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyPdfView(
+                        url: cureentModel.path,
+                        name: cureentModel.name,
+                      ),
+                    ),
                   );
                 } else {
                   launchUrl(Uri.parse(cureentModel.path));
