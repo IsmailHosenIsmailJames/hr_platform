@@ -206,6 +206,7 @@ class _HomePageState extends State<HomePage> {
                                         builder: (context) {
                                           return AddNewFolder(
                                             path: widget.path,
+                                            isURL: false,
                                           );
                                         },
                                       ),
@@ -219,6 +220,32 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   icon:
                                       const Icon(FluentIcons.folder_24_regular),
+                                ),
+                              ),
+                              const Gap(10),
+                              SizedBox(
+                                width: 300,
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return AddNewFolder(
+                                            path: widget.path,
+                                            isURL: true,
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  label: const Text(
+                                    "Add URL link",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  icon: const Icon(FluentIcons.link_24_regular),
                                 ),
                               ),
                             ],
@@ -679,11 +706,15 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               onPressed: () async {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  "/home${widget.path}/${cureentModel.name}",
-                  (route) => false,
-                );
+                if (cureentModel.url != null) {
+                  launchUrl(Uri.parse(cureentModel.url!));
+                } else {
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    "/home${widget.path}/${cureentModel.name}",
+                    (route) => false,
+                  );
+                }
               },
               child: Container(
                 margin: const EdgeInsets.all(5),

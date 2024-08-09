@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -16,8 +17,9 @@ import '../../theme/text_field_input_decoration.dart';
 
 class AddNewFolder extends StatefulWidget {
   final String path;
+  final bool isURL;
 
-  const AddNewFolder({super.key, required this.path});
+  const AddNewFolder({super.key, required this.path, required this.isURL});
 
   @override
   State<AddNewFolder> createState() => _AddNewFolderState();
@@ -27,7 +29,9 @@ class _AddNewFolderState extends State<AddNewFolder> {
   FilePickerResult? imagePickerResult;
   Uint8List? imageData;
   UploadTask? uploadTask;
+
   TextEditingController controller = TextEditingController();
+  TextEditingController urlTextControler = TextEditingController();
   String tsakState = "Let's add the file";
 
   void selectCoverImageForFile() async {
@@ -148,6 +152,41 @@ class _AddNewFolderState extends State<AddNewFolder> {
                   : Image.memory(imageData!),
             ),
             const Gap(10),
+            if (widget.isURL)
+              const Row(
+                children: [
+                  Icon(FluentIcons.link_24_regular),
+                  Gap(5),
+                  Text(
+                    "URL",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Gap(10),
+                  Text(
+                    "*",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      color: Colors.red,
+                    ),
+                  )
+                ],
+              ),
+            if (widget.isURL) const Gap(5),
+            if (widget.isURL)
+              TextFormField(
+                controller: urlTextControler,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "URL can't be empty";
+                  } else {
+                    return null;
+                  }
+                },
+                autovalidateMode: AutovalidateMode.always,
+                decoration: getInputDecooration("URL", "Type url here..."),
+              ),
+            if (widget.isURL) const Gap(15),
             ElevatedButton(
               onPressed: () async {
                 if (controller.text.isNotEmpty && uploadTask == null) {
@@ -169,12 +208,20 @@ class _AddNewFolderState extends State<AddNewFolder> {
                     imageUrl = await snapShot.ref.getDownloadURL();
                   }
 
+                  if (widget.isURL == true &&
+                      urlTextControler.text.trim().isEmpty) {
+                    // ignore: use_build_context_synchronously
+                    showFluttertoastMessage("URL cant be empty", context);
+                    return;
+                  }
+
                   final dataBaseData = FolderModel(
                     parent: widget.path,
                     isFile: false,
                     name: controller.text.trim(),
                     image: imageUrl,
                     coverImageRef: 'cover_images/$image',
+                    url: widget.isURL ? urlTextControler.text.trim() : null,
                   );
 
                   setState(() {

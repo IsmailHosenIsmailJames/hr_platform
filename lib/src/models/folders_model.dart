@@ -6,6 +6,7 @@ class FolderModel {
   final String coverImageRef;
   final String? image;
   final bool isFile;
+  final String? url;
 
   FolderModel({
     required this.parent,
@@ -13,6 +14,7 @@ class FolderModel {
     this.image,
     required this.coverImageRef,
     required this.isFile,
+    this.url,
   });
 
   FolderModel copyWith({
@@ -21,6 +23,7 @@ class FolderModel {
     String? coverImageRef,
     String? image,
     bool? isFile,
+    String? url,
   }) =>
       FolderModel(
         parent: parent ?? this.parent,
@@ -28,6 +31,7 @@ class FolderModel {
         image: image ?? this.image,
         isFile: isFile ?? this.isFile,
         coverImageRef: coverImageRef ?? this.coverImageRef,
+        url: url ?? this.url,
       );
 
   factory FolderModel.fromJson(String str) =>
@@ -41,6 +45,7 @@ class FolderModel {
         image: json["image"],
         isFile: json["is-file"],
         coverImageRef: json['coverImageRef'],
+        url: json['url'],
       );
 
   Map<String, dynamic> toMap() => {
@@ -49,5 +54,6 @@ class FolderModel {
         "image": image,
         "is-file": isFile,
         "coverImageRef": coverImageRef,
+        "url": url,
       };
 }
