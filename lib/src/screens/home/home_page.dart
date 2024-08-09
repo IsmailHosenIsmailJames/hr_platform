@@ -10,6 +10,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -419,13 +420,20 @@ class _HomePageState extends State<HomePage> {
   List<Widget> getWidgetsOfFilesFolder() {
     List<Map> allData = getCurrentPossitionListOfData();
     Map<String, List<Map>> filteredMap = {};
-    for (Map singleData in allData) {
+    Map<String, List<int>> filteredMapIndex = {};
+    for (int j = 0; j < allData.length; j++) {
+      Map singleData = allData[j];
       String parent = singleData['parent'];
       List<Map> parentDataList = filteredMap[parent] ?? [];
+      List<int> parentDataListIndex = filteredMapIndex[parent] ?? [];
       parentDataList.add(singleData);
+      parentDataListIndex.add(j);
       filteredMap.addAll({parent: parentDataList});
+      filteredMapIndex.addAll({parent: parentDataListIndex});
     }
     List<Map> cureentLayerData = filteredMap[widget.path] ?? [];
+    List<int> cureentLayerDataIndex = filteredMapIndex[widget.path] ?? [];
+
     List<Widget> toReturn = [];
 
     for (int index = 0; index < cureentLayerData.length; index++) {
@@ -744,113 +752,173 @@ class _HomePageState extends State<HomePage> {
                                       Colors.white.withOpacity(0.5),
                                 ),
                                 itemBuilder: (context) => [
-                                  PopupMenuItem(
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: const Text("Are you sure?"),
-                                          content: const Text(
-                                              "After deleten folder, it can not recover again"),
-                                          actions: [
-                                            ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text("Cancel"),
-                                            ),
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.red),
-                                              onPressed: () async {
-                                                if ((filteredMap[
-                                                            "/home${widget.path}/${cureentModel.name}"] ??
-                                                        [])
-                                                    .isNotEmpty) {
-                                                  showFluttertoastMessage(
-                                                    "Remove contents under folder first",
-                                                    context,
-                                                  );
-                                                  return;
-                                                }
-                                                showFluttertoastMessage(
-                                                  "Deleating ${widget.path}/${cureentModel.name}.",
-                                                  context,
-                                                );
-
-                                                int indexAt = -1;
-
-                                                for (var i = 0;
-                                                    i < allData.length;
-                                                    i++) {
-                                                  if (cureentModel.parent ==
-                                                          allData[i]
-                                                              ["parent"] &&
-                                                      cureentModel.name ==
-                                                          allData[i]["name"]) {
-                                                    indexAt = i;
-                                                    break;
-                                                  }
-                                                }
-                                                if (indexAt == -1) {
-                                                  showFluttertoastMessage(
-                                                    "Something went worng",
-                                                    context,
-                                                  );
-                                                }
-
-                                                try {
-                                                  await FirebaseStorage.instance
-                                                      .ref()
-                                                      .child(cureentModel
-                                                          .coverImageRef)
-                                                      .delete();
-                                                } catch (e) {
-                                                  showFluttertoastMessage(
-                                                    "Something went worng",
-                                                    context,
-                                                  );
-                                                }
-
-                                                allData.removeAt(indexAt);
-                                                await FirebaseFirestore.instance
-                                                    .collection('data')
-                                                    .doc("data-map")
-                                                    .update(
-                                                        {"data-map": allData});
-                                                final box = Hive.box("info");
-                                                await box.put(
-                                                    'data',
-                                                    jsonEncode(
-                                                        {"data-map": allData}));
-                                                showFluttertoastMessage(
-                                                  "Successfull Deleation",
-                                                  context,
-                                                );
-                                                Navigator
-                                                    .pushNamedAndRemoveUntil(
-                                                  context,
-                                                  "/home${widget.path}",
-                                                  (route) => false,
-                                                );
-                                              },
-                                              child: const Text("Delete"),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                    child: const Row(
-                                      children: [
-                                        Icon(
-                                          Icons.delete,
-                                          color: Colors.red,
-                                        ),
-                                        Gap(5),
-                                        Text("Delete"),
-                                      ],
+                                  if (FirebaseAuth
+                                              .instance.currentUser!.email !=
+                                          null &&
+                                      FirebaseAuth.instance.currentUser!.email!
+                                          .isNotEmpty &&
+                                      index > 0)
+                                    PopupMenuItem(
+                                      onTap: () async {
+                                        await moveUPDown(
+                                          cureentLayerDataIndex,
+                                          index,
+                                          allData,
+                                          context,
+                                          isMoveDown: false,
+                                        );
+                                      },
+                                      child: const Row(
+                                        children: [
+                                          Icon(FluentIcons.arrow_up_24_regular),
+                                          Gap(5),
+                                          Text("Move UP"),
+                                        ],
+                                      ),
                                     ),
-                                  ),
+                                  if (FirebaseAuth
+                                              .instance.currentUser!.email !=
+                                          null &&
+                                      FirebaseAuth.instance.currentUser!.email!
+                                          .isNotEmpty &&
+                                      index < cureentLayerData.length - 1)
+                                    PopupMenuItem(
+                                      onTap: () async {
+                                        await moveUPDown(
+                                          cureentLayerDataIndex,
+                                          index,
+                                          allData,
+                                          context,
+                                          isMoveDown: true,
+                                        );
+                                      },
+                                      child: const Row(
+                                        children: [
+                                          Icon(FluentIcons
+                                              .arrow_down_24_regular),
+                                          Gap(5),
+                                          Text("Move Down"),
+                                        ],
+                                      ),
+                                    ),
+                                  if (FirebaseAuth
+                                              .instance.currentUser!.email !=
+                                          null &&
+                                      FirebaseAuth.instance.currentUser!.email!
+                                          .isNotEmpty)
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: const Text("Are you sure?"),
+                                            content: const Text(
+                                                "After deleten folder, it can not recover again"),
+                                            actions: [
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text("Cancel"),
+                                              ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.red),
+                                                onPressed: () async {
+                                                  if ((filteredMap[
+                                                              "/home${widget.path}/${cureentModel.name}"] ??
+                                                          [])
+                                                      .isNotEmpty) {
+                                                    showFluttertoastMessage(
+                                                      "Remove contents under folder first",
+                                                      context,
+                                                    );
+                                                    return;
+                                                  }
+                                                  showFluttertoastMessage(
+                                                    "Deleating ${widget.path}/${cureentModel.name}.",
+                                                    context,
+                                                  );
+
+                                                  int indexAt = -1;
+
+                                                  for (var i = 0;
+                                                      i < allData.length;
+                                                      i++) {
+                                                    if (cureentModel.parent ==
+                                                            allData[i]
+                                                                ["parent"] &&
+                                                        cureentModel.name ==
+                                                            allData[i]
+                                                                ["name"]) {
+                                                      indexAt = i;
+                                                      break;
+                                                    }
+                                                  }
+                                                  if (indexAt == -1) {
+                                                    showFluttertoastMessage(
+                                                      "Something went worng",
+                                                      context,
+                                                    );
+                                                  }
+
+                                                  try {
+                                                    await FirebaseStorage
+                                                        .instance
+                                                        .ref()
+                                                        .child(cureentModel
+                                                            .coverImageRef)
+                                                        .delete();
+                                                  } catch (e) {
+                                                    showFluttertoastMessage(
+                                                      "Something went worng",
+                                                      context,
+                                                    );
+                                                  }
+
+                                                  allData.removeAt(indexAt);
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('data')
+                                                      .doc("data-map")
+                                                      .update({
+                                                    "data-map": allData
+                                                  });
+                                                  final box = Hive.box("info");
+                                                  await box.put(
+                                                      'data',
+                                                      jsonEncode({
+                                                        "data-map": allData
+                                                      }));
+                                                  showFluttertoastMessage(
+                                                    "Successfull Deleation",
+                                                    context,
+                                                  );
+                                                  Navigator
+                                                      .pushNamedAndRemoveUntil(
+                                                    context,
+                                                    "/home${widget.path}",
+                                                    (route) => false,
+                                                  );
+                                                },
+                                                child: const Text("Delete"),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                      child: const Row(
+                                        children: [
+                                          Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          ),
+                                          Gap(5),
+                                          Text("Delete"),
+                                        ],
+                                      ),
+                                    ),
                                 ],
                               )
                             : const SizedBox(),
@@ -887,5 +955,42 @@ class _HomePageState extends State<HomePage> {
       }
     }
     return toReturn;
+  }
+
+  Future<void> moveUPDown(List<int> cureentLayerDataIndex, int index,
+      List<Map<dynamic, dynamic>> allData, BuildContext context,
+      {bool isMoveDown = false}) async {
+    int destinationUpIndex = isMoveDown
+        ? cureentLayerDataIndex[index + 1]
+        : cureentLayerDataIndex[index - 1];
+    int currentIndex = cureentLayerDataIndex[index];
+    final tem = allData[destinationUpIndex];
+    allData[destinationUpIndex] = allData[currentIndex];
+    allData[currentIndex] = tem;
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) {
+        return Scaffold(
+          backgroundColor: Colors.grey.withOpacity(0.2),
+          body: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+    await FirebaseFirestore.instance
+        .collection('data')
+        .doc("data-map")
+        .update({"data-map": allData});
+
+    await Hive.box("info").put("data", jsonEncode({"data-map": allData}));
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      "/home${widget.path}",
+      (route) => false,
+    );
   }
 }
