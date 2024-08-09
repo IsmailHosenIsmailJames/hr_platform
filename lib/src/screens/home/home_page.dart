@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:clipboard/clipboard.dart';
@@ -41,7 +43,6 @@ class _HomePageState extends State<HomePage> {
     }
     await Hive.box("info").delete("userData");
     Navigator.pushNamedAndRemoveUntil(
-      // ignore: use_build_context_synchronously
       context,
       "/login",
       (route) => true,
@@ -426,7 +427,6 @@ class _HomePageState extends State<HomePage> {
               onPressed: () async {
                 if (isImage) {
                   showDialog(
-                    // ignore: use_build_context_synchronously
                     context: context,
                     builder: (context) {
                       return Dialog(
@@ -445,7 +445,9 @@ class _HomePageState extends State<HomePage> {
                   launchUrl(Uri.parse(cureentModel.path));
                 } else {
                   showFluttertoastMessage(
-                      "This file type can not directly open. Download it.");
+                    "This file type can not directly open. Download it.",
+                    context,
+                  );
                 }
               },
               child: Container(
@@ -480,21 +482,29 @@ class _HomePageState extends State<HomePage> {
                                     .getDirectoryPath();
                                 if (directory != null) {
                                   showFluttertoastMessage(
-                                      "Downloading ${cureentModel.path}");
+                                    "Downloading ${cureentModel.path}",
+                                    context,
+                                  );
                                   try {
                                     await Dio().download(cureentModel.path,
                                         "$directory/${cureentModel.name}.${cureentModel.type}");
                                     showFluttertoastMessage(
-                                        "Successfull Download ${cureentModel.path}");
+                                      "Successfull Download ${cureentModel.path}",
+                                      context,
+                                    );
                                   } catch (e) {
                                     showFluttertoastMessage(
-                                        "Failed Download ${cureentModel.path}");
+                                      "Failed Download ${cureentModel.path}",
+                                      context,
+                                    );
                                   }
                                 }
 
                                 if (directory == null) {
                                   showFluttertoastMessage(
-                                      "Folder did not selected. Download Cancle");
+                                    "Folder did not selected. Download Cancle",
+                                    context,
+                                  );
                                 }
                               },
                               child: const Row(
@@ -509,7 +519,7 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {
                                 FlutterClipboard.copy(cureentModel.path).then(
                                   (value) => showFluttertoastMessage(
-                                      "Copied : ${cureentModel.path}"),
+                                      "Copied : ${cureentModel.path}", context),
                                 );
                               },
                               child: const Row(
@@ -544,7 +554,9 @@ class _HomePageState extends State<HomePage> {
                                               backgroundColor: Colors.red),
                                           onPressed: () async {
                                             showFluttertoastMessage(
-                                                "Deleating ${widget.path}/${cureentModel.name}.${cureentModel.type}");
+                                              "Deleating ${widget.path}/${cureentModel.name}.${cureentModel.type}",
+                                              context,
+                                            );
 
                                             try {
                                               await FirebaseStorage.instance
@@ -554,7 +566,9 @@ class _HomePageState extends State<HomePage> {
                                                   .delete();
                                             } catch (e) {
                                               showFluttertoastMessage(
-                                                  "Something went worng");
+                                                "Something went worng",
+                                                context,
+                                              );
                                             }
                                             int indexAt = -1;
 
@@ -573,7 +587,9 @@ class _HomePageState extends State<HomePage> {
                                             }
                                             if (indexAt == -1) {
                                               showFluttertoastMessage(
-                                                  "Something went worng");
+                                                "Something went worng, context",
+                                                context,
+                                              );
                                             }
                                             allData.removeAt(indexAt);
                                             await FirebaseFirestore.instance
@@ -586,9 +602,10 @@ class _HomePageState extends State<HomePage> {
                                                 jsonEncode(
                                                     {"data-map": allData}));
                                             showFluttertoastMessage(
-                                                "Successfull Deleation");
+                                              "Successfull Deleation, context",
+                                              context,
+                                            );
                                             Navigator.pushNamedAndRemoveUntil(
-                                              // ignore: use_build_context_synchronously
                                               context,
                                               "/home${widget.path}",
                                               (route) => false,
@@ -717,11 +734,15 @@ class _HomePageState extends State<HomePage> {
                                                         [])
                                                     .isNotEmpty) {
                                                   showFluttertoastMessage(
-                                                      "Remove contents under folder first");
+                                                    "Remove contents under folder first",
+                                                    context,
+                                                  );
                                                   return;
                                                 }
                                                 showFluttertoastMessage(
-                                                    "Deleating ${widget.path}/${cureentModel.name}.");
+                                                  "Deleating ${widget.path}/${cureentModel.name}.",
+                                                  context,
+                                                );
 
                                                 int indexAt = -1;
 
@@ -739,7 +760,9 @@ class _HomePageState extends State<HomePage> {
                                                 }
                                                 if (indexAt == -1) {
                                                   showFluttertoastMessage(
-                                                      "Something went worng");
+                                                    "Something went worng",
+                                                    context,
+                                                  );
                                                 }
 
                                                 try {
@@ -750,7 +773,9 @@ class _HomePageState extends State<HomePage> {
                                                       .delete();
                                                 } catch (e) {
                                                   showFluttertoastMessage(
-                                                      "Something went worng");
+                                                    "Something went worng",
+                                                    context,
+                                                  );
                                                 }
 
                                                 allData.removeAt(indexAt);
@@ -765,10 +790,11 @@ class _HomePageState extends State<HomePage> {
                                                     jsonEncode(
                                                         {"data-map": allData}));
                                                 showFluttertoastMessage(
-                                                    "Successfull Deleation");
+                                                  "Successfull Deleation",
+                                                  context,
+                                                );
                                                 Navigator
                                                     .pushNamedAndRemoveUntil(
-                                                  // ignore: use_build_context_synchronously
                                                   context,
                                                   "/home${widget.path}",
                                                   (route) => false,

@@ -46,7 +46,8 @@ class _AddNewFileState extends State<AddNewFile> {
           await File(imagePickerResult!.files.single.path!).readAsBytes();
       setState(() {});
     } else {
-      showFluttertoastMessage("Please select a files");
+      // ignore: use_build_context_synchronously
+      showFluttertoastMessage("Please select a files", context);
     }
   }
 
@@ -60,7 +61,8 @@ class _AddNewFileState extends State<AddNewFile> {
       data = await File(filePickerResult!.files.single.path!).readAsBytes();
       setState(() {});
     } else {
-      showFluttertoastMessage("Please select a files");
+      // ignore: use_build_context_synchronously
+      showFluttertoastMessage("Please select a files", context);
     }
   }
 
@@ -275,7 +277,8 @@ class _AddNewFileState extends State<AddNewFile> {
                     (route) => false,
                   );
                 } else if (uploadTask != null) {
-                  showFluttertoastMessage("upload task is not yet finished");
+                  showFluttertoastMessage(
+                      "upload task is not yet finished", context);
                 } else {
                   showModalBottomSheet(
                     context: context,

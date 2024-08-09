@@ -57,9 +57,11 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
         return null;
       } else {
+        showFluttertoastMessage("User did not exits", context);
         return "User did not exits";
       }
     } catch (e) {
+      showFluttertoastMessage("Something went worng", context);
       return "Something went worng";
     }
   }
@@ -81,15 +83,18 @@ class _LoginPageState extends State<LoginPage> {
           await box.put("userData", jsonEncode(adminData));
           Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
         } else {
+          showFluttertoastMessage("Something went worng", context);
           return "Something went worng";
         }
       } else {
+        showFluttertoastMessage("Email is not valid", context);
         return "Email is not valid";
       }
     } catch (e) {
       if (kDebugMode) {
         print("loginAdmin() error :  + $e");
       }
+      showFluttertoastMessage("Something went worng. Unable to login", context);
     }
     return null;
   }
@@ -164,10 +169,10 @@ class _LoginPageState extends State<LoginPage> {
 
                   if (result == null) {
                     // login successfull
-                    showFluttertoastMessage("Login successfull");
+                    showFluttertoastMessage("Login successfull", context);
                   } else {
                     // something worng
-                    showFluttertoastMessage(result);
+                    showFluttertoastMessage(result, context);
                   }
 
                   if (Navigator.canPop(context)) {
