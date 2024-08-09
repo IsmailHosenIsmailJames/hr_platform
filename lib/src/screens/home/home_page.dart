@@ -514,6 +514,52 @@ class _HomePageState extends State<HomePage> {
                             backgroundColor: Colors.white.withOpacity(0.5),
                           ),
                           itemBuilder: (context) => [
+                            if (FirebaseAuth.instance.currentUser!.email !=
+                                    null &&
+                                FirebaseAuth
+                                    .instance.currentUser!.email!.isNotEmpty &&
+                                index > 0)
+                              PopupMenuItem(
+                                onTap: () async {
+                                  await moveUPDown(
+                                    cureentLayerDataIndex,
+                                    index,
+                                    allData,
+                                    context,
+                                    isMoveDown: false,
+                                  );
+                                },
+                                child: const Row(
+                                  children: [
+                                    Icon(FluentIcons.arrow_up_24_regular),
+                                    Gap(5),
+                                    Text("Move UP"),
+                                  ],
+                                ),
+                              ),
+                            if (FirebaseAuth.instance.currentUser!.email !=
+                                    null &&
+                                FirebaseAuth
+                                    .instance.currentUser!.email!.isNotEmpty &&
+                                index < cureentLayerData.length - 1)
+                              PopupMenuItem(
+                                onTap: () async {
+                                  await moveUPDown(
+                                    cureentLayerDataIndex,
+                                    index,
+                                    allData,
+                                    context,
+                                    isMoveDown: true,
+                                  );
+                                },
+                                child: const Row(
+                                  children: [
+                                    Icon(FluentIcons.arrow_down_24_regular),
+                                    Gap(5),
+                                    Text("Move Down"),
+                                  ],
+                                ),
+                              ),
                             PopupMenuItem(
                               onTap: () async {
                                 String? directory = await FilePicker.platform
