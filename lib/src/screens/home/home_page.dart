@@ -58,7 +58,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
-
+  double boxHight = 110;
+  double boxWidth = 110;
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > breakPointWidth;
@@ -403,9 +404,19 @@ class _HomePageState extends State<HomePage> {
                               const Gap(15),
                               SingleChildScrollView(
                                 scrollDirection: Axis.vertical,
-                                child: Wrap(
-                                  children: toShowWidgets,
-                                ),
+                                child: toShowWidgets.length > 2
+                                    ? Center(
+                                        child: Wrap(
+                                          runSpacing: 3,
+                                          spacing: 5,
+                                          children: toShowWidgets,
+                                        ),
+                                      )
+                                    : Wrap(
+                                        runSpacing: 3,
+                                        spacing: 5,
+                                        children: toShowWidgets,
+                                      ),
                               ),
                             ],
                           ),
@@ -498,13 +509,16 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Container(
                     padding: const EdgeInsets.all(4),
+                    height: boxHight,
+                    width: boxWidth,
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
+                    alignment: Alignment.center,
                     child: Container(
-                      height: 120,
-                      width: 120,
+                      height: boxHight - 50,
+                      width: boxWidth - 50,
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           image: FastCachedImageProvider(
@@ -515,241 +529,6 @@ class _HomePageState extends State<HomePage> {
                           ),
                           fit: BoxFit.contain,
                         ),
-                      ),
-                      alignment: Alignment.bottomRight,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              PopupMenuButton(
-                                style: IconButton.styleFrom(
-                                  backgroundColor:
-                                      Colors.white.withOpacity(0.5),
-                                ),
-                                itemBuilder: (context) => [
-                                  if (FirebaseAuth
-                                              .instance.currentUser!.email !=
-                                          null &&
-                                      FirebaseAuth.instance.currentUser!.email!
-                                          .isNotEmpty &&
-                                      index > 0)
-                                    PopupMenuItem(
-                                      onTap: () async {
-                                        await moveUPDown(
-                                          cureentLayerDataIndex,
-                                          index,
-                                          allData,
-                                          context,
-                                          isMoveDown: false,
-                                        );
-                                      },
-                                      child: const Row(
-                                        children: [
-                                          Icon(FluentIcons.arrow_up_24_regular),
-                                          Gap(5),
-                                          Text("Move UP"),
-                                        ],
-                                      ),
-                                    ),
-                                  if (FirebaseAuth
-                                              .instance.currentUser!.email !=
-                                          null &&
-                                      FirebaseAuth.instance.currentUser!.email!
-                                          .isNotEmpty &&
-                                      index < cureentLayerData.length - 1)
-                                    PopupMenuItem(
-                                      onTap: () async {
-                                        await moveUPDown(
-                                          cureentLayerDataIndex,
-                                          index,
-                                          allData,
-                                          context,
-                                          isMoveDown: true,
-                                        );
-                                      },
-                                      child: const Row(
-                                        children: [
-                                          Icon(FluentIcons
-                                              .arrow_down_24_regular),
-                                          Gap(5),
-                                          Text("Move Down"),
-                                        ],
-                                      ),
-                                    ),
-                                  PopupMenuItem(
-                                    onTap: () async {
-                                      String? directory = await FilePicker
-                                          .platform
-                                          .getDirectoryPath();
-                                      if (directory != null) {
-                                        showFluttertoastMessage(
-                                          "Downloading ${cureentModel.path}",
-                                          context,
-                                        );
-                                        try {
-                                          await Dio().download(
-                                              cureentModel.path,
-                                              "$directory/${cureentModel.name}.${cureentModel.type}");
-                                          showFluttertoastMessage(
-                                            "Successfull Download ${cureentModel.path}",
-                                            context,
-                                          );
-                                        } catch (e) {
-                                          showFluttertoastMessage(
-                                            "Failed Download ${cureentModel.path}",
-                                            context,
-                                          );
-                                        }
-                                      }
-
-                                      if (directory == null) {
-                                        showFluttertoastMessage(
-                                          "Folder did not selected. Download Cancle",
-                                          context,
-                                        );
-                                      }
-                                    },
-                                    child: const Row(
-                                      children: [
-                                        Icon(Icons.download),
-                                        Gap(5),
-                                        Text("Download"),
-                                      ],
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    onTap: () {
-                                      FlutterClipboard.copy(cureentModel.path)
-                                          .then(
-                                        (value) => showFluttertoastMessage(
-                                            "Copied : ${cureentModel.path}",
-                                            context),
-                                      );
-                                    },
-                                    child: const Row(
-                                      children: [
-                                        Icon(Icons.link),
-                                        Gap(5),
-                                        Text("Copy link"),
-                                      ],
-                                    ),
-                                  ),
-                                  if (FirebaseAuth
-                                              .instance.currentUser!.email !=
-                                          null &&
-                                      FirebaseAuth.instance.currentUser!.email!
-                                          .isNotEmpty)
-                                    PopupMenuItem(
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                            title: const Text("Are you sure?"),
-                                            content: const Text(
-                                                "After deleten data, it can not recover again"),
-                                            actions: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Text("Cancel"),
-                                              ),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.red),
-                                                onPressed: () async {
-                                                  showFluttertoastMessage(
-                                                    "Deleating ${widget.path}/${cureentModel.name}.${cureentModel.type}",
-                                                    context,
-                                                  );
-
-                                                  try {
-                                                    await FirebaseStorage
-                                                        .instance
-                                                        .ref()
-                                                        .child(cureentModel
-                                                            .coverImageRef)
-                                                        .delete();
-                                                  } catch (e) {
-                                                    showFluttertoastMessage(
-                                                      "Something went worng",
-                                                      context,
-                                                    );
-                                                  }
-                                                  int indexAt = -1;
-
-                                                  for (var i = 0;
-                                                      i < allData.length;
-                                                      i++) {
-                                                    if (cureentModel.parent ==
-                                                            allData[i]
-                                                                ["parent"] &&
-                                                        cureentModel.path ==
-                                                            allData[i]
-                                                                ["path"] &&
-                                                        cureentModel.name ==
-                                                            allData[i]
-                                                                ["name"]) {
-                                                      indexAt = i;
-                                                      break;
-                                                    }
-                                                  }
-                                                  if (indexAt == -1) {
-                                                    showFluttertoastMessage(
-                                                      "Something went worng, context",
-                                                      context,
-                                                    );
-                                                  }
-                                                  allData.removeAt(indexAt);
-                                                  await FirebaseFirestore
-                                                      .instance
-                                                      .collection('data')
-                                                      .doc("data-map")
-                                                      .update({
-                                                    "data-map": allData
-                                                  });
-                                                  final box = Hive.box("info");
-                                                  await box.put(
-                                                      'data',
-                                                      jsonEncode({
-                                                        "data-map": allData
-                                                      }));
-                                                  showFluttertoastMessage(
-                                                    "Successfull Deleation, context",
-                                                    context,
-                                                  );
-                                                  Navigator
-                                                      .pushNamedAndRemoveUntil(
-                                                    context,
-                                                    "/home${widget.path}",
-                                                    (route) => false,
-                                                  );
-                                                },
-                                                child: const Text("Delete"),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                      child: const Row(
-                                        children: [
-                                          Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          Gap(5),
-                                          Text("Delete"),
-                                        ],
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
                       ),
                     ),
                   ),
@@ -763,13 +542,255 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(FluentIcons.document_24_regular),
                         SizedBox(
-                          width: 120,
+                          width: boxWidth,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 5),
+                                child: Icon(FluentIcons.document_24_regular),
+                              ),
+                              SizedBox(
+                                height: 35,
+                                width: 35,
+                                child: PopupMenuButton(
+                                  style: IconButton.styleFrom(
+                                    iconSize: 20,
+                                    backgroundColor:
+                                        Colors.white.withOpacity(0.5),
+                                  ),
+                                  itemBuilder: (context) => [
+                                    if (FirebaseAuth
+                                                .instance.currentUser!.email !=
+                                            null &&
+                                        FirebaseAuth.instance.currentUser!
+                                            .email!.isNotEmpty &&
+                                        index > 0)
+                                      PopupMenuItem(
+                                        onTap: () async {
+                                          await moveUPDown(
+                                            cureentLayerDataIndex,
+                                            index,
+                                            allData,
+                                            context,
+                                            isMoveDown: false,
+                                          );
+                                        },
+                                        child: const Row(
+                                          children: [
+                                            Icon(FluentIcons
+                                                .arrow_up_24_regular),
+                                            Gap(5),
+                                            Text("Move UP"),
+                                          ],
+                                        ),
+                                      ),
+                                    if (FirebaseAuth
+                                                .instance.currentUser!.email !=
+                                            null &&
+                                        FirebaseAuth.instance.currentUser!
+                                            .email!.isNotEmpty &&
+                                        index < cureentLayerData.length - 1)
+                                      PopupMenuItem(
+                                        onTap: () async {
+                                          await moveUPDown(
+                                            cureentLayerDataIndex,
+                                            index,
+                                            allData,
+                                            context,
+                                            isMoveDown: true,
+                                          );
+                                        },
+                                        child: const Row(
+                                          children: [
+                                            Icon(FluentIcons
+                                                .arrow_down_24_regular),
+                                            Gap(5),
+                                            Text("Move Down"),
+                                          ],
+                                        ),
+                                      ),
+                                    PopupMenuItem(
+                                      onTap: () async {
+                                        String? directory = await FilePicker
+                                            .platform
+                                            .getDirectoryPath();
+                                        if (directory != null) {
+                                          showFluttertoastMessage(
+                                            "Downloading ${cureentModel.path}",
+                                            context,
+                                          );
+                                          try {
+                                            await Dio().download(
+                                                cureentModel.path,
+                                                "$directory/${cureentModel.name}.${cureentModel.type}");
+                                            showFluttertoastMessage(
+                                              "Successfull Download ${cureentModel.path}",
+                                              context,
+                                            );
+                                          } catch (e) {
+                                            showFluttertoastMessage(
+                                              "Failed Download ${cureentModel.path}",
+                                              context,
+                                            );
+                                          }
+                                        }
+
+                                        if (directory == null) {
+                                          showFluttertoastMessage(
+                                            "Folder did not selected. Download Cancle",
+                                            context,
+                                          );
+                                        }
+                                      },
+                                      child: const Row(
+                                        children: [
+                                          Icon(Icons.download),
+                                          Gap(5),
+                                          Text("Download"),
+                                        ],
+                                      ),
+                                    ),
+                                    PopupMenuItem(
+                                      onTap: () {
+                                        FlutterClipboard.copy(cureentModel.path)
+                                            .then(
+                                          (value) => showFluttertoastMessage(
+                                              "Copied : ${cureentModel.path}",
+                                              context),
+                                        );
+                                      },
+                                      child: const Row(
+                                        children: [
+                                          Icon(Icons.link),
+                                          Gap(5),
+                                          Text("Copy link"),
+                                        ],
+                                      ),
+                                    ),
+                                    if (FirebaseAuth
+                                                .instance.currentUser!.email !=
+                                            null &&
+                                        FirebaseAuth.instance.currentUser!
+                                            .email!.isNotEmpty)
+                                      PopupMenuItem(
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title:
+                                                  const Text("Are you sure?"),
+                                              content: const Text(
+                                                  "After deleten data, it can not recover again"),
+                                              actions: [
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text("Cancel"),
+                                                ),
+                                                ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              Colors.red),
+                                                  onPressed: () async {
+                                                    showFluttertoastMessage(
+                                                      "Deleating ${widget.path}/${cureentModel.name}.${cureentModel.type}",
+                                                      context,
+                                                    );
+
+                                                    try {
+                                                      await FirebaseStorage
+                                                          .instance
+                                                          .ref()
+                                                          .child(cureentModel
+                                                              .coverImageRef)
+                                                          .delete();
+                                                    } catch (e) {
+                                                      showFluttertoastMessage(
+                                                        "Something went worng",
+                                                        context,
+                                                      );
+                                                    }
+                                                    int indexAt = -1;
+
+                                                    for (var i = 0;
+                                                        i < allData.length;
+                                                        i++) {
+                                                      if (cureentModel.parent ==
+                                                              allData[i]
+                                                                  ["parent"] &&
+                                                          cureentModel.path ==
+                                                              allData[i]
+                                                                  ["path"] &&
+                                                          cureentModel.name ==
+                                                              allData[i]
+                                                                  ["name"]) {
+                                                        indexAt = i;
+                                                        break;
+                                                      }
+                                                    }
+                                                    if (indexAt == -1) {
+                                                      showFluttertoastMessage(
+                                                        "Something went worng, context",
+                                                        context,
+                                                      );
+                                                    }
+                                                    allData.removeAt(indexAt);
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('data')
+                                                        .doc("data-map")
+                                                        .update({
+                                                      "data-map": allData
+                                                    });
+                                                    final box =
+                                                        Hive.box("info");
+                                                    await box.put(
+                                                        'data',
+                                                        jsonEncode({
+                                                          "data-map": allData
+                                                        }));
+                                                    showFluttertoastMessage(
+                                                      "Successfull Deleation, context",
+                                                      context,
+                                                    );
+                                                    Navigator
+                                                        .pushNamedAndRemoveUntil(
+                                                      context,
+                                                      "/home${widget.path}",
+                                                      (route) => false,
+                                                    );
+                                                  },
+                                                  child: const Text("Delete"),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                        child: const Row(
+                                          children: [
+                                            Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ),
+                                            Gap(5),
+                                            Text("Delete"),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: boxHight,
                           child: Text(
-                            cureentModel.name.length > 20
-                                ? cureentModel.name.substring(0, 20)
-                                : cureentModel.name,
+                            cureentModel.name,
                           ),
                         ),
                       ],
@@ -806,224 +827,30 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
+                    height: boxHight,
+                    width: boxWidth,
+                    alignment: Alignment.center,
                     child: Container(
-                      height: 120,
-                      width: 120,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: FastCachedImageProvider(
-                            cureentModel.image ??
-                                "http://116.68.200.97:6027/static/media/form.54693b5d.png",
+                      height: boxHight - 50,
+                      width: boxWidth - 50,
+                      padding: const EdgeInsets.all(4),
+                      child: Container(
+                        height: boxHight,
+                        width: boxWidth,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: FastCachedImageProvider(
+                              cureentModel.image ??
+                                  "http://116.68.200.97:6027/static/media/form.54693b5d.png",
+                            ),
+                            fit: BoxFit.contain,
                           ),
-                          fit: BoxFit.contain,
                         ),
-                      ),
-                      alignment: Alignment.bottomRight,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              FirebaseAuth.instance.currentUser!.email !=
-                                          null &&
-                                      FirebaseAuth.instance.currentUser!.email!
-                                          .isNotEmpty
-                                  ? PopupMenuButton(
-                                      style: IconButton.styleFrom(
-                                        backgroundColor:
-                                            Colors.white.withOpacity(0.5),
-                                      ),
-                                      itemBuilder: (context) => [
-                                        if (FirebaseAuth.instance.currentUser!
-                                                    .email !=
-                                                null &&
-                                            FirebaseAuth.instance.currentUser!
-                                                .email!.isNotEmpty &&
-                                            index > 0)
-                                          PopupMenuItem(
-                                            onTap: () async {
-                                              await moveUPDown(
-                                                cureentLayerDataIndex,
-                                                index,
-                                                allData,
-                                                context,
-                                                isMoveDown: false,
-                                              );
-                                            },
-                                            child: const Row(
-                                              children: [
-                                                Icon(FluentIcons
-                                                    .arrow_up_24_regular),
-                                                Gap(5),
-                                                Text("Move UP"),
-                                              ],
-                                            ),
-                                          ),
-                                        if (FirebaseAuth.instance.currentUser!
-                                                    .email !=
-                                                null &&
-                                            FirebaseAuth.instance.currentUser!
-                                                .email!.isNotEmpty &&
-                                            index < cureentLayerData.length - 1)
-                                          PopupMenuItem(
-                                            onTap: () async {
-                                              await moveUPDown(
-                                                cureentLayerDataIndex,
-                                                index,
-                                                allData,
-                                                context,
-                                                isMoveDown: true,
-                                              );
-                                            },
-                                            child: const Row(
-                                              children: [
-                                                Icon(FluentIcons
-                                                    .arrow_down_24_regular),
-                                                Gap(5),
-                                                Text("Move Down"),
-                                              ],
-                                            ),
-                                          ),
-                                        if (FirebaseAuth.instance.currentUser!
-                                                    .email !=
-                                                null &&
-                                            FirebaseAuth.instance.currentUser!
-                                                .email!.isNotEmpty)
-                                          PopupMenuItem(
-                                            onTap: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) =>
-                                                    AlertDialog(
-                                                  title: const Text(
-                                                      "Are you sure?"),
-                                                  content: const Text(
-                                                      "After deleten folder, it can not recover again"),
-                                                  actions: [
-                                                    ElevatedButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child:
-                                                          const Text("Cancel"),
-                                                    ),
-                                                    ElevatedButton(
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                              backgroundColor:
-                                                                  Colors.red),
-                                                      onPressed: () async {
-                                                        if ((filteredMap[
-                                                                    "/home${widget.path}/${cureentModel.name}"] ??
-                                                                [])
-                                                            .isNotEmpty) {
-                                                          showFluttertoastMessage(
-                                                            "Remove contents under folder first",
-                                                            context,
-                                                          );
-                                                          return;
-                                                        }
-                                                        showFluttertoastMessage(
-                                                          "Deleating ${widget.path}/${cureentModel.name}.",
-                                                          context,
-                                                        );
-
-                                                        int indexAt = -1;
-
-                                                        for (var i = 0;
-                                                            i < allData.length;
-                                                            i++) {
-                                                          if (cureentModel
-                                                                      .parent ==
-                                                                  allData[i][
-                                                                      "parent"] &&
-                                                              cureentModel
-                                                                      .name ==
-                                                                  allData[i][
-                                                                      "name"]) {
-                                                            indexAt = i;
-                                                            break;
-                                                          }
-                                                        }
-                                                        if (indexAt == -1) {
-                                                          showFluttertoastMessage(
-                                                            "Something went worng",
-                                                            context,
-                                                          );
-                                                        }
-
-                                                        try {
-                                                          await FirebaseStorage
-                                                              .instance
-                                                              .ref()
-                                                              .child(cureentModel
-                                                                  .coverImageRef)
-                                                              .delete();
-                                                        } catch (e) {
-                                                          showFluttertoastMessage(
-                                                            "Something went worng",
-                                                            context,
-                                                          );
-                                                        }
-
-                                                        allData
-                                                            .removeAt(indexAt);
-                                                        await FirebaseFirestore
-                                                            .instance
-                                                            .collection('data')
-                                                            .doc("data-map")
-                                                            .update({
-                                                          "data-map": allData
-                                                        });
-                                                        final box =
-                                                            Hive.box("info");
-                                                        await box.put(
-                                                            'data',
-                                                            jsonEncode({
-                                                              "data-map":
-                                                                  allData
-                                                            }));
-                                                        showFluttertoastMessage(
-                                                          "Successfull Deleation",
-                                                          context,
-                                                        );
-                                                        Navigator
-                                                            .pushNamedAndRemoveUntil(
-                                                          context,
-                                                          "/home${widget.path}",
-                                                          (route) => false,
-                                                        );
-                                                      },
-                                                      child:
-                                                          const Text("Delete"),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                            child: const Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.delete,
-                                                  color: Colors.red,
-                                                ),
-                                                Gap(5),
-                                                Text("Delete"),
-                                              ],
-                                            ),
-                                          ),
-                                      ],
-                                    )
-                                  : const SizedBox(),
-                            ],
-                          ),
-                        ],
+                        alignment: Alignment.bottomRight,
                       ),
                     ),
                   ),
@@ -1037,9 +864,222 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Icon(FluentIcons.folder_24_regular),
                         SizedBox(
-                          width: 120,
+                          width: boxWidth,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 5),
+                                child: Icon(FluentIcons.folder_24_regular),
+                              ),
+                              FirebaseAuth.instance.currentUser!.email !=
+                                          null &&
+                                      FirebaseAuth.instance.currentUser!.email!
+                                          .isNotEmpty
+                                  ? SizedBox(
+                                      height: 35,
+                                      width: 35,
+                                      child: PopupMenuButton(
+                                        style: IconButton.styleFrom(
+                                          padding: EdgeInsets.zero,
+                                          iconSize: 20,
+                                          backgroundColor:
+                                              Colors.white.withOpacity(0.5),
+                                        ),
+                                        itemBuilder: (context) => [
+                                          if (FirebaseAuth.instance.currentUser!
+                                                      .email !=
+                                                  null &&
+                                              FirebaseAuth.instance.currentUser!
+                                                  .email!.isNotEmpty &&
+                                              index > 0)
+                                            PopupMenuItem(
+                                              onTap: () async {
+                                                await moveUPDown(
+                                                  cureentLayerDataIndex,
+                                                  index,
+                                                  allData,
+                                                  context,
+                                                  isMoveDown: false,
+                                                );
+                                              },
+                                              child: const Row(
+                                                children: [
+                                                  Icon(FluentIcons
+                                                      .arrow_up_24_regular),
+                                                  Gap(5),
+                                                  Text("Move UP"),
+                                                ],
+                                              ),
+                                            ),
+                                          if (FirebaseAuth.instance.currentUser!
+                                                      .email !=
+                                                  null &&
+                                              FirebaseAuth.instance.currentUser!
+                                                  .email!.isNotEmpty &&
+                                              index <
+                                                  cureentLayerData.length - 1)
+                                            PopupMenuItem(
+                                              onTap: () async {
+                                                await moveUPDown(
+                                                  cureentLayerDataIndex,
+                                                  index,
+                                                  allData,
+                                                  context,
+                                                  isMoveDown: true,
+                                                );
+                                              },
+                                              child: const Row(
+                                                children: [
+                                                  Icon(FluentIcons
+                                                      .arrow_down_24_regular),
+                                                  Gap(5),
+                                                  Text("Move Down"),
+                                                ],
+                                              ),
+                                            ),
+                                          if (FirebaseAuth.instance.currentUser!
+                                                      .email !=
+                                                  null &&
+                                              FirebaseAuth.instance.currentUser!
+                                                  .email!.isNotEmpty)
+                                            PopupMenuItem(
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      AlertDialog(
+                                                    title: const Text(
+                                                        "Are you sure?"),
+                                                    content: const Text(
+                                                        "After deleten folder, it can not recover again"),
+                                                    actions: [
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: const Text(
+                                                            "Cancel"),
+                                                      ),
+                                                      ElevatedButton(
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                                backgroundColor:
+                                                                    Colors.red),
+                                                        onPressed: () async {
+                                                          if ((filteredMap[
+                                                                      "/home${widget.path}/${cureentModel.name}"] ??
+                                                                  [])
+                                                              .isNotEmpty) {
+                                                            showFluttertoastMessage(
+                                                              "Remove contents under folder first",
+                                                              context,
+                                                            );
+                                                            return;
+                                                          }
+                                                          showFluttertoastMessage(
+                                                            "Deleating ${widget.path}/${cureentModel.name}.",
+                                                            context,
+                                                          );
+
+                                                          int indexAt = -1;
+
+                                                          for (var i = 0;
+                                                              i <
+                                                                  allData
+                                                                      .length;
+                                                              i++) {
+                                                            if (cureentModel
+                                                                        .parent ==
+                                                                    allData[i][
+                                                                        "parent"] &&
+                                                                cureentModel
+                                                                        .name ==
+                                                                    allData[i][
+                                                                        "name"]) {
+                                                              indexAt = i;
+                                                              break;
+                                                            }
+                                                          }
+                                                          if (indexAt == -1) {
+                                                            showFluttertoastMessage(
+                                                              "Something went worng",
+                                                              context,
+                                                            );
+                                                          }
+
+                                                          try {
+                                                            await FirebaseStorage
+                                                                .instance
+                                                                .ref()
+                                                                .child(cureentModel
+                                                                    .coverImageRef)
+                                                                .delete();
+                                                          } catch (e) {
+                                                            showFluttertoastMessage(
+                                                              "Something went worng",
+                                                              context,
+                                                            );
+                                                          }
+
+                                                          allData.removeAt(
+                                                              indexAt);
+                                                          await FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  'data')
+                                                              .doc("data-map")
+                                                              .update({
+                                                            "data-map": allData
+                                                          });
+                                                          final box =
+                                                              Hive.box("info");
+                                                          await box.put(
+                                                              'data',
+                                                              jsonEncode({
+                                                                "data-map":
+                                                                    allData
+                                                              }));
+                                                          showFluttertoastMessage(
+                                                            "Successfull Deleation",
+                                                            context,
+                                                          );
+                                                          Navigator
+                                                              .pushNamedAndRemoveUntil(
+                                                            context,
+                                                            "/home${widget.path}",
+                                                            (route) => false,
+                                                          );
+                                                        },
+                                                        child: const Text(
+                                                            "Delete"),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                              child: const Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.delete,
+                                                    color: Colors.red,
+                                                  ),
+                                                  Gap(5),
+                                                  Text("Delete"),
+                                                ],
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    )
+                                  : const SizedBox(),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: boxWidth,
                           child: Text(
                             cureentModel.name.length > 20
                                 ? cureentModel.name.substring(0, 20)
