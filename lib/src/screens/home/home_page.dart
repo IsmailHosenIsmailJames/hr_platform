@@ -547,9 +547,12 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Padding(
-                                padding: EdgeInsets.only(left: 5),
-                                child: Icon(FluentIcons.document_24_regular),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5),
+                                child: Icon(
+                                    (fileType == 'pdf' || fileType == 'PDF')
+                                        ? FluentIcons.document_pdf_24_regular
+                                        : FluentIcons.document_24_regular),
                               ),
                               SizedBox(
                                 height: 35,
@@ -869,9 +872,11 @@ class _HomePageState extends State<HomePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Padding(
-                                padding: EdgeInsets.only(left: 5),
-                                child: Icon(FluentIcons.folder_24_regular),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5),
+                                child: Icon(cureentModel.url == null
+                                    ? FluentIcons.folder_24_regular
+                                    : FluentIcons.link_24_regular),
                               ),
                               FirebaseAuth.instance.currentUser!.email !=
                                           null &&
@@ -1080,11 +1085,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         SizedBox(
                           width: boxWidth,
-                          child: Text(
-                            cureentModel.name.length > 20
-                                ? cureentModel.name.substring(0, 20)
-                                : cureentModel.name,
-                          ),
+                          child: Text(cureentModel.name),
                         ),
                       ],
                     ),
