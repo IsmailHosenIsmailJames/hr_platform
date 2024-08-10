@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
+      onPopInvokedWithResult: (x, didPop) async {
         bool? canPop = widget.path.split('/').length > 2;
         if (canPop == true) {
           int lastSalah = widget.path.lastIndexOf('/');
@@ -251,98 +251,132 @@ class _HomePageState extends State<HomePage> {
             : null,
         body: SafeArea(
           child: toShowWidgets.isEmpty
-              ? const Center(child: Text("No files or folders found"))
-              : Column(
-                  children: [
-                    if (isDesktop)
-                      Center(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          margin: const EdgeInsets.all(5),
-                          padding: const EdgeInsets.only(
-                            left: 20,
-                            right: 20,
-                            top: 5,
-                            bottom: 5,
-                          ),
-                          width: breakPointWidth.toDouble(),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: folderNavigator,
+              ? isDesktop
+                  ? Column(
+                      children: [
+                        Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            margin: const EdgeInsets.all(5),
+                            padding: const EdgeInsets.only(
+                              left: 20,
+                              right: 20,
+                              top: 5,
+                              bottom: 5,
+                            ),
+                            width: breakPointWidth.toDouble(),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: folderNavigator,
+                            ),
                           ),
                         ),
-                      ),
-                    Container(
-                      width:
-                          isDesktop ? MediaQuery.of(context).size.width : null,
-                      height: isDesktop
-                          ? MediaQuery.of(context).size.height * 0.80
-                          : null,
-                      padding: isDesktop
-                          ? EdgeInsets.only(
-                              top: MediaQuery.of(context).size.width * 0.01,
-                              bottom: MediaQuery.of(context).size.width * 0.05,
-                              left: MediaQuery.of(context).size.width * 0.05,
-                              right: MediaQuery.of(context).size.width * 0.03,
-                            )
-                          : null,
-                      margin: isDesktop
-                          ? EdgeInsets.only(
-                              top: MediaQuery.of(context).size.width * 0.01,
-                              bottom: MediaQuery.of(context).size.width * 0.05,
-                              left: MediaQuery.of(context).size.width * 0.05,
-                              right: MediaQuery.of(context).size.width * 0.03,
-                            )
-                          : null,
-                      decoration: isDesktop
-                          ? BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: Colors.blue.shade700.withOpacity(0.7),
-                            )
-                          : null,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (isDesktop)
-                            Row(
-                              children: [
-                                const Spacer(),
-                                Text(
-                                  isAdmin ? "Admin" : userModel!.userName ?? "",
-                                  style: const TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const Spacer(),
-                                IconButton(
-                                  onPressed: () {
-                                    scaffoldKey.currentState!.openEndDrawer();
-                                  },
-                                  icon: const Icon(
-                                    Icons.menu,
-                                    color: Colors.white,
-                                    size: 40,
-                                  ),
-                                ),
-                              ],
+                        const Gap(200),
+                        const Center(child: Text("No files or folders found"))
+                      ],
+                    )
+                  : const Center(child: Text("No files or folders found"))
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      if (isDesktop)
+                        Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(100),
                             ),
-                          const Gap(15),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: Wrap(
-                              children: toShowWidgets,
+                            margin: const EdgeInsets.all(5),
+                            padding: const EdgeInsets.only(
+                              left: 20,
+                              right: 20,
+                              top: 5,
+                              bottom: 5,
+                            ),
+                            width: breakPointWidth.toDouble(),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: folderNavigator,
                             ),
                           ),
-                        ],
+                        ),
+                      Container(
+                        width: isDesktop
+                            ? MediaQuery.of(context).size.width
+                            : null,
+                        height: isDesktop
+                            ? MediaQuery.of(context).size.height * 0.80
+                            : null,
+                        padding: isDesktop
+                            ? EdgeInsets.only(
+                                top: MediaQuery.of(context).size.width * 0.01,
+                                bottom:
+                                    MediaQuery.of(context).size.width * 0.05,
+                                left: MediaQuery.of(context).size.width * 0.05,
+                                right: MediaQuery.of(context).size.width * 0.03,
+                              )
+                            : null,
+                        margin: isDesktop
+                            ? EdgeInsets.only(
+                                top: MediaQuery.of(context).size.width * 0.01,
+                                bottom:
+                                    MediaQuery.of(context).size.width * 0.05,
+                                left: MediaQuery.of(context).size.width * 0.05,
+                                right: MediaQuery.of(context).size.width * 0.03,
+                              )
+                            : null,
+                        decoration: isDesktop
+                            ? BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: Colors.blue.shade700.withOpacity(0.7),
+                              )
+                            : null,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (isDesktop)
+                              Row(
+                                children: [
+                                  const Spacer(),
+                                  Text(
+                                    isAdmin
+                                        ? "Admin"
+                                        : userModel!.userName ?? "",
+                                    style: const TextStyle(
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  IconButton(
+                                    onPressed: () {
+                                      scaffoldKey.currentState!.openEndDrawer();
+                                    },
+                                    icon: const Icon(
+                                      Icons.menu,
+                                      color: Colors.white,
+                                      size: 40,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            const Gap(15),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Wrap(
+                                children: toShowWidgets,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
         ),
       ),
@@ -592,10 +626,13 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           const Icon(FluentIcons.document_24_regular),
                           const Gap(5),
-                          Text(
-                            cureentModel.name.length > 17
-                                ? "${cureentModel.name.substring(0, 17)}...${cureentModel.type}"
-                                : "${cureentModel.name}.${cureentModel.type}",
+                          SizedBox(
+                            width: 120,
+                            child: Text(
+                              cureentModel.name.length > 17
+                                  ? "${cureentModel.name.substring(0, 17)}...${cureentModel.type}"
+                                  : "${cureentModel.name}.${cureentModel.type}",
+                            ),
                           ),
                         ],
                       ),
@@ -770,10 +807,13 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           const Icon(FluentIcons.folder_24_regular),
                           const Gap(5),
-                          Text(
-                            cureentModel.name.length > 20
-                                ? cureentModel.name.substring(0, 20)
-                                : cureentModel.name,
+                          SizedBox(
+                            width: 120,
+                            child: Text(
+                              cureentModel.name.length > 20
+                                  ? cureentModel.name.substring(0, 20)
+                                  : cureentModel.name,
+                            ),
                           ),
                         ],
                       ),
