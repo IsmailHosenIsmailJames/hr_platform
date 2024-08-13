@@ -22,53 +22,55 @@ class _SuspendNewState extends State<SuspendNew> {
       appBar: AppBar(
         title: const Text("Suspend New"),
       ),
-      body: SizedBox(
-        width: 600,
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: idController,
-                      validator: (value) {
-                        var x = int.tryParse(value!);
-                        return x == null ? "Not a valid ID" : null;
-                      },
-                      decoration: InputDecoration(
-                        labelText: "User ID for Suspend",
-                        hintText: "Type user id here...",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
+      body: Center(
+        child: SizedBox(
+          width: 600,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: idController,
+                        validator: (value) {
+                          var x = int.tryParse(value!);
+                          return x == null ? "Not a valid ID" : null;
+                        },
+                        decoration: InputDecoration(
+                          labelText: "User ID for Suspend",
+                          hintText: "Type user id here...",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const Gap(10),
-                  IconButton(
-                    style: IconButton.styleFrom(
-                        backgroundColor: Colors.grey.shade300),
-                    onPressed: () async {
-                      String id = idController.text.trim();
-                      if (int.tryParse(idController.text.trim()) != null) {
-                        final response = await FirebaseFirestore.instance
-                            .collection('general_user')
-                            .doc(id)
-                            .get();
-                        if (response.exists) {
-                          buildUserInfoWidgetForSuspend(response.data()!, id);
+                    const Gap(10),
+                    IconButton(
+                      style: IconButton.styleFrom(
+                          backgroundColor: Colors.grey.shade300),
+                      onPressed: () async {
+                        String id = idController.text.trim();
+                        if (int.tryParse(idController.text.trim()) != null) {
+                          final response = await FirebaseFirestore.instance
+                              .collection('general_user')
+                              .doc(id)
+                              .get();
+                          if (response.exists) {
+                            buildUserInfoWidgetForSuspend(response.data()!, id);
+                          }
                         }
-                      }
-                    },
-                    icon: const Icon(Icons.search_rounded),
-                  ),
-                ],
-              ),
-              const Gap(20),
-              searchedUserIDWidget,
-            ],
+                      },
+                      icon: const Icon(Icons.search_rounded),
+                    ),
+                  ],
+                ),
+                const Gap(20),
+                searchedUserIDWidget,
+              ],
+            ),
           ),
         ),
       ),

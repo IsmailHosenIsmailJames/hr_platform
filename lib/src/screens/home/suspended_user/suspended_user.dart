@@ -42,58 +42,60 @@ class _SuspendedUserState extends State<SuspendedUser> {
           const Gap(5)
         ],
       ),
-      body: SizedBox(
-        width: 600,
-        child: FutureBuilder(
-          future: FirebaseFirestore.instance
-              .collection("suspended")
-              .doc('suspendedUserMap')
-              .get(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              if (snapshot.data!.exists) {
-                Map<String, dynamic> suspendedUserMap =
-                    Map<String, dynamic>.from(snapshot.data!.data()!);
-                return ListView.builder(
-                  padding: const EdgeInsets.all(10),
-                  itemCount: suspendedUserMap.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      margin: const EdgeInsets.all(5),
-                      padding: const EdgeInsets.all(5),
-                      child: Column(
-                        children: getBuildOfUserInfoWidget(suspendedUserMap[
-                                suspendedUserMap.keys.toList()[index]]) +
-                            [
-                              const Gap(10),
-                              ElevatedButton(
-                                onPressed: () {
-                                  undoSuspend(
-                                      suspendedUserMap.keys.toList()[index],
-                                      suspendedUserMap);
-                                },
-                                child: const Text("Undo Suspend"),
-                              ),
-                            ],
-                      ),
-                    );
-                  },
-                );
+      body: Center(
+        child: SizedBox(
+          width: 600,
+          child: FutureBuilder(
+            future: FirebaseFirestore.instance
+                .collection("suspended")
+                .doc('suspendedUserMap')
+                .get(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                if (snapshot.data!.exists) {
+                  Map<String, dynamic> suspendedUserMap =
+                      Map<String, dynamic>.from(snapshot.data!.data()!);
+                  return ListView.builder(
+                    padding: const EdgeInsets.all(10),
+                    itemCount: suspendedUserMap.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        margin: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(5),
+                        child: Column(
+                          children: getBuildOfUserInfoWidget(suspendedUserMap[
+                                  suspendedUserMap.keys.toList()[index]]) +
+                              [
+                                const Gap(10),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    undoSuspend(
+                                        suspendedUserMap.keys.toList()[index],
+                                        suspendedUserMap);
+                                  },
+                                  child: const Text("Undo Suspend"),
+                                ),
+                              ],
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: Text("No users are suspended"),
+                  );
+                }
               } else {
                 return const Center(
-                  child: Text("No users are suspended"),
+                  child: CircularProgressIndicator(),
                 );
               }
-            } else {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
+            },
+          ),
         ),
       ),
     );
