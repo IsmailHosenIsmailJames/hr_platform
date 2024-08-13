@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -136,9 +137,20 @@ class _SuspendNewState extends State<SuspendNew> {
   void suspandUser(Map<String, String> userData, String id) async {
     userData.addAll({"isSuspanded": "true"});
     try {
+      showCupertinoModalPopup(
+        context: context,
+        builder: (context) {
+          return Scaffold(
+            backgroundColor: Colors.grey.withOpacity(0.1),
+            body: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        },
+      );
       await FirebaseFirestore.instance
           .collection('general_user')
-          .doc(idController.text.trim())
+          .doc(id)
           .update(userData);
       final response = await FirebaseFirestore.instance
           .collection("suspended")
@@ -160,6 +172,12 @@ class _SuspendNewState extends State<SuspendNew> {
             .doc('suspendedUserMap')
             .set(suspendedList);
       }
+      Navigator.pushNamedAndRemoveUntil(
+        // ignore: use_build_context_synchronously
+        context,
+        "/",
+        (route) => false,
+      );
     } on FirebaseException catch (e) {
       showModalBottomSheet(
         // ignore: use_build_context_synchronously
