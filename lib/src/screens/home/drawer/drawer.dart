@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/models/user_model.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/edit_profile/edit_profile.dart';
+import 'package:hr_platform/src/screens/home/suspended_user/suspended_user.dart';
 import 'package:hr_platform/src/screens/survey/all_survey.dart';
 import 'package:hr_platform/src/screens/survey/getx/controller_getx.dart';
 import 'package:hr_platform/src/screens/survey/models/surevey_question_model.dart';
@@ -113,6 +114,30 @@ class MyDrawer extends StatelessWidget {
                         children: [
                           Text(
                             "Create a Survey",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      icon: const Icon(FluentIcons.document_table_24_regular),
+                    ),
+                  if (FirebaseAuth.instance.currentUser!.email != null &&
+                      FirebaseAuth.instance.currentUser!.email!.isNotEmpty)
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const SuspendedUser();
+                            },
+                          ),
+                        );
+                      },
+                      label: const Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Suspended User",
                             style: TextStyle(fontSize: 16),
                           ),
                         ],

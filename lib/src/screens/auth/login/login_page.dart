@@ -52,8 +52,8 @@ class _LoginPageState extends State<LoginPage> {
       if (response.exists) {
         final box = await Hive.openBox('info');
         Map temUserData = Map.from(response.data()!);
-        bool isSuspended = temUserData['isSuspended'] ?? false;
-        if (isSuspended == true) {
+        String isSuspended = temUserData['isSuspended'] ?? "false";
+        if (isSuspended == "true") {
           showModalBottomSheet(
             context: context,
             builder: (context) => const Center(
