@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
@@ -49,10 +50,12 @@ class _LoginPageState extends State<LoginPage> {
           .collection('general_user')
           .doc(id)
           .get();
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
       if (response.exists) {
-        final box = await Hive.openBox('info');
         Map temUserData = Map.from(response.data()!);
-        String isSuspended = temUserData['isSuspended'] ?? "false";
+        String isSuspended = temUserData['isSuspanded'] ?? "false";
         if (isSuspended == "true") {
           showModalBottomSheet(
             context: context,
@@ -65,6 +68,7 @@ class _LoginPageState extends State<LoginPage> {
           );
           return "This user has been suspended";
         }
+        final box = await Hive.openBox('info');
         temUserData.addAll({"user_id": id});
         await box.put('userData', jsonEncode(temUserData));
         Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);

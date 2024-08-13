@@ -11,7 +11,7 @@ class UserModel {
   String? designationName;
   String? email;
   String? jobTypeName;
-  bool? isSuspended;
+  String? isSuspanded;
 
   UserModel({
     this.userID,
@@ -24,7 +24,7 @@ class UserModel {
     this.designationName,
     this.email,
     this.jobTypeName,
-    this.isSuspended,
+    this.isSuspanded,
   });
 
   UserModel copyWith({
@@ -50,7 +50,7 @@ class UserModel {
         userName: userName ?? this.userName,
         userID: userID ?? this.userID,
         userPassword: userPassword ?? this.userPassword,
-        isSuspended: isSuspended ?? this.isSuspended,
+        isSuspanded: isSuspanded ?? this.isSuspanded,
       );
 
   factory UserModel.fromJson(String str) => UserModel.fromMap(json.decode(str));
@@ -68,7 +68,7 @@ class UserModel {
         email: json["email"],
         jobTypeName: json["job_type_name"],
         userName: json["user_name"],
-        isSuspended: json['isSuspended'],
+        isSuspanded: json['isSuspanded'],
       );
 
   Map<String, dynamic> toMap() => {
@@ -82,6 +82,6 @@ class UserModel {
         "email": email,
         "job_type_name": jobTypeName,
         "user_name": userName,
-        "isSuspended": isSuspended,
+        "isSuspanded": isSuspanded,
       };
 }
