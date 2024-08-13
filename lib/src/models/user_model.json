@@ -6,5 +6,6 @@
     "designation_name": "NA",
     "email": "",
     "job_type_name": "Permanent Mgt",
-    "user_name": "MD  MAHBUBUL ALAM"
+    "user_name": "MD  MAHBUBUL ALAM",
+    "isSuspended" : true
 }

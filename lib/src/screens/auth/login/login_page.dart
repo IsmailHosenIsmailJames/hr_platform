@@ -52,6 +52,19 @@ class _LoginPageState extends State<LoginPage> {
       if (response.exists) {
         final box = await Hive.openBox('info');
         Map temUserData = Map.from(response.data()!);
+        bool isSuspended = temUserData['isSuspended'] ?? false;
+        if (isSuspended == true) {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) => const Center(
+              child: Text(
+                "This user has been suspended",
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          );
+          return "This user has been suspended";
+        }
         temUserData.addAll({"user_id": id});
         await box.put('userData', jsonEncode(temUserData));
         Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
@@ -78,7 +91,6 @@ class _LoginPageState extends State<LoginPage> {
         if (response.exists) {
           Map userData = response.data()!;
           Map<String, dynamic> adminData = Map<String, dynamic>.from(userData);
-
           final box = await Hive.openBox('info');
           await box.put("userData", jsonEncode(adminData));
           Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
