@@ -73,7 +73,11 @@ class _SurveyViewState extends State<SurveyView> {
                       "/",
                       (route) => false,
                     );
-                    showToastedMessage("Successfully Published");
+                    showToastedMessage(
+                      "Successfully Published",
+                      // ignore: use_build_context_synchronously
+                      context,
+                    );
                   } catch (e) {
                     if (kDebugMode) {
                       print(e);
@@ -94,7 +98,11 @@ class _SurveyViewState extends State<SurveyView> {
                         .collection("survey")
                         .doc("${surevey.id}")
                         .update({"${userModel.userID}": ans});
-                    showToastedMessage("Submit Successfull");
+                    showToastedMessage(
+                      "Submit Successfull",
+                      // ignore: use_build_context_synchronously
+                      context,
+                    );
                     Navigator.pushNamedAndRemoveUntil(
                       // ignore: use_build_context_synchronously
                       context,
@@ -102,7 +110,11 @@ class _SurveyViewState extends State<SurveyView> {
                       (route) => false,
                     );
                   } catch (e) {
-                    showToastedMessage("Submit failed");
+                    showToastedMessage(
+                      "Submit failed",
+                      // ignore: use_build_context_synchronously
+                      context,
+                    );
                   }
                 }
                 setState(() {

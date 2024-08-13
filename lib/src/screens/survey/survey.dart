@@ -57,7 +57,8 @@ class _SurveyState extends State<Survey> {
                     DateTime.now().millisecondsSinceEpoch;
                 await box.put("${surveyController.survey.value.id}",
                     surveyController.survey.value.toJson());
-                showToastedMessage("Saved!");
+                // ignore: use_build_context_synchronously
+                showToastedMessage("Saved!", context);
                 Navigator.pushNamedAndRemoveUntil(
                   // ignore: use_build_context_synchronously
                   context,
@@ -78,7 +79,8 @@ class _SurveyState extends State<Survey> {
                   await box.put("${surveyController.survey.value.id}",
                       surveyController.survey.value.toJson());
 
-                  showToastedMessage("Saved!");
+                  // ignore: use_build_context_synchronously
+                  showToastedMessage("Saved!", context);
                   Navigator.push(
                     // ignore: use_build_context_synchronously
                     context,
@@ -350,7 +352,8 @@ class _SurveyState extends State<Survey> {
                                             ),
                                             const Divider(),
                                             const Gap(20),
-                                            SizedBox(
+                                            Container(
+                                              margin: const EdgeInsets.all(10),
                                               width: 300,
                                               child: ElevatedButton(
                                                 onPressed: () {
@@ -380,7 +383,8 @@ class _SurveyState extends State<Survey> {
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(
+                                            Container(
+                                              margin: const EdgeInsets.all(10),
                                               width: 300,
                                               child: ElevatedButton(
                                                 onPressed: () {
@@ -410,7 +414,8 @@ class _SurveyState extends State<Survey> {
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(
+                                            Container(
+                                              margin: const EdgeInsets.all(10),
                                               width: 300,
                                               child: ElevatedButton(
                                                 onPressed: () {

@@ -220,7 +220,10 @@ void showDialogForMobileUpdate(BuildContext context, String deviceV,
       );
     }
     if (!await Permission.requestInstallPackages.isGranted) {
-      showToastedMessage("Something went worng");
+      showToastedMessage(
+        "Something went worng",
+        context,
+      );
       return;
     }
   }

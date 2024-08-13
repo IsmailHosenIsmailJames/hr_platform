@@ -126,7 +126,6 @@ class _HomePageState extends State<HomePage> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: isDesktop ? Colors.lightBlue.shade400 : null,
         floatingActionButton: isAdmin
             ? FloatingActionButton(
                 onPressed: null,
@@ -283,148 +282,162 @@ class _HomePageState extends State<HomePage> {
                 isAdmin: isAdmin,
               )
             : null,
-        body: SafeArea(
-          child: toShowWidgets.isEmpty
-              ? isDesktop
-                  ? Column(
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          decoration: BoxDecoration(
+              image: isDesktop
+                  ? const DecorationImage(
+                      image: AssetImage("assets/dashboard_bg.png"),
+                      fit: BoxFit.cover)
+                  : null),
+          child: SafeArea(
+            child: toShowWidgets.isEmpty
+                ? isDesktop
+                    ? Column(
+                        children: [
+                          Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              margin: const EdgeInsets.all(5),
+                              padding: const EdgeInsets.only(
+                                left: 20,
+                                right: 20,
+                                top: 5,
+                                bottom: 5,
+                              ),
+                              width: breakPointWidth.toDouble(),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: folderNavigator,
+                              ),
+                            ),
+                          ),
+                          const Gap(200),
+                          const Center(child: Text("No files or folders found"))
+                        ],
+                      )
+                    : const Center(child: Text("No files or folders found"))
+                : SingleChildScrollView(
+                    child: Column(
                       children: [
-                        Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            margin: const EdgeInsets.all(5),
-                            padding: const EdgeInsets.only(
-                              left: 20,
-                              right: 20,
-                              top: 5,
-                              bottom: 5,
-                            ),
-                            width: breakPointWidth.toDouble(),
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: folderNavigator,
-                            ),
-                          ),
-                        ),
-                        const Gap(200),
-                        const Center(child: Text("No files or folders found"))
-                      ],
-                    )
-                  : const Center(child: Text("No files or folders found"))
-              : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      if (isDesktop)
-                        Center(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            margin: const EdgeInsets.all(5),
-                            padding: const EdgeInsets.only(
-                              left: 20,
-                              right: 20,
-                              top: 5,
-                              bottom: 5,
-                            ),
-                            width: breakPointWidth.toDouble(),
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: folderNavigator,
+                        if (isDesktop)
+                          Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              margin: const EdgeInsets.all(5),
+                              padding: const EdgeInsets.only(
+                                left: 20,
+                                right: 20,
+                                top: 5,
+                                bottom: 5,
+                              ),
+                              width: breakPointWidth.toDouble(),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: folderNavigator,
+                              ),
                             ),
                           ),
-                        ),
-                      Container(
-                        width: isDesktop
-                            ? MediaQuery.of(context).size.width
-                            : null,
-                        height: isDesktop
-                            ? MediaQuery.of(context).size.height * 0.80
-                            : null,
-                        padding: isDesktop
-                            ? EdgeInsets.only(
-                                top: MediaQuery.of(context).size.width * 0.01,
-                                bottom:
-                                    MediaQuery.of(context).size.width * 0.05,
-                                left: MediaQuery.of(context).size.width * 0.05,
-                                right: MediaQuery.of(context).size.width * 0.03,
-                              )
-                            : null,
-                        margin: isDesktop
-                            ? EdgeInsets.only(
-                                top: MediaQuery.of(context).size.width * 0.01,
-                                bottom:
-                                    MediaQuery.of(context).size.width * 0.05,
-                                left: MediaQuery.of(context).size.width * 0.05,
-                                right: MediaQuery.of(context).size.width * 0.03,
-                              )
-                            : null,
-                        decoration: isDesktop
-                            ? BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: Colors.blue.shade700.withOpacity(0.7),
-                              )
-                            : null,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (isDesktop)
-                                Row(
-                                  children: [
-                                    const Spacer(),
-                                    Text(
-                                      isAdmin
-                                          ? "Admin"
-                                          : userModel!.userName ?? "",
-                                      style: const TextStyle(
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                        Container(
+                          width: isDesktop
+                              ? MediaQuery.of(context).size.width
+                              : null,
+                          height: isDesktop
+                              ? MediaQuery.of(context).size.height * 0.80
+                              : null,
+                          padding: isDesktop
+                              ? EdgeInsets.only(
+                                  top: MediaQuery.of(context).size.width * 0.01,
+                                  bottom:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.03,
+                                )
+                              : null,
+                          margin: isDesktop
+                              ? EdgeInsets.only(
+                                  top: MediaQuery.of(context).size.width * 0.01,
+                                  bottom:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  right:
+                                      MediaQuery.of(context).size.width * 0.03,
+                                )
+                              : null,
+                          decoration: isDesktop
+                              ? BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: Colors.blue.shade700.withOpacity(0.7),
+                                )
+                              : null,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (isDesktop)
+                                  Row(
+                                    children: [
+                                      const Spacer(),
+                                      Text(
+                                        isAdmin
+                                            ? "Admin"
+                                            : userModel!.userName ?? "",
+                                        style: const TextStyle(
+                                          fontSize: 26,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                    const Spacer(),
-                                    IconButton(
-                                      onPressed: () {
-                                        scaffoldKey.currentState!
-                                            .openEndDrawer();
-                                      },
-                                      icon: const Icon(
-                                        Icons.menu,
-                                        color: Colors.white,
-                                        size: 40,
+                                      const Spacer(),
+                                      IconButton(
+                                        onPressed: () {
+                                          scaffoldKey.currentState!
+                                              .openEndDrawer();
+                                        },
+                                        icon: const Icon(
+                                          Icons.menu,
+                                          color: Colors.white,
+                                          size: 40,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              const Gap(15),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: toShowWidgets.length > 2
-                                    ? Center(
-                                        child: Wrap(
+                                    ],
+                                  ),
+                                const Gap(15),
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: toShowWidgets.length > 2
+                                      ? Center(
+                                          child: Wrap(
+                                            runSpacing: 3,
+                                            spacing: 5,
+                                            children: toShowWidgets,
+                                          ),
+                                        )
+                                      : Wrap(
                                           runSpacing: 3,
                                           spacing: 5,
                                           children: toShowWidgets,
                                         ),
-                                      )
-                                    : Wrap(
-                                        runSpacing: 3,
-                                        spacing: 5,
-                                        children: toShowWidgets,
-                                      ),
-                              ),
-                            ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
+          ),
         ),
       ),
     );

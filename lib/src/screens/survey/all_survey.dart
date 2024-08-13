@@ -206,7 +206,9 @@ class _AllSurveyState extends State<AllSurvey> {
                                                         '${allSurveyFirebase[index].id}')
                                                     .then((value) {
                                                   showToastedMessage(
-                                                      "Copied ${allSurveyFirebase[index].id}");
+                                                      "Copied ${allSurveyFirebase[index].id}",
+                                                      // ignore: use_build_context_synchronously
+                                                      context);
                                                 });
                                               },
                                               icon: const Icon(Icons.link),
@@ -423,7 +425,9 @@ class _AllSurveyState extends State<AllSurvey> {
                                                       '${allSurveyLocal[index].id}')
                                                   .then((value) {
                                                 showToastedMessage(
-                                                    "Copied ${allSurveyLocal[index].id}");
+                                                    "Copied ${allSurveyLocal[index].id}",
+                                                    // ignore: use_build_context_synchronously
+                                                    context);
                                               });
                                             },
                                             icon: const Icon(Icons.link),
@@ -589,9 +593,17 @@ class _AllSurveyState extends State<AllSurvey> {
     String? path = await FilePicker.platform.getDirectoryPath();
     if (path != null) {
       await File("$path/$title.csv").writeAsString(csv);
-      showToastedMessage("Saved successfull!");
+      showToastedMessage(
+        "Saved successfull!",
+        // ignore: use_build_context_synchronously
+        context,
+      );
     } else {
-      showToastedMessage("Please pick a folder where we can save data");
+      showToastedMessage(
+        "Please pick a folder where we can save data",
+        // ignore: use_build_context_synchronously
+        context,
+      );
     }
   }
 }

@@ -1,18 +1,20 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 
-void showToastedMessage(String msg) {
+void showToastedMessage(String msg, BuildContext context) {
   bool possibleToShowTwoatsedMessage =
       Platform.isIOS || Platform.isAndroid || kIsWeb;
   if (possibleToShowTwoatsedMessage) {
     Fluttertoast.showToast(msg: msg, toastLength: Toast.LENGTH_LONG);
   } else {
-    Get.showSnackbar(GetSnackBar(
-      message: msg,
-      duration: const Duration(seconds: 2),
-    ));
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Center(
+        child: Text(msg),
+      ),
+    );
   }
 }
