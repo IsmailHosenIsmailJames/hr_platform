@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hr_platform/src/screens/home/suspended_user/suspend_new.dart';
@@ -172,7 +171,6 @@ class _SuspendedUserState extends State<SuspendedUser> {
         (route) => false,
       );
     } on FirebaseException catch (e) {
-      print(e.toString());
       showModalBottomSheet(
         // ignore: use_build_context_synchronously
         context: context,

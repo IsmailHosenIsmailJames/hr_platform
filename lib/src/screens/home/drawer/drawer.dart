@@ -92,6 +92,30 @@ class MyDrawer extends StatelessWidget {
                       FirebaseAuth.instance.currentUser!.email!.isNotEmpty)
                     TextButton.icon(
                       onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const SuspendedUser();
+                            },
+                          ),
+                        );
+                      },
+                      label: const Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Suspended User",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      icon: const Icon(Icons.remove),
+                    ),
+                  if (FirebaseAuth.instance.currentUser!.email != null &&
+                      FirebaseAuth.instance.currentUser!.email!.isNotEmpty)
+                    TextButton.icon(
+                      onPressed: () {
                         final tem = Get.put(SurveyController());
                         tem.survey.value = SureveyModel(
                           id: getRandomValue(),
@@ -114,30 +138,6 @@ class MyDrawer extends StatelessWidget {
                         children: [
                           Text(
                             "Create a Survey",
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ],
-                      ),
-                      icon: const Icon(FluentIcons.document_table_24_regular),
-                    ),
-                  if (FirebaseAuth.instance.currentUser!.email != null &&
-                      FirebaseAuth.instance.currentUser!.email!.isNotEmpty)
-                    TextButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const SuspendedUser();
-                            },
-                          ),
-                        );
-                      },
-                      label: const Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Suspended User",
                             style: TextStyle(fontSize: 16),
                           ),
                         ],

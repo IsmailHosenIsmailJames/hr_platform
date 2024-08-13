@@ -38,6 +38,7 @@ class UserModel {
     String? designationName,
     String? email,
     String? jobTypeName,
+    String? isSuspanded,
   }) =>
       UserModel(
         cellPhone: cellPhone ?? this.cellPhone,
