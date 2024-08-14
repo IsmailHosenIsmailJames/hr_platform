@@ -807,6 +807,7 @@ class _HomePageState extends State<HomePage> {
                           width: boxHight,
                           child: Text(
                             cureentModel.name,
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ],
@@ -1098,7 +1099,10 @@ class _HomePageState extends State<HomePage> {
                         ),
                         SizedBox(
                           width: boxWidth,
-                          child: Text(cureentModel.name),
+                          child: Text(
+                            cureentModel.name,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),

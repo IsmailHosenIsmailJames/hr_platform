@@ -286,7 +286,7 @@ void showDialogForMobileUpdate(BuildContext context, String deviceV,
                     const Gap(10),
                     ElevatedButton(
                       onPressed: () async {
-                        await OpenFilex.open(apkFilePathOnDevice);
+                        await OpenFilex.open(apkFilePathOnDevice!);
                         Navigator.pop(context);
                       },
                       child: const Text(
