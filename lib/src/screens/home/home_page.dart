@@ -62,10 +62,11 @@ class _HomePageState extends State<HomePage> {
   double boxWidth = 110;
   @override
   Widget build(BuildContext context) {
+    bool canPop = widget.path.split('/').length > 2;
     bool isDesktop = MediaQuery.of(context).size.width > breakPointWidth;
     bool isMobile = !isDesktop;
     List<String> splitedPath = widget.path.split('/');
-    List<Widget> toShowWidgets = getWidgetsOfFilesFolder();
+    List<Widget> toShowWidgets = getWidgetsOfFilesFolder(canPop);
     bool isAdmin = FirebaseAuth.instance.currentUser!.email != null &&
         FirebaseAuth.instance.currentUser!.email!.isNotEmpty;
     final box = Hive.box('info');
@@ -108,10 +109,29 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
+    Widget backIcon = IconButton(
+      style: IconButton.styleFrom(
+        iconSize: 60,
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      onPressed: () {
+        int lastSalah = widget.path.lastIndexOf('/');
+        String toGo = widget.path.substring(0, lastSalah);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          "/home$toGo",
+          (route) => false,
+        );
+      },
+      icon: const Icon(
+        Icons.arrow_back,
+      ),
+    );
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (x, didPop) async {
-        bool? canPop = widget.path.split('/').length > 2;
         if (canPop == true) {
           int lastSalah = widget.path.lastIndexOf('/');
           String toGo = widget.path.substring(0, lastSalah);
@@ -317,10 +337,20 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           const Gap(200),
-                          const Center(child: Text("No files or folders found"))
+                          canPop
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: backIcon,
+                                )
+                              : const SizedBox()
                         ],
                       )
-                    : const Center(child: Text("No files or folders found"))
+                    : canPop
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: backIcon,
+                          )
+                        : const SizedBox()
                 : SingleChildScrollView(
                     child: Column(
                       children: [
@@ -377,7 +407,7 @@ class _HomePageState extends State<HomePage> {
                           decoration: isDesktop
                               ? BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  color: Colors.blue.shade700.withOpacity(0.7),
+                                  color: Colors.blue.shade700.withOpacity(0.3),
                                 )
                               : null,
                           child: SingleChildScrollView(
@@ -416,19 +446,19 @@ class _HomePageState extends State<HomePage> {
                                 const Gap(15),
                                 SingleChildScrollView(
                                   scrollDirection: Axis.vertical,
-                                  child: toShowWidgets.length > 2
-                                      ? Center(
-                                          child: Wrap(
-                                            runSpacing: 3,
-                                            spacing: 5,
-                                            children: toShowWidgets,
-                                          ),
-                                        )
-                                      : Wrap(
-                                          runSpacing: 3,
-                                          spacing: 5,
-                                          children: toShowWidgets,
-                                        ),
+                                  child: Wrap(
+                                    runSpacing: 3,
+                                    spacing: 5,
+                                    children: <Widget>[
+                                          if (canPop)
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: backIcon,
+                                            )
+                                        ] +
+                                        toShowWidgets,
+                                  ),
                                 ),
                               ],
                             ),
@@ -445,7 +475,7 @@ class _HomePageState extends State<HomePage> {
 
   int downloadPercentage = 0;
 
-  List<Widget> getWidgetsOfFilesFolder() {
+  List<Widget> getWidgetsOfFilesFolder(bool canBack) {
     List<Map> allData = getCurrentPossitionListOfData();
     Map<String, List<Map>> filteredMap = {};
     Map<String, List<int>> filteredMapIndex = {};
