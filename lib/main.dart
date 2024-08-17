@@ -10,6 +10,7 @@ import 'package:hr_platform/src/auth/is_authenticated.dart';
 import 'package:hr_platform/src/core/initialization.dart';
 import 'package:hr_platform/src/screens/auth/login/login_page.dart';
 import 'package:hr_platform/src/screens/survey/all_survey.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'firebase_options.dart';
@@ -28,9 +29,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FastCachedImageConfig.init();
+  Directory cachedDir = await getApplicationCacheDirectory();
+  await FastCachedImageConfig.init(subDir: "hr_platform");
   setPathUrlStrategy();
-  await Hive.initFlutter("hr_platform");
+  await Hive.initFlutter("${cachedDir.path}/hr_platform");
   await Hive.openBox("info");
   await Hive.openBox("surveyLocal");
 

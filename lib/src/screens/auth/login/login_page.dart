@@ -67,7 +67,9 @@ class _LoginPageState extends State<LoginPage> {
           );
           return "This user has been suspended";
         }
-        final box = await Hive.openBox('info');
+        var box = await Hive.openBox('info');
+        await box.deleteFromDisk();
+        box = await Hive.openBox('info');
         temUserData.addAll({"user_id": id});
         await box.put('userData', jsonEncode(temUserData));
         Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
@@ -94,7 +96,9 @@ class _LoginPageState extends State<LoginPage> {
         if (response.exists) {
           Map userData = response.data()!;
           Map<String, dynamic> adminData = Map<String, dynamic>.from(userData);
-          final box = await Hive.openBox('info');
+          var box = await Hive.openBox('info');
+          await box.deleteFromDisk();
+          box = await Hive.openBox('info');
           await box.put("userData", jsonEncode(adminData));
           Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
         } else {
