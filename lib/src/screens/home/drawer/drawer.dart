@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/models/user_model.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/edit_profile/edit_profile.dart';
+import 'package:hr_platform/src/screens/home/all_users/all_users.dart';
 import 'package:hr_platform/src/screens/home/suspended_user/suspended_user.dart';
 import 'package:hr_platform/src/screens/survey/all_survey.dart';
 import 'package:hr_platform/src/screens/survey/getx/controller_getx.dart';
@@ -64,6 +65,30 @@ class MyDrawer extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.all(10),
                 children: [
+                  if (FirebaseAuth.instance.currentUser!.email != null &&
+                      FirebaseAuth.instance.currentUser!.email!.isNotEmpty)
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const AllUsers();
+                            },
+                          ),
+                        );
+                      },
+                      label: const Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "All User",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                      icon: const Icon(FluentIcons.person_search_24_regular),
+                    ),
                   if (FirebaseAuth.instance.currentUser!.email != null &&
                       FirebaseAuth.instance.currentUser!.email!.isNotEmpty)
                     TextButton.icon(

@@ -386,7 +386,7 @@ class _HomePageState extends State<HomePage> {
                               ? EdgeInsets.only(
                                   top: MediaQuery.of(context).size.width * 0.01,
                                   bottom:
-                                      MediaQuery.of(context).size.width * 0.05,
+                                      MediaQuery.of(context).size.width * 0.01,
                                   left:
                                       MediaQuery.of(context).size.width * 0.05,
                                   right:
@@ -397,7 +397,7 @@ class _HomePageState extends State<HomePage> {
                               ? EdgeInsets.only(
                                   top: MediaQuery.of(context).size.width * 0.01,
                                   bottom:
-                                      MediaQuery.of(context).size.width * 0.05,
+                                      MediaQuery.of(context).size.width * 0.01,
                                   left:
                                       MediaQuery.of(context).size.width * 0.05,
                                   right:
