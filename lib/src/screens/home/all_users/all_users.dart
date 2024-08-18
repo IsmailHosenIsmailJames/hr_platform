@@ -95,7 +95,10 @@ class _AllUsersState extends State<AllUsers> {
                             ),
                             const Gap(10),
                             ElevatedButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                getAllUserData();
+                                Navigator.pop(context);
+                              },
                               label: const Text("Download"),
                               icon: const Icon(Icons.download),
                             ),
