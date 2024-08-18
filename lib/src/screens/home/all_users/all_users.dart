@@ -16,7 +16,11 @@ class AllUsers extends StatefulWidget {
 class _AllUsersState extends State<AllUsers> {
   Map<String, UserModel>? allUserMap;
   Map<String, UserModel> constSearchAllUserMap = {};
+  bool isDownloading = false;
   Future<void> getAllUserData() async {
+    setState(() {
+      isDownloading = true;
+    });
     final box = await Hive.openBox("allUserCached");
     Map<String, UserModel> allUser = {};
 
@@ -50,6 +54,8 @@ class _AllUsersState extends State<AllUsers> {
     setState(() {
       allUserMap = allUser;
       constSearchAllUserMap = allUser;
+      searchFieldController.clear();
+      isDownloading = false;
     });
   }
 
@@ -59,12 +65,48 @@ class _AllUsersState extends State<AllUsers> {
     super.initState();
   }
 
+  TextEditingController searchFieldController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text("All Users"),
+        actions: [
+          isDownloading
+              ? const CircularProgressIndicator()
+              : IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text("Are you sure?"),
+                          content: const Text(
+                              "This task is heavy and spend resources. If not necessary, try to avoid it."),
+                          actions: [
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              label: const Text("Cancel"),
+                              icon: const Icon(Icons.close),
+                            ),
+                            const Gap(10),
+                            ElevatedButton.icon(
+                              onPressed: () {},
+                              label: const Text("Download"),
+                              icon: const Icon(Icons.download),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.restore),
+                ),
+        ],
       ),
       body: Center(
         child: allUserMap != null
@@ -86,6 +128,7 @@ class _AllUsersState extends State<AllUsers> {
                         ),
                         padding: const EdgeInsets.only(left: 10, right: 10),
                         child: TextFormField(
+                          controller: searchFieldController,
                           onChanged: (value) {
                             List<String> splited =
                                 value.replaceAll(" ", "").split(',');
