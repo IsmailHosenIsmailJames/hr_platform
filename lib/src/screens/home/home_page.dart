@@ -26,7 +26,6 @@ import 'package:hr_platform/src/theme/break_point.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/data/get_data_form_hive.dart';
-import '../../core/in_app_update/cheak_for_update.dart';
 import '../../models/user_model.dart';
 
 class HomePage extends StatefulWidget {
@@ -53,7 +52,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    cheakUpdateAvailable(context);
     super.initState();
   }
 

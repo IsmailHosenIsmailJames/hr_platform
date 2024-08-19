@@ -1,38 +1,33 @@
-import 'dart:io';
-import 'dart:isolate';
-
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:hr_platform/src/auth/is_authenticated.dart';
 import 'package:hr_platform/src/core/initialization.dart';
 import 'package:hr_platform/src/screens/auth/login/login_page.dart';
 import 'package:hr_platform/src/screens/survey/all_survey.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'firebase_options.dart';
 import 'src/screens/home/home_page.dart';
 
-void _isolateMain(RootIsolateToken rootIsolateToken) async {
-  BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
-}
+// void _isolateMain(RootIsolateToken rootIsolateToken) async {
+//   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
+// }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isWindows) {
-    RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
-    Isolate.spawn(_isolateMain, rootIsolateToken);
-  }
+  // if (Platform.isWindows) {
+  //   RootIsolateToken rootIsolateToken = RootIsolateToken.instance!;
+  //   Isolate.spawn(_isolateMain, rootIsolateToken);
+  // }
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Directory cachedDir = await getApplicationCacheDirectory();
+  // Directory cachedDir = await getApplicationCacheDirectory();
   await FastCachedImageConfig.init(subDir: "hr_platform");
   setPathUrlStrategy();
-  await Hive.initFlutter("${cachedDir.path}/hr_platform");
+  await Hive.initFlutter();
   await Hive.openBox("info");
   await Hive.openBox("surveyLocal");
 
