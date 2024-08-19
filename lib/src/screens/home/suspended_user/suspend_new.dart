@@ -85,36 +85,34 @@ class _SuspendNewState extends State<SuspendNew> {
       job_type_name: Permanent Mgt,
        date_of_joining: 01-Jul-07, 
        email: , cell_phone: }""";
-    Map<String, String> user = Map<String, String>.from(userData);
-    List<Widget> listOfWidget = [];
+    Map<String, dynamic> user = Map<String, dynamic>.from(userData);
+    List<InlineSpan> listOfWidget = [];
     user.forEach(
       (key, value) {
-        if (value.isNotEmpty) {
+        if (value != null && value.isNotEmpty) {
           listOfWidget.add(
-            Padding(
-              padding: const EdgeInsets.only(top: 5, bottom: 5),
-              child: Row(
-                children: [
-                  Text(
-                    "$key: ",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const Gap(20),
-                  Text(value.toString())
-                ],
-              ),
+            TextSpan(
+              text: "$key: ",
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           );
+          listOfWidget.add(TextSpan(text: "\t \t \t \t$value\n"));
         }
       },
     );
     if ((userData['isSuspanded'] ?? "false") != "true") {
       setState(() {
-        searchedUserIDWidget = Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: listOfWidget +
-              [
+        searchedUserIDWidget = Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          padding: const EdgeInsets.all(10),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SelectableText.rich(TextSpan(children: listOfWidget)),
                 const Gap(20),
                 ElevatedButton(
                   onPressed: () {
@@ -122,7 +120,7 @@ class _SuspendNewState extends State<SuspendNew> {
                   },
                   child: const Text("Suspend"),
                 ),
-              ],
+              ]),
         );
       });
     } else {
@@ -136,7 +134,7 @@ class _SuspendNewState extends State<SuspendNew> {
     }
   }
 
-  void suspandUser(Map<String, String> userData, String id) async {
+  void suspandUser(Map<String, dynamic> userData, String id) async {
     userData.addAll({"isSuspanded": "true"});
     try {
       showCupertinoModalPopup(

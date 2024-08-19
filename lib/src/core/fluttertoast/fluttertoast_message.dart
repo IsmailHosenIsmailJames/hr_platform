@@ -9,13 +9,11 @@ void showFluttertoastMessage(String msg, BuildContext context) {
   } else {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Center(
-        child: Text(
-          msg,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
+      builder: (context) => Text(
+        msg,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );

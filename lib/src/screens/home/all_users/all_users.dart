@@ -3,6 +3,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:hr_platform/src/screens/edit_profile/edit_profile.dart';
 
 import '../../../models/user_model.dart';
 
@@ -16,6 +17,7 @@ class AllUsers extends StatefulWidget {
 class _AllUsersState extends State<AllUsers> {
   Map<String, UserModel>? allUserMap;
   Map<String, UserModel> constSearchAllUserMap = {};
+  Map<String, dynamic>? userMapedData;
   bool isDownloading = false;
   Future<void> getAllUserData() async {
     setState(() {
@@ -40,9 +42,14 @@ class _AllUsersState extends State<AllUsers> {
       );
       await box.put("data", toSave);
       await box.put("time", DateTime.now().millisecondsSinceEpoch);
+      setState(() {
+        userMapedData = Map<String, dynamic>.from(toSave);
+      });
     } else {
       Map data = box.get("data");
-
+      setState(() {
+        userMapedData = Map<String, dynamic>.from(data);
+      });
       data.forEach(
         (key, value) {
           allUser.addAll({
@@ -184,25 +191,15 @@ class _AllUsersState extends State<AllUsers> {
 
   Widget buildUserInfoWidgetForSuspend(Map userData, String id) {
     Map<String, dynamic> user = Map<String, dynamic>.from(userData);
-    List<Widget> listOfWidget = [];
+    List<InlineSpan> listOfWidget = [];
     user.forEach(
       (key, value) {
         if ((value ?? "").isNotEmpty) {
-          listOfWidget.add(
-            Padding(
-              padding: const EdgeInsets.only(top: 5, bottom: 5),
-              child: Row(
-                children: [
-                  Text(
-                    "$key: ",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const Gap(20),
-                  Text(value.toString())
-                ],
-              ),
-            ),
-          );
+          listOfWidget.add(TextSpan(
+            text: "$key: ",
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ));
+          listOfWidget.add(TextSpan(text: "\t \t \t \t$value\n"));
         }
       },
     );
@@ -214,21 +211,45 @@ class _AllUsersState extends State<AllUsers> {
         borderRadius: BorderRadius.circular(10),
         color: Colors.grey.shade300,
       ),
-      child: Column(
-        children: <Widget>[
-              Center(
-                child: Text(
-                  "User ID: $id",
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
+      child: Column(children: <Widget>[
+        Row(
+          children: [
+            const Spacer(
+              flex: 5,
+            ),
+            Center(
+              child: SelectableText(
+                "User ID: $id",
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              const Divider()
-            ] +
-            listOfWidget,
-      ),
+            ),
+            const Spacer(
+              flex: 4,
+            ),
+            IconButton(
+              onPressed: () {
+                UserModel model = UserModel.fromMap(
+                  Map<String, dynamic>.from(userData),
+                );
+                model.userID = id;
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => EditProfile(
+                    userModel: model,
+                    extraDataTOSave: userMapedData,
+                  ),
+                ));
+              },
+              icon: const Icon(Icons.edit),
+            ),
+            const Gap(10),
+          ],
+        ),
+        const Divider(),
+        SelectableText.rich(TextSpan(children: listOfWidget)),
+      ]),
     );
   }
 }

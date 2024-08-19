@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:hr_platform/src/models/user_model.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
 
@@ -8,7 +10,8 @@ import '../add_user/add_user.dart';
 
 class EditProfile extends StatefulWidget {
   final UserModel userModel;
-  const EditProfile({super.key, required this.userModel});
+  final Map<String, dynamic>? extraDataTOSave;
+  const EditProfile({super.key, required this.userModel, this.extraDataTOSave});
 
   @override
   State<EditProfile> createState() => _EditProfileState();
@@ -25,6 +28,7 @@ class _EditProfileState extends State<EditProfile> {
   late TextEditingController designationNameController;
   late TextEditingController emailController;
   late TextEditingController jobTypeNameController;
+  Map<String, dynamic>? extraDataTOSave;
   @override
   void initState() {
     passwordController =
@@ -43,6 +47,7 @@ class _EditProfileState extends State<EditProfile> {
     emailController = TextEditingController(text: widget.userModel.email);
     jobTypeNameController =
         TextEditingController(text: widget.userModel.jobTypeName);
+    extraDataTOSave = widget.extraDataTOSave;
     super.initState();
   }
 
@@ -163,26 +168,39 @@ class _EditProfileState extends State<EditProfile> {
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           try {
+                            UserModel model = UserModel(
+                              userID: widget.userModel.userID,
+                              userPassword: passwordController.text,
+                              userName: userNameController.text,
+                              cellPhone: cellPhoneController.text,
+                              companyName: companyNameController.text,
+                              dateOfJoining: dateOfJoiningController.text,
+                              departmentName: departmentNameController.text,
+                              designationName: designationNameController.text,
+                              email: emailController.text,
+                              jobTypeName: jobTypeNameController.text,
+                            );
                             await FirebaseFirestore.instance
                                 .collection("general_user")
                                 .doc(widget.userModel.userID)
-                                .update(
-                                  UserModel(
-                                    userID: widget.userModel.userID,
-                                    userPassword: passwordController.text,
-                                    userName: userNameController.text,
-                                    cellPhone: cellPhoneController.text,
-                                    companyName: companyNameController.text,
-                                    dateOfJoining: dateOfJoiningController.text,
-                                    departmentName:
-                                        departmentNameController.text,
-                                    designationName:
-                                        designationNameController.text,
-                                    email: emailController.text,
-                                    jobTypeName: jobTypeNameController.text,
-                                  ).toMap(),
-                                );
+                                .update(model.toMap());
+                            if (extraDataTOSave != null) {
+                              extraDataTOSave!.addAll(Map<String, dynamic>.from(
+                                  {widget.userModel.userID!: model.toMap()}));
+
+                              print(extraDataTOSave![widget.userModel.userID]);
+
+                              final box = await Hive.openBox("allUserCached");
+                              await box.put("data", extraDataTOSave);
+                            }
+                            Navigator.pushNamedAndRemoveUntil(
+                              // ignore: use_build_context_synchronously
+                              context,
+                              "/",
+                              (route) => false,
+                            );
                           } catch (e) {
+                            print(e);
                             showModalBottomSheet(
                               // ignore: use_build_context_synchronously
                               context: context,

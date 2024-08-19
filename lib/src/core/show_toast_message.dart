@@ -12,8 +12,12 @@ void showToastedMessage(String msg, BuildContext context) {
   } else {
     showModalBottomSheet(
       context: context,
-      builder: (context) => Center(
-        child: Text(msg),
+      builder: (context) => Text(
+        msg,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }
