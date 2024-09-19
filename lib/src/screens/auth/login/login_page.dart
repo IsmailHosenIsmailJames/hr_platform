@@ -32,6 +32,8 @@ class _LoginPageState extends State<LoginPage> {
     return EmailValidator.validate(id);
   }
 
+  FocusNode passwordFocusNode = FocusNode();
+
   Future<String?> loginUser(String id, String password) async {
     if (isIdLooksLikeEmail(id)) {
       String? result = await loginAdmin(id, password);
@@ -139,9 +141,18 @@ class _LoginPageState extends State<LoginPage> {
               }
               return null;
             },
+            onFieldSubmitted: (value) {
+              passwordFocusNode.requestFocus();
+            },
           ),
           const Gap(10),
           TextFormField(
+            onFieldSubmitted: (value) async {
+              if (_formKey.currentState!.validate()) {
+                await logButtonPressedFun(context);
+              }
+            },
+            focusNode: passwordFocusNode,
             controller: _passwordTextEditingController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             style: const TextStyle(color: Colors.black),
@@ -161,43 +172,7 @@ class _LoginPageState extends State<LoginPage> {
             width: 400,
             child: ElevatedButton(
               onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return SizedBox(
-                        height: MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width,
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.blue,
-                          ),
-                        ),
-                      );
-                    },
-                  );
-
-                  final String? result = await loginUser(
-                    _idTextEditingController.text.trim(),
-                    _passwordTextEditingController.text,
-                  );
-
-                  if (kDebugMode) {
-                    print(result);
-                  }
-
-                  if (result == null) {
-                    // login successfull
-                    showFluttertoastMessage("Login successfull", context);
-                  } else {
-                    // something worng
-                    showFluttertoastMessage(result, context);
-                  }
-
-                  if (Navigator.canPop(context)) {
-                    Navigator.pop(context);
-                  }
-                }
+                await logButtonPressedFun(context);
               },
               child: const Text("Login"),
             ),
@@ -295,5 +270,45 @@ class _LoginPageState extends State<LoginPage> {
               );
       },
     );
+  }
+
+  Future<void> logButtonPressedFun(BuildContext context) async {
+    if (_formKey.currentState!.validate()) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: const Center(
+              child: CircularProgressIndicator(
+                color: Colors.blue,
+              ),
+            ),
+          );
+        },
+      );
+
+      final String? result = await loginUser(
+        _idTextEditingController.text.trim(),
+        _passwordTextEditingController.text,
+      );
+
+      if (kDebugMode) {
+        print(result);
+      }
+
+      if (result == null) {
+        // login successfull
+        showFluttertoastMessage("Login successfull", context);
+      } else {
+        // something worng
+        showFluttertoastMessage(result, context);
+      }
+
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+    }
   }
 }

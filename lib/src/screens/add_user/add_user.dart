@@ -24,6 +24,17 @@ class _AddUserState extends State<AddUser> {
   TextEditingController emailController = TextEditingController();
   TextEditingController jobTypeNameController = TextEditingController();
 
+  FocusNode userIDFocus = FocusNode();
+  FocusNode passwordFocus = FocusNode();
+  FocusNode userNameFocus = FocusNode();
+  FocusNode cellPhoneFocus = FocusNode();
+  FocusNode companyNameFocus = FocusNode();
+  FocusNode dateOfJoiningFocus = FocusNode();
+  FocusNode departmentNameFocus = FocusNode();
+  FocusNode designationNameFocus = FocusNode();
+  FocusNode emailFocus = FocusNode();
+  FocusNode jobTypeNameFocus = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +56,10 @@ class _AddUserState extends State<AddUser> {
                     const Gap(5),
                     TextFormField(
                       controller: userIDController,
+                      focusNode: userIDFocus,
+                      onFieldSubmitted: (value) {
+                        passwordFocus.requestFocus();
+                      },
                       validator: (value) {
                         if (value == null || value.length < 4) {
                           return "ID should be 4 digit at least";
@@ -76,6 +91,10 @@ class _AddUserState extends State<AddUser> {
                       },
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       controller: passwordController,
+                      focusNode: passwordFocus,
+                      onFieldSubmitted: (value) {
+                        userNameFocus.requestFocus();
+                      },
                       decoration: getInputDecooration(
                         "User Password",
                         "Type password for new user...",
@@ -85,6 +104,10 @@ class _AddUserState extends State<AddUser> {
                     const Gap(5),
                     TextFormField(
                       controller: userNameController,
+                      focusNode: userNameFocus,
+                      onFieldSubmitted: (value) {
+                        cellPhoneFocus.requestFocus();
+                      },
                       decoration: getInputDecooration(
                         "User Name",
                         "Type user name for new user...",
@@ -95,6 +118,10 @@ class _AddUserState extends State<AddUser> {
                     const Gap(5),
                     TextFormField(
                       controller: cellPhoneController,
+                      focusNode: cellPhoneFocus,
+                      onFieldSubmitted: (value) {
+                        companyNameFocus.requestFocus();
+                      },
                       decoration: getInputDecooration(
                         "Cell Phone",
                         "Type user Cell Phone...",
@@ -105,6 +132,10 @@ class _AddUserState extends State<AddUser> {
                     const Gap(5),
                     TextFormField(
                       controller: companyNameController,
+                      focusNode: companyNameFocus,
+                      onFieldSubmitted: (value) {
+                        dateOfJoiningFocus.requestFocus();
+                      },
                       decoration: getInputDecooration(
                         "Company Name",
                         "Type Company Name of new user...",
@@ -115,6 +146,10 @@ class _AddUserState extends State<AddUser> {
                     const Gap(5),
                     TextFormField(
                       controller: dateOfJoiningController,
+                      focusNode: dateOfJoiningFocus,
+                      onFieldSubmitted: (value) {
+                        departmentNameFocus.requestFocus();
+                      },
                       decoration: getInputDecooration(
                         "Date Of Joining",
                         "Type Date Of Joining of new user...",
@@ -125,6 +160,10 @@ class _AddUserState extends State<AddUser> {
                     const Gap(5),
                     TextFormField(
                       controller: departmentNameController,
+                      focusNode: departmentNameFocus,
+                      onFieldSubmitted: (value) {
+                        designationNameFocus.requestFocus();
+                      },
                       decoration: getInputDecooration(
                         "Department Name",
                         "Type Department Name of new user...",
@@ -135,6 +174,10 @@ class _AddUserState extends State<AddUser> {
                     const Gap(5),
                     TextFormField(
                       controller: designationNameController,
+                      focusNode: designationNameFocus,
+                      onFieldSubmitted: (value) {
+                        emailFocus.requestFocus();
+                      },
                       decoration: getInputDecooration(
                         "Designation Name",
                         "Type Designation Name of new user...",
@@ -145,6 +188,10 @@ class _AddUserState extends State<AddUser> {
                     const Gap(5),
                     TextFormField(
                       controller: emailController,
+                      focusNode: emailFocus,
+                      onFieldSubmitted: (value) {
+                        jobTypeNameFocus.requestFocus();
+                      },
                       keyboardType: TextInputType.emailAddress,
                       decoration: getInputDecooration(
                         "Email",
@@ -156,6 +203,10 @@ class _AddUserState extends State<AddUser> {
                     const Gap(5),
                     TextFormField(
                       controller: jobTypeNameController,
+                      focusNode: jobTypeNameFocus,
+                      onFieldSubmitted: (value) async {
+                        await onADDButtonPressedFub(context);
+                      },
                       decoration: getInputDecooration(
                         "Job Type",
                         "Type Job Type Name of new user...",
@@ -166,52 +217,7 @@ class _AddUserState extends State<AddUser> {
                       width: 330,
                       child: ElevatedButton.icon(
                         onPressed: () async {
-                          if (formKey.currentState!.validate()) {
-                            try {
-                              final response = await FirebaseFirestore.instance
-                                  .collection("general_user")
-                                  .doc(userIDController.text)
-                                  .get();
-                              if (response.exists) {
-                                showDialog(
-                                  // ignore: use_build_context_synchronously
-                                  context: context,
-                                  builder: (context) => const AlertDialog(
-                                    title: Text("This user already exits"),
-                                  ),
-                                );
-                              } else {
-                                await FirebaseFirestore.instance
-                                    .collection("general_user")
-                                    .doc(userIDController.text)
-                                    .set(
-                                      UserModel(
-                                        userID: userIDController.text,
-                                        userPassword: passwordController.text,
-                                        userName: userNameController.text,
-                                        cellPhone: cellPhoneController.text,
-                                        companyName: companyNameController.text,
-                                        dateOfJoining:
-                                            dateOfJoiningController.text,
-                                        departmentName:
-                                            departmentNameController.text,
-                                        designationName:
-                                            designationNameController.text,
-                                        email: emailController.text,
-                                        jobTypeName: jobTypeNameController.text,
-                                      ).toMap(),
-                                    );
-                              }
-                            } catch (e) {
-                              showModalBottomSheet(
-                                // ignore: use_build_context_synchronously
-                                context: context,
-                                builder: (context) => const Center(
-                                  child: Text("Somethings went worng"),
-                                ),
-                              );
-                            }
-                          }
+                          await onADDButtonPressedFub(context);
                         },
                         label: const Text("ADD"),
                         icon: const Icon(Icons.add),
@@ -225,6 +231,52 @@ class _AddUserState extends State<AddUser> {
         ),
       ),
     );
+  }
+
+  Future<void> onADDButtonPressedFub(BuildContext context) async {
+    if (formKey.currentState!.validate()) {
+      try {
+        final response = await FirebaseFirestore.instance
+            .collection("general_user")
+            .doc(userIDController.text)
+            .get();
+        if (response.exists) {
+          showDialog(
+            // ignore: use_build_context_synchronously
+            context: context,
+            builder: (context) => const AlertDialog(
+              title: Text("This user already exits"),
+            ),
+          );
+        } else {
+          await FirebaseFirestore.instance
+              .collection("general_user")
+              .doc(userIDController.text)
+              .set(
+                UserModel(
+                  userID: userIDController.text,
+                  userPassword: passwordController.text,
+                  userName: userNameController.text,
+                  cellPhone: cellPhoneController.text,
+                  companyName: companyNameController.text,
+                  dateOfJoining: dateOfJoiningController.text,
+                  departmentName: departmentNameController.text,
+                  designationName: designationNameController.text,
+                  email: emailController.text,
+                  jobTypeName: jobTypeNameController.text,
+                ).toMap(),
+              );
+        }
+      } catch (e) {
+        showModalBottomSheet(
+          // ignore: use_build_context_synchronously
+          context: context,
+          builder: (context) => const Center(
+            child: Text("Somethings went worng"),
+          ),
+        );
+      }
+    }
   }
 }
 
