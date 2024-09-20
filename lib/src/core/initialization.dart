@@ -29,7 +29,7 @@ class _InitializationState extends State<Initialization> {
   }
 
   Future<void> goToLoginPage() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 1000));
     Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => true);
   }
 
@@ -43,6 +43,7 @@ class _InitializationState extends State<Initialization> {
     } else {
       await Hive.box('info').put('data', jsonEncode({}));
     }
+    await Future.delayed(const Duration(milliseconds: 500));
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
