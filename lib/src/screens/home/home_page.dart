@@ -2,10 +2,10 @@
 
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -109,23 +109,29 @@ class _HomePageState extends State<HomePage> {
       ),
     );
 
-    Widget backIcon = IconButton(
-      style: IconButton.styleFrom(
-        iconSize: 60,
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
-      onPressed: () {
-        int lastSalah = widget.path.lastIndexOf('/');
-        String toGo = widget.path.substring(0, lastSalah);
-        Navigator.pushNamedAndRemoveUntil(
-          context,
-          "/home$toGo",
-          (route) => false,
-        );
-      },
-      icon: const Icon(
-        Icons.arrow_back,
+    Widget backIcon = SizedBox(
+      height: 100,
+      width: 100,
+      child: Center(
+        child: IconButton(
+          style: IconButton.styleFrom(
+            iconSize: 60,
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+          ),
+          onPressed: () {
+            int lastSalah = widget.path.lastIndexOf('/');
+            String toGo = widget.path.substring(0, lastSalah);
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              "/home$toGo",
+              (route) => false,
+            );
+          },
+          icon: const Icon(
+            Icons.arrow_back,
+          ),
+        ),
       ),
     );
 
@@ -523,11 +529,15 @@ class _HomePageState extends State<HomePage> {
                     context: context,
                     builder: (context) {
                       return Dialog(
-                        child: FastCachedImage(
-                          url: cureentModel.path,
-                          loadingBuilder: (p0, p1) {
+                        child: CachedNetworkImage(
+                          imageUrl: cureentModel.path,
+                          progressIndicatorBuilder: (context, url, progress) {
                             return CircularProgressIndicator(
-                              value: p1.progressPercentage.value,
+                              value: progress.totalSize == null
+                                  ? null
+                                  : (progress.downloaded /
+                                          progress.totalSize!) *
+                                      100,
                             );
                           },
                         ),
@@ -564,7 +574,7 @@ class _HomePageState extends State<HomePage> {
                       width: boxWidth - 50,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: FastCachedImageProvider(
+                          image: CachedNetworkImageProvider(
                             isImage
                                 ? cureentModel.path
                                 : cureentModel.image ??
@@ -890,7 +900,7 @@ class _HomePageState extends State<HomePage> {
                         width: boxWidth,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: FastCachedImageProvider(
+                            image: CachedNetworkImageProvider(
                               cureentModel.image ??
                                   "http://116.68.200.97:6027/static/media/form.54693b5d.png",
                             ),
