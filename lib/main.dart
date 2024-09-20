@@ -1,4 +1,3 @@
-import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -25,7 +24,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   // Directory cachedDir = await getApplicationCacheDirectory();
-  await FastCachedImageConfig.init(subDir: "hr_platform");
   setPathUrlStrategy();
   await Hive.initFlutter();
   await Hive.openBox("info");

@@ -224,7 +224,7 @@ class MyDrawer extends StatelessWidget {
                   TextButton.icon(
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();
-                      await Hive.box('info').deleteFromDisk();
+                      await Hive.box('info').clear();
                       await Hive.box("surveyLocal").deleteFromDisk();
                       await Hive.openBox("info");
                       await Hive.openBox("surveyLocal");
