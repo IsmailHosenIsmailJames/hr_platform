@@ -59,7 +59,6 @@ dependencies:
   # device_info_plus: ^10.1.0
   bottom_picker: ^2.8.0
   csv: ^6.0.0
-  syncfusion_flutter_pdfviewer: ^27.1.48
   hive: ^2.2.3
   hive_flutter: ^1.1.0
   cached_network_image: ^3.4.1
