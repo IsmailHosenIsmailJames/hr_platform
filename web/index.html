@@ -32,10 +32,40 @@
 
   <title>HR Platform</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    .container {
+      width: 90vw;
+      height: 90vh;
+      display: flex;
+      /* Default Axis is X*/
+      justify-content: center;
+      /* Main Axis */
+      align-items: center;
+      /* Cross Axis */
+    }
+
+    .indicator {
+      width: 15vw;
+      height: 15vw;
+    }
+  </style>
 </head>
 
 <body>
+  <div id="loading_indicator" class="container">
+    <img class="indicator" src="./assets/cupertino_activity_indicator_square_medium.gif" />
+  </div>
   <script src="flutter_bootstrap.js" async></script>
+  <script>
+    window.onload = function () {
+      setTimeout(function () {
+        var loadingIndicator = document.getElementById("loading_indicator");
+        if (loadingIndicator) {
+          loadingIndicator.remove();
+        }
+      }, 5000);
+    };
+  </script>
 </body>
 
 </html>
