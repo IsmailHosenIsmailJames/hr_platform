@@ -56,6 +56,7 @@ class MyApp extends StatelessWidget {
         '/': (contex) => const Initialization(
               namePath: "/home",
             ),
+        '/login': (contex) => const LoginPage(),
       },
       onGenerateRoute: (settings) {
         if (isAuthenticated()) {

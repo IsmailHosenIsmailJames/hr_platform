@@ -225,7 +225,7 @@ class MyDrawer extends StatelessWidget {
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();
                       await Hive.box('info').clear();
-                      await Hive.box("surveyLocal").deleteFromDisk();
+                      await Hive.box("surveyLocal").clear();
                       await Hive.openBox("info");
                       await Hive.openBox("surveyLocal");
                       Navigator.pushNamedAndRemoveUntil(
