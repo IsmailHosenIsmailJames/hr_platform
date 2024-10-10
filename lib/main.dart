@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:hr_platform/src/auth/is_authenticated.dart';
 import 'package:hr_platform/src/core/initialization.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light().copyWith(
+        textTheme: GoogleFonts.poppinsTextTheme(),
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue.shade800,
         ),
