@@ -63,6 +63,7 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^27.1.48
   cached_network_image: ^3.4.1
   google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -91,6 +92,7 @@ flutter:
   assets:
     - assets/radiant_logo.636da2b1.png
     - assets/dashboard_bg.png
+    - assets/logo_hr.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

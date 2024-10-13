@@ -15,6 +15,7 @@ import 'package:url_strategy/url_strategy.dart';
 
 import 'firebase_options.dart';
 import 'src/screens/home/home_page.dart';
+import 'src/screens/home/home_page_v2.dart';
 
 void _isolateMain(RootIsolateToken rootIsolateToken) async {
   BackgroundIsolateBinaryMessenger.ensureInitialized(rootIsolateToken);
@@ -50,6 +51,13 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue.shade800,
         ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.blue.shade800,
@@ -58,90 +66,91 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (contex) => const Initialization(
-              namePath: "/home",
-            ),
-      },
-      onGenerateRoute: (settings) {
-        if (isAuthenticated()) {
-          // login route
-          if (settings.name == '/login') {
-            return MaterialPageRoute(
-              settings: settings,
-              builder: (context) {
-                return const LoginPage();
-              },
-            );
-          }
+      home: HomePageV2(),
+      //   initialRoute: '/',
+      //   routes: {
+      //     '/': (contex) => const Initialization(
+      //           namePath: "/home",
+      //         ),
+      //   },
+      //   onGenerateRoute: (settings) {
+      //     if (isAuthenticated()) {
+      //       // login route
+      //       if (settings.name == '/login') {
+      //         return MaterialPageRoute(
+      //           settings: settings,
+      //           builder: (context) {
+      //             return const LoginPage();
+      //           },
+      //         );
+      //       }
 
-          if (settings.name == '/') {
-            return MaterialPageRoute(
-              settings: settings,
-              builder: (context) {
-                return const Initialization(namePath: "/home");
-              },
-            );
-          }
+      //       if (settings.name == '/') {
+      //         return MaterialPageRoute(
+      //           settings: settings,
+      //           builder: (context) {
+      //             return const Initialization(namePath: "/home");
+      //           },
+      //         );
+      //       }
 
-          if (settings.name != null && settings.name!.startsWith("/survey")) {
-            String name = settings.name!;
-            name = name.replaceAll("/survey", "").replaceAll("/", "");
-            int? id = int.tryParse(name);
-            if (id != null) {
-              return MaterialPageRoute(
-                settings: settings,
-                builder: (context) {
-                  return AllSurvey(
-                    surveyID: "$id",
-                  );
-                },
-              );
-            } else {
-              return MaterialPageRoute(
-                settings: settings,
-                builder: (context) {
-                  return const AllSurvey();
-                },
-              );
-            }
-          }
+      //       if (settings.name != null && settings.name!.startsWith("/survey")) {
+      //         String name = settings.name!;
+      //         name = name.replaceAll("/survey", "").replaceAll("/", "");
+      //         int? id = int.tryParse(name);
+      //         if (id != null) {
+      //           return MaterialPageRoute(
+      //             settings: settings,
+      //             builder: (context) {
+      //               return AllSurvey(
+      //                 surveyID: "$id",
+      //               );
+      //             },
+      //           );
+      //         } else {
+      //           return MaterialPageRoute(
+      //             settings: settings,
+      //             builder: (context) {
+      //               return const AllSurvey();
+      //             },
+      //           );
+      //         }
+      //       }
 
-          if (settings.name!.startsWith("/home")) {
-            return MaterialPageRoute(
-              settings: settings,
-              builder: (context) {
-                return HomePage(path: settings.name!.replaceFirst("/home", ""));
-              },
-            );
-          }
+      //       if (settings.name!.startsWith("/home")) {
+      //         return MaterialPageRoute(
+      //           settings: settings,
+      //           builder: (context) {
+      //             return HomePage(path: settings.name!.replaceFirst("/home", ""));
+      //           },
+      //         );
+      //       }
 
-          return MaterialPageRoute(
-            settings: settings,
-            builder: (context) {
-              return Scaffold(
-                body: Center(
-                  child: Text(
-                    "${settings.name ?? ""}\nsomething went worng",
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
-        } else {
-          return MaterialPageRoute(
-            settings: const RouteSettings(name: '/login'),
-            builder: (context) {
-              return const LoginPage();
-            },
-          );
-        }
-      },
+      //       return MaterialPageRoute(
+      //         settings: settings,
+      //         builder: (context) {
+      //           return Scaffold(
+      //             body: Center(
+      //               child: Text(
+      //                 "${settings.name ?? ""}\nsomething went worng",
+      //                 textAlign: TextAlign.center,
+      //                 style: const TextStyle(
+      //                   fontSize: 20,
+      //                 ),
+      //               ),
+      //             ),
+      //           );
+      //         },
+      //       );
+      //     } else {
+      //       return MaterialPageRoute(
+      //         settings: const RouteSettings(name: '/login'),
+      //         builder: (context) {
+      //           return const LoginPage();
+      //         },
+      //       );
+      //     }
+      //   },
     );
   }
 }
