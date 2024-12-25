@@ -4,17 +4,13 @@ import 'dart:isolate';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:hr_platform/src/auth/is_authenticated.dart';
-import 'package:hr_platform/src/core/initialization.dart';
-import 'package:hr_platform/src/screens/auth/login/login_page.dart';
-import 'package:hr_platform/src/screens/survey/all_survey.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'firebase_options.dart';
-import 'src/screens/home/home_page.dart';
 import 'src/screens/home/home_page_v2.dart';
 
 void _isolateMain(RootIsolateToken rootIsolateToken) async {
@@ -44,8 +40,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      defaultTransition: Transition.leftToRight,
       theme: ThemeData.light().copyWith(
         textTheme: GoogleFonts.poppinsTextTheme(),
         colorScheme: ColorScheme.fromSeed(
