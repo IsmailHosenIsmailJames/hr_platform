@@ -105,7 +105,7 @@ class _HomePageV2State extends State<HomePageV2> {
               padding: isMobileView
                   ? EdgeInsets.all(7)
                   : EdgeInsets.only(
-                      top: hight * 0.08,
+                      top: hight * 0.05,
                       left: width * 0.03,
                       right: width * 0.01,
                     ),
@@ -230,28 +230,34 @@ class _HomePageV2State extends State<HomePageV2> {
     );
   }
 
-  Container generateCard({
+  Widget generateCard({
     required int index,
     required String titleName,
     required String description,
     required String iconSVG,
   }) {
-    return Container(
-      width: 372 * 0.8,
-      height: 172 * 0.8,
-      margin: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: [
-          Color(0xFFEFF4EE),
-          Color(0xFFEFF5F5),
-          Color(0xFFF5F1EE),
-        ][index % 3],
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Stack(
-        children: [
-          SvgPicture.string(
-            """<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: TextButton(
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+        ),
+        onPressed: () {},
+        child: Container(
+          width: 372 * 0.8,
+          height: 172 * 0.8,
+          decoration: BoxDecoration(
+            color: [
+              Color.fromARGB(150, 220, 255, 220),
+              Color.fromARGB(150, 220, 220, 255),
+              Color.fromARGB(150, 255, 220, 220),
+            ][index % 3],
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Stack(
+            children: [
+              SvgPicture.string(
+                """<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                                    viewBox="0 0 372 172" style="enable-background:new 0 0 372 172;" xml:space="preserve">
                                 <style type="text/css">
                                   .st0{fill:#9DCE91;}
@@ -262,76 +268,78 @@ class _HomePageV2State extends State<HomePageV2> {
                                   C346.45,67.44,360.96,72.96,372,82.4z"/>
                                 </svg>
                                 """,
-            colorFilter: ColorFilter.mode(
-              [
-                Color(0xFFD8EFD2),
-                Color(0xFFE3F2EF),
-                Color(0xFFF6E2CB),
-              ][index % 3],
-              BlendMode.srcIn,
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 20, left: 15),
-                child: Text(
-                  titleName,
-                  style: Theme.of(context).textTheme.titleMedium,
+                colorFilter: ColorFilter.mode(
+                  [
+                    Color.fromARGB(150, 200, 255, 200),
+                    Color.fromARGB(150, 200, 200, 255),
+                    Color.fromARGB(150, 255, 200, 200),
+                  ][index % 3],
+                  BlendMode.srcIn,
                 ),
               ),
-              Gap(5),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, left: 15),
+                    child: Text(
+                      titleName,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  Gap(5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        width: 220,
-                        padding: const EdgeInsets.only(top: 15, left: 15),
-                        child: Text(
-                          description,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 220,
+                            padding: const EdgeInsets.only(top: 15, left: 15),
+                            child: Text(
+                              description,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ),
+                          // Spacer(),
+                          Padding(
+                            padding: EdgeInsets.only(left: 15, top: 10),
+                            child: Icon(
+                              Icons.arrow_forward,
+                              size: 15,
+                            ),
+                          ),
+                        ],
                       ),
-                      // Spacer(),
+                      const Spacer(),
                       Padding(
-                        padding: EdgeInsets.only(left: 15, top: 10),
-                        child: Icon(
-                          Icons.arrow_forward,
-                          size: 15,
+                        padding: const EdgeInsets.only(right: 15, bottom: 15),
+                        child: SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: SvgPicture.string(
+                            iconSVG,
+                            colorFilter: ColorFilter.mode(
+                              [
+                                Color.fromARGB(255, 62, 182, 32),
+                                Color.fromARGB(255, 34, 173, 145),
+                                Color.fromARGB(255, 178, 120, 54),
+                              ][index % 3],
+                              BlendMode.srcIn,
+                            ),
+                          ),
                         ),
                       ),
                     ],
-                  ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 15, bottom: 15),
-                    child: SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: SvgPicture.string(
-                        iconSVG,
-                        colorFilter: ColorFilter.mode(
-                          [
-                            Color.fromARGB(255, 62, 182, 32),
-                            Color.fromARGB(255, 34, 173, 145),
-                            Color.fromARGB(255, 178, 120, 54),
-                          ][index % 3],
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
