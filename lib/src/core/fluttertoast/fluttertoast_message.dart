@@ -7,5 +7,6 @@ void showFluttertoastMessage(String msg,
     title: Text(msg),
     description: description != null ? Text(description) : null,
     type: type,
+    autoCloseDuration: Duration(seconds: 5),
   );
 }

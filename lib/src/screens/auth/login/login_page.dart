@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
@@ -8,8 +9,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
+import 'package:hr_platform/src/screens/home/home_page_v2.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
 import 'package:toastification/toastification.dart';
 
@@ -28,6 +31,8 @@ class _LoginPageState extends State<LoginPage> {
       TextEditingController();
   final TextEditingController _passwordTextEditingController =
       TextEditingController();
+
+  bool isTryingToAsyncLogin = false;
 
   bool isIdLooksLikeEmail(String id) {
     return EmailValidator.validate(id);
@@ -70,12 +75,16 @@ class _LoginPageState extends State<LoginPage> {
           );
           return "This user has been suspended";
         }
-        var box = await Hive.openBox('info');
-        await box.deleteFromDisk();
-        box = await Hive.openBox('info');
+        var box = Hive.box('info');
+        log("User Data Found: ${temUserData.toString()}");
+        await box.clear();
         temUserData.addAll({"user_id": id});
         await box.put('userData', jsonEncode(temUserData));
-        Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
+        log("User Data Saved Successful on info->userData");
+
+        Get.off(
+          () => HomePageV2(),
+        );
         return null;
       } else {
         showFluttertoastMessage(
@@ -191,7 +200,11 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () async {
                 await logButtonPressedFun(context);
               },
-              child: const Text("Login"),
+              child: isTryingToAsyncLogin
+                  ? CircularProgressIndicator(
+                      color: Colors.white,
+                    )
+                  : const Text("Login"),
             ),
           ),
         ],
@@ -291,20 +304,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> logButtonPressedFun(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: const Center(
-              child: CircularProgressIndicator(
-                color: Colors.blue,
-              ),
-            ),
-          );
-        },
-      );
+      setState(() {
+        isTryingToAsyncLogin = true;
+      });
 
       final String? result = await loginUser(
         _idTextEditingController.text.trim(),
@@ -321,16 +323,17 @@ class _LoginPageState extends State<LoginPage> {
           "Login successful",
           type: ToastificationType.success,
         );
+        return;
       } else {
         // something wrong
+        FirebaseAuth.instance.signOut();
         showFluttertoastMessage(
           result,
           type: ToastificationType.error,
         );
-      }
-
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
+        setState(() {
+          isTryingToAsyncLogin = false;
+        });
       }
     }
   }

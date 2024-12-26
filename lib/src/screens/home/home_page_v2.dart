@@ -23,16 +23,27 @@ class HomePageV2 extends StatefulWidget {
 class _HomePageV2State extends State<HomePageV2> {
   int tabIndex = 0;
   Widget? documentsView;
+
   String rightWidgetID = "Home";
+  final infoBox = Hive.box("info");
+  late String name;
   @override
   void initState() {
     getFilesInfoList();
+    final userData = infoBox.get("userData", defaultValue: null);
+    if (userData != null) {
+      log("User Data : $userData");
+      Map<String, dynamic> decodedUserData =
+          Map<String, dynamic>.from(jsonDecode(userData));
+      name = decodedUserData["user_name"];
+    } else {
+      log("User Data Not Found");
+    }
+    log(infoBox.keys.toList().toString());
     super.initState();
   }
 
   getFilesInfoList() async {
-    final box = Hive.box("info");
-    log(box.get("data"));
     final response = await FirebaseFirestore.instance
         .collection("data")
         .doc("data-map")
@@ -41,7 +52,7 @@ class _HomePageV2State extends State<HomePageV2> {
       Map? data = response.data();
       if (data != null) {
         List<Map> listOfInfo = List<Map>.from(data['data-map']);
-        await box.put("data", jsonEncode(listOfInfo));
+        await infoBox.put("data", jsonEncode(listOfInfo));
       }
     }
   }
@@ -137,7 +148,7 @@ class _HomePageV2State extends State<HomePageV2> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  "Good Morning,\nRahim Md. Earteza",
+                  "Good ${getWishingTime(DateTime.now())},\n$name",
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
               ),
@@ -458,6 +469,20 @@ class _HomePageV2State extends State<HomePageV2> {
             ),
       ),
     );
+  }
+
+  String getWishingTime(DateTime now) {
+    ["Morning", "Afternoon" "Evening", "Night"];
+    int hour = now.hour;
+    if (hour > 6 && hour < 12) {
+      return "Morning";
+    } else if (hour > 12 && hour < 16) {
+      return "Afternoon";
+    } else if (hour > 16 && hour < 18) {
+      return "Evening";
+    } else {
+      return "Night";
+    }
   }
 }
 

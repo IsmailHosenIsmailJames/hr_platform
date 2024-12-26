@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 
@@ -133,7 +134,7 @@ class MyApp extends StatelessWidget {
         //           return Scaffold(
         //             body: Center(
         //               child: Text(
-        //                 "${settings.name ?? ""}\nsomething went worng",
+        //                 "${settings.name ?? ""}\nsomething went wrong",
         //                 textAlign: TextAlign.center,
         //                 style: const TextStyle(
         //                   fontSize: 20,
@@ -163,12 +164,33 @@ class Init extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseAuth.instance.userChanges(),
+      stream: Stream.periodic(
+        Duration(seconds: 1),
+        (computationCount) {
+          if (FirebaseAuth.instance.currentUser != null &&
+              Hive.box("info").get("userData") != null) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      ),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return HomePageV2();
+          if (snapshot.data == true) {
+            return HomePageV2();
+          } else {
+            return LoginPage();
+          }
         } else {
-          return LoginPage();
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Colors.grey.shade300,
+                color: Colors.blue,
+              ),
+            ),
+          );
         }
       },
     );

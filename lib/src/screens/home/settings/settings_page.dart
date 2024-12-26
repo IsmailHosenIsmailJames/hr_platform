@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -15,7 +16,12 @@ class _SettingsPageState extends State<SettingsPage> {
         title: const Text("Settings"),
       ),
       body: Center(
-        child: Text("Settings"),
+        child: ElevatedButton(
+          onPressed: () {
+            FirebaseAuth.instance.signOut();
+          },
+          child: Text("Log Out"),
+        ),
       ),
     );
   }
