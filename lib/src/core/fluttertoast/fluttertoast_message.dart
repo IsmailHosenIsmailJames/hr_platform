@@ -1,21 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:toastification/toastification.dart';
 
-void showFluttertoastMessage(String msg, BuildContext context) {
-  if (!Platform.isWindows) {
-    Fluttertoast.showToast(msg: msg);
-  } else {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Text(
-        msg,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    );
-  }
+void showFluttertoastMessage(String msg,
+    {String? description, ToastificationType? type}) {
+  toastification.show(
+    title: Text(msg),
+    description: description != null ? Text(description) : null,
+    type: type,
+  );
 }

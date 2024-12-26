@@ -13,6 +13,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
 import 'package:hr_platform/src/models/files_model.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../core/data/get_data_form_hive.dart';
 
@@ -47,7 +48,10 @@ class _AddNewFileState extends State<AddNewFile> {
       setState(() {});
     } else {
       // ignore: use_build_context_synchronously
-      showFluttertoastMessage("Please select a files", context);
+      showFluttertoastMessage(
+        "Please select a files",
+        type: ToastificationType.info,
+      );
     }
   }
 
@@ -62,7 +66,10 @@ class _AddNewFileState extends State<AddNewFile> {
       setState(() {});
     } else {
       // ignore: use_build_context_synchronously
-      showFluttertoastMessage("Please select a files", context);
+      showFluttertoastMessage(
+        "Please select a files",
+        type: ToastificationType.info,
+      );
     }
   }
 
@@ -278,7 +285,9 @@ class _AddNewFileState extends State<AddNewFile> {
                   );
                 } else if (uploadTask != null) {
                   showFluttertoastMessage(
-                      "upload task is not yet finished", context);
+                    "upload task is not yet finished",
+                    type: ToastificationType.info,
+                  );
                 } else {
                   showModalBottomSheet(
                     context: context,

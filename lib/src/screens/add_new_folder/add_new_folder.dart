@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/models/folders_model.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../core/data/get_data_form_hive.dart';
 import '../../core/fluttertoast/fluttertoast_message.dart';
@@ -31,8 +32,8 @@ class _AddNewFolderState extends State<AddNewFolder> {
   UploadTask? uploadTask;
 
   TextEditingController controller = TextEditingController();
-  TextEditingController urlTextControler = TextEditingController();
-  String tsakState = "Let's add the file";
+  TextEditingController urlTextController = TextEditingController();
+  String taskState = "Let's add the file";
 
   void selectCoverImageForFile() async {
     imagePickerResult = await FilePicker.platform.pickFiles(
@@ -47,7 +48,10 @@ class _AddNewFolderState extends State<AddNewFolder> {
       setState(() {});
     } else {
       // ignore: use_build_context_synchronously
-      showFluttertoastMessage("Please select a files", context);
+      showFluttertoastMessage(
+        "Please select a files",
+        type: ToastificationType.info,
+      );
     }
   }
 
@@ -175,7 +179,7 @@ class _AddNewFolderState extends State<AddNewFolder> {
             if (widget.isURL) const Gap(5),
             if (widget.isURL)
               TextFormField(
-                controller: urlTextControler,
+                controller: urlTextController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "URL can't be empty";
@@ -209,9 +213,12 @@ class _AddNewFolderState extends State<AddNewFolder> {
                   }
 
                   if (widget.isURL == true &&
-                      urlTextControler.text.trim().isEmpty) {
+                      urlTextController.text.trim().isEmpty) {
                     // ignore: use_build_context_synchronously
-                    showFluttertoastMessage("URL cant be empty", context);
+                    showFluttertoastMessage(
+                      "URL cant be empty",
+                      type: ToastificationType.info,
+                    );
                     return;
                   }
 
@@ -221,12 +228,12 @@ class _AddNewFolderState extends State<AddNewFolder> {
                     name: controller.text.trim(),
                     image: imageUrl,
                     coverImageRef: 'cover_images/$image',
-                    url: widget.isURL ? urlTextControler.text.trim() : null,
+                    url: widget.isURL ? urlTextController.text.trim() : null,
                   );
 
                   setState(() {
                     uploadTask = null;
-                    tsakState = "Updating Data Base";
+                    taskState = "Updating Data Base";
                   });
 
                   List<Map> localData = getCurrentPossitionListOfData();
@@ -236,7 +243,7 @@ class _AddNewFolderState extends State<AddNewFolder> {
                       .doc("data-map")
                       .update({"data-map": localData});
                   setState(() {
-                    tsakState = "Done all Task";
+                    taskState = "Done all Task";
                   });
                   await Hive.box("info")
                       .put("data", jsonEncode({"data-map": localData}));
@@ -249,7 +256,9 @@ class _AddNewFolderState extends State<AddNewFolder> {
                   );
                 } else if (uploadTask != null) {
                   showFluttertoastMessage(
-                      "upload task is not yet finished", context);
+                    "upload task is not yet finished",
+                    type: ToastificationType.info,
+                  );
                 } else {
                   showModalBottomSheet(
                     context: context,
@@ -262,7 +271,7 @@ class _AddNewFolderState extends State<AddNewFolder> {
                 }
               },
               child: uploadTask == null
-                  ? Text(tsakState)
+                  ? Text(taskState)
                   : StreamBuilder(
                       stream: uploadTask!.snapshotEvents,
                       builder: (context, snapshot) {

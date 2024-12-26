@@ -11,6 +11,7 @@ import 'package:gap/gap.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
 import 'package:hr_platform/src/theme/text_field_input_decoration.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../theme/break_point.dart';
 
@@ -77,12 +78,18 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
         return null;
       } else {
-        showFluttertoastMessage("User did not exits", context);
+        showFluttertoastMessage(
+          "User did not exits",
+          type: ToastificationType.error,
+        );
         return "User did not exits";
       }
     } catch (e) {
-      showFluttertoastMessage("Something went worng", context);
-      return "Something went worng";
+      showFluttertoastMessage(
+        "Something went wrong",
+        type: ToastificationType.error,
+      );
+      return "Something went wrong";
     }
   }
 
@@ -104,18 +111,28 @@ class _LoginPageState extends State<LoginPage> {
           await box.put("userData", jsonEncode(adminData));
           Navigator.pushNamedAndRemoveUntil(context, "/", (route) => false);
         } else {
-          showFluttertoastMessage("Something went worng", context);
-          return "Something went worng";
+          showFluttertoastMessage(
+            "Something went wrong",
+            type: ToastificationType.error,
+          );
+          return "Something went wrong";
         }
       } else {
-        showFluttertoastMessage("Email is not valid", context);
+        showFluttertoastMessage(
+          "Email is not valid",
+          type: ToastificationType.error,
+        );
         return "Email is not valid";
       }
     } catch (e) {
       if (kDebugMode) {
         print("loginAdmin() error :  + $e");
       }
-      showFluttertoastMessage("Something went worng. Unable to login", context);
+      showFluttertoastMessage(
+        "Something went wrong.",
+        description: " Unable to login",
+        type: ToastificationType.error,
+      );
     }
     return null;
   }
@@ -299,11 +316,17 @@ class _LoginPageState extends State<LoginPage> {
       }
 
       if (result == null) {
-        // login successfull
-        showFluttertoastMessage("Login successfull", context);
+        // login successful
+        showFluttertoastMessage(
+          "Login successful",
+          type: ToastificationType.success,
+        );
       } else {
-        // something worng
-        showFluttertoastMessage(result, context);
+        // something wrong
+        showFluttertoastMessage(
+          result,
+          type: ToastificationType.error,
+        );
       }
 
       if (Navigator.canPop(context)) {

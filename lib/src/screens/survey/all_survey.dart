@@ -9,12 +9,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:hr_platform/src/core/show_toast_message.dart';
+import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/survey/survey.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:hr_platform/src/screens/survey/view_general_user.dart/survey_view.dart';
 import 'package:hr_platform/src/theme/break_point.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../models/user_model.dart';
 import 'models/surevey_question_model.dart';
@@ -205,10 +206,12 @@ class _AllSurveyState extends State<AllSurvey> {
                                                 FlutterClipboard.copy(
                                                         '${allSurveyFirebase[index].id}')
                                                     .then((value) {
-                                                  showToastedMessage(
-                                                      "Copied ${allSurveyFirebase[index].id}",
-                                                      // ignore: use_build_context_synchronously
-                                                      context);
+                                                  showFluttertoastMessage(
+                                                    "Copied ${allSurveyFirebase[index].id}",
+                                                    // ignore: use_build_context_synchronously
+                                                    type: ToastificationType
+                                                        .success,
+                                                  );
                                                 });
                                               },
                                               icon: const Icon(Icons.link),
@@ -424,10 +427,12 @@ class _AllSurveyState extends State<AllSurvey> {
                                               FlutterClipboard.copy(
                                                       '${allSurveyLocal[index].id}')
                                                   .then((value) {
-                                                showToastedMessage(
-                                                    "Copied ${allSurveyLocal[index].id}",
-                                                    // ignore: use_build_context_synchronously
-                                                    context);
+                                                showFluttertoastMessage(
+                                                  "Copied ${allSurveyLocal[index].id}",
+                                                  // ignore: use_build_context_synchronously
+                                                  type: ToastificationType
+                                                      .success,
+                                                );
                                               });
                                             },
                                             icon: const Icon(Icons.link),
@@ -593,16 +598,16 @@ class _AllSurveyState extends State<AllSurvey> {
     String? path = await FilePicker.platform.getDirectoryPath();
     if (path != null) {
       await File("$path/$title.csv").writeAsString(csv);
-      showToastedMessage(
-        "Saved successfull!",
+      showFluttertoastMessage(
+        "Saved successful!",
         // ignore: use_build_context_synchronously
-        context,
+        type: ToastificationType.success,
       );
     } else {
-      showToastedMessage(
+      showFluttertoastMessage(
         "Please pick a folder where we can save data",
         // ignore: use_build_context_synchronously
-        context,
+        type: ToastificationType.info,
       );
     }
   }

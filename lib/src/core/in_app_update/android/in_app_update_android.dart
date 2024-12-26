@@ -6,13 +6,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../theme/break_point.dart';
-import '../../show_toast_message.dart';
 import '../api.dart';
 import 'get_architecture.dart';
 
@@ -41,9 +42,9 @@ void showDialogForMobileUpdate(BuildContext context, String deviceV,
     p = join(directory.path, lastV, apkURL.split("/").last);
   }
 
-  bool isExitsErliter = await File(p).exists();
+  bool isExitsEelier = await File(p).exists();
 
-  if (!isExitsErliter) {
+  if (!isExitsEelier) {
     await showDialog(
       context: context,
       builder: (context) {
@@ -220,9 +221,9 @@ void showDialogForMobileUpdate(BuildContext context, String deviceV,
       );
     }
     if (!await Permission.requestInstallPackages.isGranted) {
-      showToastedMessage(
+      showFluttertoastMessage(
         "Something went worng",
-        context,
+        type: ToastificationType.error,
       );
       return;
     }

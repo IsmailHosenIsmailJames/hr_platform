@@ -23,6 +23,7 @@ import 'package:hr_platform/src/screens/add_new_folder/add_new_folder.dart';
 import 'package:hr_platform/src/screens/home/drawer/drawer.dart';
 import 'package:hr_platform/src/screens/pdf_view/pdf_view.dart';
 import 'package:hr_platform/src/theme/break_point.dart';
+import 'package:toastification/toastification.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/data/get_data_form_hive.dart';
@@ -675,28 +676,28 @@ class _HomePageState extends State<HomePage> {
                                         if (directory != null) {
                                           showFluttertoastMessage(
                                             "Downloading ${cureentModel.path}",
-                                            context,
+                                            type: ToastificationType.success,
                                           );
                                           try {
                                             await Dio().download(
                                                 cureentModel.path,
                                                 "$directory/${cureentModel.name}.${cureentModel.type}");
                                             showFluttertoastMessage(
-                                              "Successfull Download ${cureentModel.path}",
-                                              context,
+                                              "Successful Download ${cureentModel.path}",
+                                              type: ToastificationType.success,
                                             );
                                           } catch (e) {
                                             showFluttertoastMessage(
                                               "Failed Download ${cureentModel.path}",
-                                              context,
+                                              type: ToastificationType.error,
                                             );
                                           }
                                         }
 
                                         if (directory == null) {
                                           showFluttertoastMessage(
-                                            "Folder did not selected. Download Cancle",
-                                            context,
+                                            "Folder did not selected. Download Cancel",
+                                            type: ToastificationType.info,
                                           );
                                         }
                                       },
@@ -713,8 +714,9 @@ class _HomePageState extends State<HomePage> {
                                         FlutterClipboard.copy(cureentModel.path)
                                             .then(
                                           (value) => showFluttertoastMessage(
-                                              "Copied : ${cureentModel.path}",
-                                              context),
+                                            "Copied : ${cureentModel.path}",
+                                            type: ToastificationType.success,
+                                          ),
                                         );
                                       },
                                       child: const Row(
@@ -753,8 +755,9 @@ class _HomePageState extends State<HomePage> {
                                                               Colors.red),
                                                   onPressed: () async {
                                                     showFluttertoastMessage(
-                                                      "Deleating ${widget.path}/${cureentModel.name}.${cureentModel.type}",
-                                                      context,
+                                                      "Deleting ${widget.path}/${cureentModel.name}.${cureentModel.type}",
+                                                      type: ToastificationType
+                                                          .info,
                                                     );
 
                                                     try {
@@ -766,8 +769,9 @@ class _HomePageState extends State<HomePage> {
                                                           .delete();
                                                     } catch (e) {
                                                       showFluttertoastMessage(
-                                                        "Something went worng",
-                                                        context,
+                                                        "Something went wrong",
+                                                        type: ToastificationType
+                                                            .error,
                                                       );
                                                     }
                                                     int indexAt = -1;
@@ -790,8 +794,9 @@ class _HomePageState extends State<HomePage> {
                                                     }
                                                     if (indexAt == -1) {
                                                       showFluttertoastMessage(
-                                                        "Something went worng, context",
-                                                        context,
+                                                        "Something went wrong",
+                                                        type: ToastificationType
+                                                            .error,
                                                       );
                                                     }
                                                     allData.removeAt(indexAt);
@@ -810,8 +815,9 @@ class _HomePageState extends State<HomePage> {
                                                           "data-map": allData
                                                         }));
                                                     showFluttertoastMessage(
-                                                      "Successfull Deleation, context",
-                                                      context,
+                                                      "Successful Deletion, context",
+                                                      type: ToastificationType
+                                                          .success,
                                                     );
                                                     Navigator
                                                         .pushNamedAndRemoveUntil(
@@ -1034,13 +1040,17 @@ class _HomePageState extends State<HomePage> {
                                                               .isNotEmpty) {
                                                             showFluttertoastMessage(
                                                               "Remove contents under folder first",
-                                                              context,
+                                                              type:
+                                                                  ToastificationType
+                                                                      .info,
                                                             );
                                                             return;
                                                           }
                                                           showFluttertoastMessage(
-                                                            "Deleating ${widget.path}/${cureentModel.name}.",
-                                                            context,
+                                                            "Deleting ${widget.path}/${cureentModel.name}.",
+                                                            type:
+                                                                ToastificationType
+                                                                    .info,
                                                           );
 
                                                           int indexAt = -1;
@@ -1064,8 +1074,10 @@ class _HomePageState extends State<HomePage> {
                                                           }
                                                           if (indexAt == -1) {
                                                             showFluttertoastMessage(
-                                                              "Something went worng",
-                                                              context,
+                                                              "Something went wrong",
+                                                              type:
+                                                                  ToastificationType
+                                                                      .error,
                                                             );
                                                           }
 
@@ -1078,8 +1090,10 @@ class _HomePageState extends State<HomePage> {
                                                                 .delete();
                                                           } catch (e) {
                                                             showFluttertoastMessage(
-                                                              "Something went worng",
-                                                              context,
+                                                              "Something went wrong",
+                                                              type:
+                                                                  ToastificationType
+                                                                      .error,
                                                             );
                                                           }
 
@@ -1102,8 +1116,10 @@ class _HomePageState extends State<HomePage> {
                                                                     allData
                                                               }));
                                                           showFluttertoastMessage(
-                                                            "Successfull Deleation",
-                                                            context,
+                                                            "Successful Deletion",
+                                                            type:
+                                                                ToastificationType
+                                                                    .success,
                                                           );
                                                           Navigator
                                                               .pushNamedAndRemoveUntil(

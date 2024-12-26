@@ -4,10 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:hr_platform/src/core/show_toast_message.dart';
+import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/survey/models/surevey_question_model.dart';
 import 'package:hr_platform/src/theme/break_point.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../models/user_model.dart';
 import '../../../theme/text_field_input_decoration.dart';
@@ -73,10 +74,10 @@ class _SurveyViewState extends State<SurveyView> {
                       "/",
                       (route) => false,
                     );
-                    showToastedMessage(
+                    showFluttertoastMessage(
                       "Successfully Published",
                       // ignore: use_build_context_synchronously
-                      context,
+                      type: ToastificationType.success,
                     );
                   } catch (e) {
                     if (kDebugMode) {
@@ -98,10 +99,10 @@ class _SurveyViewState extends State<SurveyView> {
                         .collection("survey")
                         .doc("${surevey.id}")
                         .update({"${userModel.userID}": ans});
-                    showToastedMessage(
-                      "Submit Successfull",
+                    showFluttertoastMessage(
+                      "Submit Successful",
                       // ignore: use_build_context_synchronously
-                      context,
+                      type: ToastificationType.success,
                     );
                     Navigator.pushNamedAndRemoveUntil(
                       // ignore: use_build_context_synchronously
@@ -110,10 +111,10 @@ class _SurveyViewState extends State<SurveyView> {
                       (route) => false,
                     );
                   } catch (e) {
-                    showToastedMessage(
+                    showFluttertoastMessage(
                       "Submit failed",
                       // ignore: use_build_context_synchronously
-                      context,
+                      type: ToastificationType.error,
                     );
                   }
                 }

@@ -1,7 +1,12 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:hr_platform/src/screens/home/documents/documents_page.dart';
 import 'package:hr_platform/src/screens/home/settings/settings_page.dart';
 import 'package:hr_platform/src/screens/notification/notification_page.dart';
@@ -21,7 +26,24 @@ class _HomePageV2State extends State<HomePageV2> {
   String rightWidgetID = "Home";
   @override
   void initState() {
+    getFilesInfoList();
     super.initState();
+  }
+
+  getFilesInfoList() async {
+    final box = Hive.box("info");
+    log(box.get("data"));
+    final response = await FirebaseFirestore.instance
+        .collection("data")
+        .doc("data-map")
+        .get();
+    if (response.exists) {
+      Map? data = response.data();
+      if (data != null) {
+        List<Map> listOfInfo = List<Map>.from(data['data-map']);
+        await box.put("data", jsonEncode(listOfInfo));
+      }
+    }
   }
 
   @override
@@ -30,9 +52,7 @@ class _HomePageV2State extends State<HomePageV2> {
     final hight = MediaQuery.of(context).size.height;
 
     Widget leftWidget = Container();
-    Widget rightWidget = Container(
-      child: Text(rightWidgetID.toString()),
-    );
+    Widget rightWidget = Text(rightWidgetID.toString());
 
     bool isMobileView = width < breakPointWidth;
 

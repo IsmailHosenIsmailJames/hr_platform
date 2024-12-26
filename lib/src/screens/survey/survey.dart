@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hr_platform/src/core/show_toast_message.dart';
+import 'package:hr_platform/src/core/fluttertoast/fluttertoast_message.dart';
 import 'package:hr_platform/src/screens/add_user/add_user.dart';
 import 'package:hr_platform/src/screens/survey/models/surevey_question_model.dart';
 import 'package:hr_platform/src/screens/survey/models/text_answer.dart';
 import 'package:hr_platform/src/screens/survey/view_general_user.dart/survey_view.dart';
 import 'package:hr_platform/src/theme/break_point.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../theme/text_field_input_decoration.dart';
 import 'getx/controller_getx.dart';
@@ -58,7 +59,10 @@ class _SurveyState extends State<Survey> {
                 await box.put("${surveyController.survey.value.id}",
                     surveyController.survey.value.toJson());
                 // ignore: use_build_context_synchronously
-                showToastedMessage("Saved!", context);
+                showFluttertoastMessage(
+                  "Saved!",
+                  type: ToastificationType.success,
+                );
                 Navigator.pushNamedAndRemoveUntil(
                   // ignore: use_build_context_synchronously
                   context,
@@ -80,7 +84,10 @@ class _SurveyState extends State<Survey> {
                       surveyController.survey.value.toJson());
 
                   // ignore: use_build_context_synchronously
-                  showToastedMessage("Saved!", context);
+                  showFluttertoastMessage(
+                    "Saved!",
+                    type: ToastificationType.success,
+                  );
                   Navigator.push(
                     // ignore: use_build_context_synchronously
                     context,

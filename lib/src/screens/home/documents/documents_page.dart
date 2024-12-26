@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class DocumentsPage extends StatefulWidget {
   final int index;
@@ -33,11 +37,21 @@ class _DocumentsPageState extends State<DocumentsPage> {
         color: widget.colorLight,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: IconButton(
-          onPressed: () {
-            setState(() {});
-          },
-          icon: Icon(Icons.repartition)),
+      child: Text(getCurrentAllListOfData.toString()),
     );
   }
+
+  List<Map> getCurrentAllListOfData() {
+    final box = Hive.box("info");
+    final data = box.get('data', defaultValue: null);
+    List<Map> toReturn = [];
+    if (data != null) {
+      toReturn = List<Map>.from(jsonDecode(data));
+    }
+    return toReturn;
+  }
+}
+
+List<dynamic> filterData(x) {
+  return [];
 }
