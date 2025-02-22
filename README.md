@@ -82,23 +82,3 @@ This section is *optional*.  If you want others to be able to run your project l
     flutter run
     ```
 
-## Contributing (Optional)
-If you are taking contribution add this option. 
-
-If you're open to contributions, add guidelines here. This might include:
-
-*   How to report bugs.
-*   How to suggest new features.
-*   Coding style guidelines.
-*   Pull request process.
-
-## License (Optional)
-
-Choose a license (e.g., MIT, Apache 2.0) and include it here. The MIT license is a common choice for open-source projects.
-
-```markdown
-MIT License
-
-Copyright (c) [Year] [Your Name]
-
-[Full license text]
