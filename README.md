@@ -1,4 +1,4 @@
-# Project Title (Replace with Actual Title)
+# HR Platform
 
 This project is a Flutter application with a Firebase backend.  It provides [**core functionality - e.g., a user management system, a file/folder management system with admin controls, a survey/quiz platform, etc.  BE VERY SPECIFIC HERE**].  The commit history reveals a focus on building out core features, UI/UX improvements, and bug fixes over time.
 
